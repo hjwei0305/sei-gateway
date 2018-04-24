@@ -1,17 +1,18 @@
 buildscript {
     ext {
+//        springBootVersion = '1.5.9.RELEASE'
+        springBootVersion = '1.5.12.RELEASE'
 //        springBootVersion = '2.0.1.RELEASE'
-        springBootVersion = '1.5.9.RELEASE'
     }
     repositories {
         mavenCentral()
-
         maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group' }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
+
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -25,16 +26,19 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+
+ext {
+    springCloudVersion = '1.4.4.RELEASE'
+}
 repositories {
     mavenLocal()
     maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group/' }
 }
-
-
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul:1.4.4.RELEASE')
+    //compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul:1.4.4.RELEASE')
+    compile("org.springframework.cloud:spring-cloud-starter-netflix-zuul:${springCloudVersion}")
     runtime('mysql:mysql-connector-java')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

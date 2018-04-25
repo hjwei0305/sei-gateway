@@ -4,6 +4,7 @@ import com.ecmp.apigateway.model.*;
 import com.ecmp.apigateway.service.IGatewayApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -83,7 +84,7 @@ public class GatewayApplicationController {
      */
     @RequestMapping("/find_gateway_applications")
     @ResponseBody
-    public Object findGatewayApplications(boolean weatherPage, SearchParam searchParam) {
+    public Object findGatewayApplications(@RequestParam(value = "weatherPage", defaultValue = "1") boolean weatherPage, SearchParam searchParam) {
         if (weatherPage) {
             Page<GatewayApplication> result = this.gatewayApplicationService.findAllByKeywordAndPage(searchParam);
             return new PageModel<>(result);

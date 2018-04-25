@@ -6,6 +6,7 @@ import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApplication;
 import com.ecmp.apigateway.model.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApplicationService;
+import com.ecmp.apigateway.service.IGatewayInterfaceService;
 import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.RandomUtil;
 import com.google.common.collect.Lists;
@@ -28,6 +29,8 @@ import java.util.List;
 public class GatewayApplicationServiceImpl implements IGatewayApplicationService {
     @Autowired
     private GatewayApplicationDao gatewayApplicationDao;
+    @Autowired
+    private IGatewayInterfaceService gatewayInterfaceService;
 
     @Override
     public void addGatewayApplication(GatewayApplication gatewayApplication) {
@@ -53,17 +56,13 @@ public class GatewayApplicationServiceImpl implements IGatewayApplicationService
         if (null == application) throw new ObjectNotFoundException();
         application.setDeleted(true);
         this.gatewayApplicationDao.save(application);
+        //移除应用对应的接口信息
+        gatewayInterfaceService.removeGatewayInterfaceByApplicationCode(application.getApplicationCode());
     }
 
     @Override
     public List<GatewayApplication> findAll() {
-        List<GatewayApplication> result = Lists.newArrayList();
-        Iterable<GatewayApplication> all = this.gatewayApplicationDao.findAll();
-        if (null != all)
-            all.forEach(single -> {
-                result.add(single);
-            });
-        return result;
+        return this.gatewayApplicationDao.findByDeletedFalse();
     }
 
     @Override

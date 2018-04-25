@@ -12,8 +12,9 @@ import java.util.List;
  * @remark: 分页返回对象
  */
 public class PageModel<T> implements Serializable {
+
     //当前页
-    private int pageNum;
+    private int page;
     //每页的数量
     private int pageSize;
     //当前页的数量
@@ -22,11 +23,11 @@ public class PageModel<T> implements Serializable {
     private Iterable<Sort> sort;
 
     //总记录数
-    private long total;
+    private long records;
     //总页数
-    private int pages;
+    private int total;
     //结果集
-    private List<T> list;
+    private List<T> rows;
 
     //是否为第一页
     private boolean first = false;
@@ -39,12 +40,12 @@ public class PageModel<T> implements Serializable {
 
     public PageModel(Page<T> page) {
         //pageable页数从0开始
-        this.pageNum = page.getNumber() + 1;
+        this.page = page.getNumber() + 1;
         this.pageSize = page.getNumberOfElements();
         this.size = page.getSize();
-        this.list = page.getContent();
-        this.total = page.getTotalElements();
-        this.pages = page.getTotalPages();
+        this.rows = page.getContent();
+        this.records = page.getTotalElements();
+        this.total = page.getTotalPages();
         this.first = page.isFirst();
         this.last = page.isLast();
         if (page.getSort() != null) {
@@ -55,12 +56,32 @@ public class PageModel<T> implements Serializable {
     }
 
 
-    public int getPageNum() {
-        return pageNum;
+    public int getPage() {
+        return page;
     }
 
-    public void setPageNum(int pageNum) {
-        this.pageNum = pageNum;
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public long getRecords() {
+        return records;
+    }
+
+    public void setRecords(long records) {
+        this.records = records;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public List<T> getRows() {
+        return rows;
+    }
+
+    public void setRows(List<T> rows) {
+        this.rows = rows;
     }
 
     public int getPageSize() {
@@ -91,25 +112,6 @@ public class PageModel<T> implements Serializable {
         return total;
     }
 
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public int getPages() {
-        return pages;
-    }
-
-    public void setPages(int pages) {
-        this.pages = pages;
-    }
-
-    public List<T> getList() {
-        return list;
-    }
-
-    public void setList(List<T> list) {
-        this.list = list;
-    }
 
     public boolean isFirst() {
         return first;

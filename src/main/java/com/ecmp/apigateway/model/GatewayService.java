@@ -1,8 +1,6 @@
 package com.ecmp.apigateway.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author: hejun
@@ -35,6 +33,8 @@ public class GatewayService extends Domain {
     /**
      * 应用code
      */
+    @JoinTable(name = "gateway_application", joinColumns = { @JoinColumn(name = "application_code") })
+    @ManyToOne
     @Column(name = "application_code")
     private String applicationCode;
 

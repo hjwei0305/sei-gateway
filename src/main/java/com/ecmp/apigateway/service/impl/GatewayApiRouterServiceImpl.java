@@ -86,7 +86,6 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
             return gatewayApiRouterDao.findByDeletedFalse(searchParam.getPageable());
         }
         return gatewayApiRouterDao.findByDeletedFalseAndPathLikeOrServiceIdLikeOrInterfaceNameLike(searchParam.getKeywords(),searchParam.getKeywords(),searchParam.getKeywords(),searchParam.getPageable());
-        //return gatewayApiRouterDao.findAllByPage(searchParam.getKeywords(),searchParam.getKeywords(),searchParam.getKeywords(),searchParam.getPageable());
     }
 
     @Override

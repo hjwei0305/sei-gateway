@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 控制层：网关-路由配置
+ * @remark: 网关-路由配置-控制层
  */
 @Controller
 @RequestMapping(value="/api_router")

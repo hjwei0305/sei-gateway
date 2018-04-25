@@ -5,7 +5,7 @@ import javax.persistence.*;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 实体类：网关-应用服务
+ * @remark: 网关-应用服务-实体类
  */
 @Entity
 @Table(name = "gateway_api_service")

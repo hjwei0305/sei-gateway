@@ -7,7 +7,7 @@ import javax.persistence.Table;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 实体类：网关-路由配置
+ * @remark: 网关-路由配置-实体类
  */
 @Entity
 @Table(name = "gateway_api_router")

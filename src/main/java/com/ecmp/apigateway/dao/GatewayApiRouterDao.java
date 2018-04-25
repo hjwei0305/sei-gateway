@@ -8,11 +8,12 @@ import java.util.List;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 网关-路由配置
+ * @remark: 网关-路由配置-持久层接口
  */
 public interface GatewayApiRouterDao extends JpaRepository<GatewayApiRouter, String> {
 
     List<GatewayApiRouter> findAllByDeletedFalse();
 
     List<GatewayApiRouter> findAllByEnabledTrue();
+
 }

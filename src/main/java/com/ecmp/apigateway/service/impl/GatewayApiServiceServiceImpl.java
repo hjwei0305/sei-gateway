@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author: hejun
  * @date: 2018/4/25
- * @remark: 网关-应用服务
+ * @remark: 网关-应用服务-业务层实现
  */
 @Service
 @Transactional

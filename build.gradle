@@ -36,6 +36,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile("org.springframework.cloud:spring-cloud-starter-netflix-zuul:${springCloudVersion}")
+    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     runtime('mysql:mysql-connector-java')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

@@ -4,6 +4,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @author:wangdayin
@@ -37,11 +38,11 @@ public class Domain {
     @Version
     private int version = 0;
     //是否删除--true：已删除；false：未删除
-    @Column(name = "deleted")
+    @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
     public String getId() {
-        return id;
+        return UUID.randomUUID().toString();
     }
 
     public void setId(String id) {

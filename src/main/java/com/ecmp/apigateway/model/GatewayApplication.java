@@ -13,13 +13,13 @@ import javax.persistence.Table;
 @Table(name = "gateway_application")
 public class GatewayApplication extends Domain {
     //应用code
-    @Column(name = "application_code")
+    @Column(name = "application_code", nullable = false, length = 64)
     private String applicationCode;
     //应用名称
-    @Column(name = "application_name")
+    @Column(name = "application_name", nullable = false, length = 50)
     private String applicationName;
     //应用说明
-    @Column(name = "application_remark")
+    @Column(name = "application_remark", nullable = false, length = 200)
     private String applicationRemark;
 
     public String getApplicationCode() {

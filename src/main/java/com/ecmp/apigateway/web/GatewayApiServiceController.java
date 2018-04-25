@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 网关-应用服务-控制层
+ * @remark: 网关-应用服务-控制层跳转
  */
 @Controller
 @RequestMapping(value="/api_service")

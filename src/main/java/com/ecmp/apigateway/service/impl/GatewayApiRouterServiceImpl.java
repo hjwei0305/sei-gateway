@@ -1,9 +1,15 @@
 package com.ecmp.apigateway.service.impl;
 
 import com.ecmp.apigateway.dao.GatewayApiRouterDao;
+import com.ecmp.apigateway.exception.ObjectNotFoundException;
+import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiRouter;
+import com.ecmp.apigateway.model.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
+import com.ecmp.apigateway.utils.EntityUtils;
+import com.ecmp.apigateway.utils.ToolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,41 +27,70 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
     private GatewayApiRouterDao gatewayApiRouterDao;
 
     @Override
-    public GatewayApiRouter save(GatewayApiRouter gatewayApiRouter) {
+    public void save(GatewayApiRouter gatewayApiRouter) {
         gatewayApiRouterDao.save(gatewayApiRouter);
-        return gatewayApiRouter;
     }
 
     @Override
-    public int edit(GatewayApiRouter gatewayApiRouter) {
-        return 0;
-    }
-
-    @Override
-    public int removeAll() {
-        return gatewayApiRouterDao.removeAll();
-    }
-
-    @Override
-    public int removeById(String ids) {
-        int row = 0;
-        String[] idArr = ids.split(",");
-        for(String id: idArr){
-            row += gatewayApiRouterDao.removeById(id);
+    public void edit(GatewayApiRouter gatewayApiRouter) {
+        if(ToolUtils.isEmpty(gatewayApiRouter.getId())){
+            throw new RequestParamNullException();
+        } else {
+            GatewayApiRouter apiRouter = gatewayApiRouterDao.findById(gatewayApiRouter.getId());
+            if(ToolUtils.isEmpty(apiRouter)){
+                throw new ObjectNotFoundException();
+            } else {
+                EntityUtils.resolveAllFieldsSet(gatewayApiRouter, apiRouter);
+                gatewayApiRouterDao.save(gatewayApiRouter);
+            }
         }
-        return row;
     }
 
     @Override
-    public Object findAll(String keywords) {
-        List<GatewayApiRouter> valueList = gatewayApiRouterDao.findAll(keywords);
-        return valueList;
+    public void removeAll() {
+        List<GatewayApiRouter> gatewayApiRouterList = gatewayApiRouterDao.findByDeletedFalse();
+        if(ToolUtils.isEmpty(gatewayApiRouterList)){
+            throw new ObjectNotFoundException();
+        } else {
+            for(GatewayApiRouter gatewayApiRouter: gatewayApiRouterList){
+                if(ToolUtils.isEmpty(gatewayApiRouter)){
+                    //这里为空时可以不任何的处理
+                    //throw new ObjectNotFoundException();
+                } else {
+                    gatewayApiRouter.setDeleted(true);
+                    gatewayApiRouterDao.save(gatewayApiRouter);
+                }
+            }
+        }
     }
 
     @Override
-    public Object findById(String id) {
-        GatewayApiRouter value = gatewayApiRouterDao.findById(id);
-        return value;
+    public void removeById(String id) {
+        GatewayApiRouter gatewayApiRouter = gatewayApiRouterDao.findById(id);
+        if(ToolUtils.isEmpty(gatewayApiRouter)){
+            throw new ObjectNotFoundException();
+        } else {
+            gatewayApiRouter.setDeleted(true);
+            gatewayApiRouterDao.save(gatewayApiRouter);
+        }
+    }
+
+    @Override
+    public List<GatewayApiRouter> findAll() {
+        return gatewayApiRouterDao.findByDeletedFalse();
+    }
+
+    @Override
+    public Page<GatewayApiRouter> findAllByPage(SearchParam searchParam) {
+        if (ToolUtils.isEmpty(searchParam.getKeywords())) {
+            return gatewayApiRouterDao.findByDeletedFalse(searchParam.getPageable());
+        }
+        return gatewayApiRouterDao.findByDeletedFalseAndPathLikeOrServiceIdLikeOrInterfaceNameLike(searchParam.getKeywords(),searchParam.getKeywords(),searchParam.getKeywords(),searchParam.getPageable());
+    }
+
+    @Override
+    public GatewayApiRouter findById(String id) {
+        return gatewayApiRouterDao.findById(id);
     }
 
 }

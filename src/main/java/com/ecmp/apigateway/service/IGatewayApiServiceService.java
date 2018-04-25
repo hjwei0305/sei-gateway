@@ -1,6 +1,10 @@
 package com.ecmp.apigateway.service;
 
 import com.ecmp.apigateway.model.GatewayApiService;
+import com.ecmp.apigateway.model.SearchParam;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 /**
  * @author: hejun
@@ -9,16 +13,49 @@ import com.ecmp.apigateway.model.GatewayApiService;
  */
 public interface IGatewayApiServiceService {
 
-    GatewayApiService save(GatewayApiService gatewayApiService);
+    /**
+     * 新增
+     * @param gatewayApiService
+     */
+    void save(GatewayApiService gatewayApiService);
 
-    int edit(GatewayApiService gatewayApiService);
+    /**
+     * 编辑
+     * @param gatewayApiService
+     */
+    void edit(GatewayApiService gatewayApiService);
 
-    int removeAll();
+    /**
+     * 删除所有
+     */
+    void removeAll();
 
-    int removeById(String ids);
+    /**
+     * 根据ID、应用ID删除
+     * @param id
+     * @param serviceAppId
+     */
+    void removeById(String id, String serviceAppId);
 
-    Object findAll(String keywords);
+    /**
+     * 查询所有
+     * @return
+     */
+    List<GatewayApiService> findAll();
 
-    Object findById(String id);
+    /**
+     * 分页查询
+     * @param searchParam
+     * @return
+     */
+    Page<GatewayApiService> findAllByPage(SearchParam searchParam);
+
+    /**
+     * 根据ID、应用ID查询
+     * @param id
+     * @param serviceAppid
+     * @return
+     */
+    GatewayApiService findById(String id, String serviceAppid);
 
 }

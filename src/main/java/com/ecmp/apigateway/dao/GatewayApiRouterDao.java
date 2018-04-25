@@ -1,9 +1,10 @@
 package com.ecmp.apigateway.dao;
 
 import com.ecmp.apigateway.model.GatewayApiRouter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -14,22 +15,34 @@ import java.util.List;
  */
 public interface GatewayApiRouterDao extends JpaRepository<GatewayApiRouter, String> {
 
-    List<GatewayApiRouter> findAllByDeletedFalse();
+    /**
+     * 查询所有数据(不分页)
+     * @return
+     */
+    List<GatewayApiRouter> findByDeletedFalse();
 
-    List<GatewayApiRouter> findAllByEnabledTrue();
+    /**
+     * 查询所有数据(分页)
+     * @param pageable
+     * @return
+     */
+    Page<GatewayApiRouter> findByDeletedFalse(Pageable pageable);
 
-    @Query(value = "select * from gateway_api_router where path like %?1% or service_id like %?1% or interface_name like %?1% ", nativeQuery = true)
-    List<GatewayApiRouter> findAll(String keywords);
+    /**
+     * 根据关键字查询数据(分页)
+     * @param kwd1
+     * @param kwd2
+     * @param kwd3
+     * @param pageable
+     * @return
+     */
+    Page<GatewayApiRouter> findByDeletedFalseAndPathLikeOrServiceIdLikeOrInterfaceNameLike(@Param("path")String kwd1, @Param("serviceId")String kwd2, @Param("interfaceName")String kwd3, Pageable pageable);
 
-    @Query(value = "select * from gateway_api_router where id=?1 ", nativeQuery = true)
-    GatewayApiRouter findById(String id);
-
-    @Modifying
-    @Query(value = "delete * from gateway_api_router ", nativeQuery = true)
-    int removeAll();
-
-    @Modifying
-    @Query(value = "delete * from gateway_api_router where id=?1 ", nativeQuery = true)
-    int removeById(String id);
+    /**
+     * 根据ID查询数据
+     * @param id
+     * @return
+     */
+    GatewayApiRouter findById(@Param("id")String id);
 
 }

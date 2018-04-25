@@ -1,9 +1,10 @@
 package com.ecmp.apigateway.dao;
 
 import com.ecmp.apigateway.model.GatewayApiService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -14,19 +15,35 @@ import java.util.List;
  */
 public interface GatewayApiServiceDao extends JpaRepository<GatewayApiService, String> {
 
-    List<GatewayApiService> findAllByDeletedFalse();
+    /**
+     * 查询所有数据(不分页)
+     * @return
+     */
+    List<GatewayApiService> findByDeletedFalse();
 
-    @Query(value = "select * from gateway_api_service where service_appname like %?1% or service_appremark like %?1% or service_appversion like %?1% ", nativeQuery = true)
-    List<GatewayApiService> findAll(String keywords);
+    /**
+     * 查询所有数据(分页)
+     * @param pageable
+     * @return
+     */
+    Page<GatewayApiService> findByDeletedFalse(Pageable pageable);
 
-    @Query(value = "select * from gateway_api_service where id=?1 ", nativeQuery = true)
-    GatewayApiService findById(String id);
+    /**
+     * 根据关键字查询数据(分页)
+     * @param kwd1
+     * @param kwd2
+     * @param kwd3
+     * @param pageable
+     * @return
+     */
+    Page<GatewayApiService> findByDeletedFalseAndServiceAppNameLikeOrServiceAppRemarkLikeOrServiceAppVersionLike(@Param("serviceAppName")String kwd1,@Param("serviceAppRemark")String kwd2,@Param("serviceAppVersion")String kwd3, Pageable pageable);
 
-    @Modifying
-    @Query(value = "delete * from gateway_api_service ", nativeQuery = true)
-    int removeAll();
+    /**
+     * 根据ID、应用ID查询数据
+     * @param id
+     * @param serviceAppId
+     * @return
+     */
+    GatewayApiService findByIdOrServiceAppId(@Param("id")String id, @Param("serviceAppId")String serviceAppId);
 
-    @Modifying
-    @Query(value = "delete * from gateway_api_service where id=?1 ", nativeQuery = true)
-    int removeById(String id);
 }

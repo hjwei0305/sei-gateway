@@ -1,9 +1,6 @@
 package com.ecmp.apigateway.web;
 
-import com.ecmp.apigateway.model.GatewayApplication;
-import com.ecmp.apigateway.model.ResponseModel;
-import com.ecmp.apigateway.model.SearchParam;
-import com.ecmp.apigateway.model.StaticVariable;
+import com.ecmp.apigateway.model.*;
 import com.ecmp.apigateway.service.IGatewayApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -80,23 +77,20 @@ public class GatewayApplicationController {
     /**
      * 查询网关应用列表
      *
-     * @param model
      * @param weatherPage 是否分页查询 true：分页 false：不分页
      * @param searchParam 查询参数对象
      * @return
      */
     @RequestMapping("/find_gateway_applications")
-    public String findGatewayApplications(Model model, boolean weatherPage, SearchParam searchParam) {
+    @ResponseBody
+    public Object findGatewayApplications(boolean weatherPage, SearchParam searchParam) {
         if (weatherPage) {
-            Page<GatewayApplication> allApplications = this.gatewayApplicationService.findAllByKeywordAndPage(searchParam);
-            model.addAttribute(StaticVariable.DATA, allApplications);
+            Page<GatewayApplication> result = this.gatewayApplicationService.findAllByKeywordAndPage(searchParam);
+            return new PageModel<>(result);
         } else {
-            List<GatewayApplication> all = this.gatewayApplicationService.findAll();
-            model.addAttribute(StaticVariable.DATA, all);
+            List<GatewayApplication> result = this.gatewayApplicationService.findAll();
+            return result;
         }
-        model.addAttribute(StaticVariable.STATUS, HttpStatus.OK.value());
-        model.addAttribute(StaticVariable.MESSAGE, StaticVariable.SUCCESS_MESSAGE);
-        return "";
     }
 
     /**

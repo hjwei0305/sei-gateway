@@ -1,6 +1,7 @@
 package com.ecmp.apigateway.web;
 
 import com.ecmp.apigateway.model.GatewayApplication;
+import com.ecmp.apigateway.model.ResponseModel;
 import com.ecmp.apigateway.model.SearchParam;
 import com.ecmp.apigateway.model.StaticVariable;
 import com.ecmp.apigateway.service.IGatewayApplicationService;
@@ -33,11 +34,10 @@ public class GatewayApplicationController {
      * @return
      */
     @RequestMapping("/add_gateway_application")
-    public String addGatewayApplication(Model model, GatewayApplication gatewayApplication) {
+    @ResponseBody
+    public Object addGatewayApplication(GatewayApplication gatewayApplication) {
         this.gatewayApplicationService.addGatewayApplication(gatewayApplication);
-        model.addAttribute(StaticVariable.STATUS, HttpStatus.OK.value());
-        model.addAttribute(StaticVariable.MESSAGE, StaticVariable.SUCCESS_MESSAGE);
-        return "";
+        return ResponseModel.SUCCESS();
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.ecmp.apigateway.web;
 
-import com.ecmp.apigateway.dao.GatewayRouterDao;
-import com.ecmp.apigateway.model.GatewayRouter;
+import com.ecmp.apigateway.dao.GatewayApiServiceDao;
+import com.ecmp.apigateway.model.GatewayApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,18 +12,18 @@ import java.util.List;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 控制层：网关-路由
+ * @remark: 控制层：网关-应用服务
  */
 @Controller
-@RequestMapping(value="/router")
-public class GatewayRouterController {
+@RequestMapping(value="/api_service")
+public class GatewayApiServiceController {
     @Autowired
-    private GatewayRouterDao gatewayRouterDao;
+    private GatewayApiServiceDao gatewayApiServiceDao;
 
     @ResponseBody
     @RequestMapping("find")
     public Object find() {
-        List<GatewayRouter> allByDeletedFalse = this.gatewayRouterDao.findAllByDeletedFalse();
+        List<GatewayApiService> allByDeletedFalse = this.gatewayApiServiceDao.findAllByDeletedFalse();
         return allByDeletedFalse;
     }
 }

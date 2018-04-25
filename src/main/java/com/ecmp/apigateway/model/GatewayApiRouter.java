@@ -10,8 +10,8 @@ import javax.persistence.Table;
  * @remark: 实体类：网关-路由
  */
 @Entity
-@Table(name = "gateway_router")
-public class GatewayRouter extends Domain {
+@Table(name = "gateway_api_router")
+public class GatewayApiRouter extends Domain {
     /**
      * 请求路径
      */

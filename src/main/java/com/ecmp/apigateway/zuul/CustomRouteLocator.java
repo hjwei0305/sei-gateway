@@ -77,7 +77,7 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
 
     private Map<String, ZuulRoute> locateRoutesFromDB(){
         Map<String, ZuulRoute> routes = new LinkedHashMap<>();
-        String sql = "select * from gateway_router where enabled = true ";
+        String sql = "select * from gateway_api_router where enabled = true ";
         List<ZuulRouteVO> results = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ZuulRouteVO.class));
         for (ZuulRouteVO result : results) {
             if(org.apache.commons.lang3.StringUtils.isBlank(result.getPath()) || org.apache.commons.lang3.StringUtils.isBlank(result.getUrl()) ){

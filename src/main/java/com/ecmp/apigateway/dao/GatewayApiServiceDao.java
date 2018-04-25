@@ -1,6 +1,6 @@
 package com.ecmp.apigateway.dao;
 
-import com.ecmp.apigateway.model.GatewayService;
+import com.ecmp.apigateway.model.GatewayApiService;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  * @date: 2018/4/24
  * @remark: 网关-服务
  */
-public interface GatewayServiceDao extends JpaRepository<GatewayService, String> {
+public interface GatewayApiServiceDao extends JpaRepository<GatewayApiService, String> {
 
-    List<GatewayService> findAllByDeletedFalse();
+    List<GatewayApiService> findAllByDeletedFalse();
 }

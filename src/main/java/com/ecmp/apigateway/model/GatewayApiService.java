@@ -5,11 +5,11 @@ import javax.persistence.*;
 /**
  * @author: hejun
  * @date:2018/4/24
- * @remark: 实体类：网关-服务
+ * @remark: 实体类：网关-应用服务
  */
 @Entity
-@Table(name = "gateway_service")
-public class GatewayService extends Domain {
+@Table(name = "gateway_api_service")
+public class GatewayApiService extends Domain {
     /**
      * 服务应用id
      */
@@ -33,8 +33,6 @@ public class GatewayService extends Domain {
     /**
      * 应用code
      */
-    @JoinTable(name = "gateway_application", joinColumns = { @JoinColumn(name = "application_code") })
-    @ManyToOne
     @Column(name = "application_code")
     private String applicationCode;
 

@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author: hejun
  * @date: 2018/4/25
- * @remark: 网关-应用服务-业务层实现
+ * @remark: 应用服务-业务层实现
  */
 @Service
 @Transactional

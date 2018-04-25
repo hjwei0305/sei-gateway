@@ -25,6 +25,11 @@ public class GatewayApplicationController {
     @Autowired
     private IGatewayApplicationService gatewayApplicationService;
 
+    @RequestMapping("/show")
+    public String show() {
+        return "main/ApplicationView";
+    }
+
     /**
      * 新增网关应用
      *
@@ -48,7 +53,7 @@ public class GatewayApplicationController {
     @ResponseBody
     public Object checkGatewayApplicationName(@RequestParam(name = "applicationName") String applicationName) {
         GatewayApplication application = this.gatewayApplicationService.findGatewayApplicationByName(applicationName);
-        return application;
+        return ResponseModel.SUCCESS(application);
     }
 
     /**
@@ -59,8 +64,9 @@ public class GatewayApplicationController {
      */
     @RequestMapping("/remove_gateway_application")
     @ResponseBody
-    public void removeGatewayApplication(String id, String applicationCode) {
+    public Object removeGatewayApplication(String id, String applicationCode) {
         this.gatewayApplicationService.removeGatewayApplication(id, applicationCode);
+        return ResponseModel.SUCCESS();
     }
 
     /**
@@ -70,9 +76,9 @@ public class GatewayApplicationController {
      * @return
      */
     @RequestMapping("/modify_gateway_application")
-    public String modifyGatewayApplication(GatewayApplication gatewayApplication) {
+    public Object modifyGatewayApplication(GatewayApplication gatewayApplication) {
         this.gatewayApplicationService.modifyGatewayApplication(gatewayApplication);
-        return "";
+        return ResponseModel.SUCCESS();
     }
 
     /**

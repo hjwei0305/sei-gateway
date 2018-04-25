@@ -13,4 +13,5 @@ import java.util.List;
 public interface GatewayRouterDao extends JpaRepository<GatewayRouter, String> {
 
     List<GatewayRouter> findAllByDeletedFalse();
+    List<GatewayRouter> findAllByEnabledTrue();
 }

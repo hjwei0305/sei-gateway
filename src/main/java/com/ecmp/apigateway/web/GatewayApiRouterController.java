@@ -1,6 +1,8 @@
 package com.ecmp.apigateway.web;
 
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
+import com.ecmp.apigateway.zuul.event.RefreshRouteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,23 @@ import javax.annotation.Resource;
 public class GatewayApiRouterController {
     @Resource
     private IGatewayApiRouterService gatewayApiRouterService;
+    @Autowired
+    RefreshRouteService refreshRouteService;
+
+    @ResponseBody
+    @RequestMapping("start")
+    public Object start() {
+        refreshRouteService.refreshRoute();
+        return "success";
+    }
+
+    @ResponseBody
+    @RequestMapping("stop")
+    public Object stop() {
+        gatewayApiRouterService.removeAll();
+        refreshRouteService.refreshRoute();
+        return "success";
+    }
 
     @ResponseBody
     @RequestMapping("save")

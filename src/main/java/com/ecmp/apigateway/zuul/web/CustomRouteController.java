@@ -12,12 +12,11 @@ import java.util.Map;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 控制层：网关-路由配置
+ * @remark: 网关-路由配置-控制层跳转
  */
 @Controller
-@RequestMapping(value="/refresh")
-public class RefreshRouteController {
-
+@RequestMapping(value="/custom_route")
+public class CustomRouteController {
     @Autowired
     RefreshRouteService refreshRouteService;
 

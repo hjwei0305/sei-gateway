@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 业务类：网关-路由刷新
+ * @remark: 网关-路由刷新-业务类
  */
 @Service
 public class RefreshRouteService {

@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 定位器：网关-路由定位
+ * @remark: 网关-路由定位-定位器
  */
 public class CustomRouteLocator extends SimpleRouteLocator implements RefreshableRouteLocator{
 

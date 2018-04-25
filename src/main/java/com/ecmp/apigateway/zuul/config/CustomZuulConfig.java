@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 配置类：网关-路由配置
+ * @remark: 网关-路由配置-配置类
  */
 @Configuration
 public class CustomZuulConfig {

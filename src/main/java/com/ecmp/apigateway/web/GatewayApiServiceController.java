@@ -20,7 +20,7 @@ import java.util.List;
  * @remark: 应用服务-控制层跳转
  */
 @Controller
-@RequestMapping(value="/api_service")
+@RequestMapping(value="/gateway_api_service")
 public class GatewayApiServiceController {
     @Autowired
     private IGatewayApiServiceService gatewayApiServiceService;

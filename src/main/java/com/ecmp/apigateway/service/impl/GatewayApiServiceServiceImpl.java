@@ -87,6 +87,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             return gatewayApiServiceDao.findByDeletedFalse(searchParam.getPageable());
         }
         return gatewayApiServiceDao.findByDeletedFalseAndServiceAppNameLikeOrServiceAppRemarkLikeOrServiceAppVersionLike(searchParam.getKeywords(),searchParam.getKeywords(),searchParam.getKeywords(),searchParam.getPageable());
+        //return gatewayApiServiceDao.findAllByPage(searchParam.getKeywords(),searchParam.getKeywords(),searchParam.getKeywords(),searchParam.getPageable());
     }
 
     @Override

@@ -21,7 +21,7 @@ import java.util.List;
  * @remark: 路由配置-控制层跳转
  */
 @Controller
-@RequestMapping(value="/api_router")
+@RequestMapping(value="/gateway_api_router")
 public class GatewayApiRouterController {
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;

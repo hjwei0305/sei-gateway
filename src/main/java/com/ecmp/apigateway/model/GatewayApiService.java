@@ -4,34 +4,34 @@ import javax.persistence.*;
 
 /**
  * @author: hejun
- * @date:2018/4/24
+ * @date: 2018/4/24
  * @remark: 实体类：网关-应用服务
  */
 @Entity
 @Table(name = "gateway_api_service")
 public class GatewayApiService extends Domain {
     /**
-     * 服务应用id
+     * 应用服务id
      */
     @Column(name = "service_appid")
     private String serviceAppId;
     /**
-     * 服务应用名称
+     * 应用服务名称
      */
     @Column(name = "service_appname")
     private String serviceAppName;
     /**
-     * 服务应用说明
+     * 应用服务说明
      */
     @Column(name = "service_appremark")
     private String serviceAppRemark;
     /**
-     * 服务应用版本
+     * 应用服务版本
      */
     @Column(name = "service_appversion")
     private String serviceAppVersion;
     /**
-     * 应用code
+     * 应用code-关联字段
      */
     @Column(name = "application_code")
     private String applicationCode;

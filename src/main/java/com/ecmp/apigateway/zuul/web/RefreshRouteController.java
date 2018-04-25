@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 控制层：网关-路由
+ * @remark: 控制层：网关-路由配置
  */
 @Controller
 @RequestMapping(value="/refresh")

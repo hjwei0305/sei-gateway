@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 网关-服务
+ * @remark: 网关-应用服务
  */
 public interface GatewayApiServiceDao extends JpaRepository<GatewayApiService, String> {
 

@@ -22,6 +22,15 @@ public class GatewayApplication extends Domain {
     @Column(name = "application_remark", nullable = false, length = 200)
     private String applicationRemark;
 
+    public GatewayApplication() {
+    }
+
+    public GatewayApplication(String applicationCode, String applicationName, String applicationRemark) {
+        this.applicationCode = applicationCode;
+        this.applicationName = applicationName;
+        this.applicationRemark = applicationRemark;
+    }
+
     public String getApplicationCode() {
         return applicationCode;
     }

@@ -3,6 +3,7 @@ package com.ecmp.apigateway.model;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -12,21 +13,20 @@ import java.util.UUID;
  * @remark: 公用基类
  */
 @MappedSuperclass
-public class Domain {
+public class Domain implements Serializable {
 
     //主键ID
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private String id = UUID.randomUUID().toString();
     //创建时间
     @Column(name = "created_time", nullable = false, updatable = false)
     @Temporal(value = TemporalType.TIMESTAMP)
-    private Date createdTime;
+    private Date createdTime = new Date();
     //更新时间
     @Column(name = "updated_time", nullable = false, updatable = false)
     @Temporal(value = TemporalType.TIMESTAMP)
     @UpdateTimestamp
-    private Date updatedTime;
+    private Date updatedTime = new Date();
     //创建者
     @Column(name = "creator")
     private String creator;
@@ -42,7 +42,7 @@ public class Domain {
     private boolean deleted = false;
 
     public String getId() {
-        return UUID.randomUUID().toString();
+        return id;
     }
 
     public void setId(String id) {

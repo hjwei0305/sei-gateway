@@ -54,6 +54,18 @@ public class GatewayApiServiceController {
     }
 
     /**
+     * 根据应用ID获取应用服务信息
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("findAppByAppId")
+    public Object findAppByAppId(String serviceAppId) {
+        Object apiAppList = gatewayApiAppClient.findAppByAppId(serviceAppId);
+        return ResponseModel.SUCCESS(apiAppList);
+    }
+
+    /**
      * 新增
      *
      * @param gatewayApiService

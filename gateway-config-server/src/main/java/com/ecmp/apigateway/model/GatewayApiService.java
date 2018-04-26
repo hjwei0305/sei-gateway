@@ -15,12 +15,12 @@ public class GatewayApiService extends Domain {
     /**
      * 应用服务id
      */
-    @Column(name = "service_appid")
+    @Column(name = "service_appid", nullable = false, length = 64)
     private String serviceAppId;
     /**
      * 应用服务名称
      */
-    @Column(name = "service_appname")
+    @Column(name = "service_appname", nullable = false, length = 50)
     private String serviceAppName;
     /**
      * 应用服务说明
@@ -30,12 +30,12 @@ public class GatewayApiService extends Domain {
     /**
      * 应用服务版本
      */
-    @Column(name = "service_appversion")
+    @Column(name = "service_appversion", nullable = false, length = 50)
     private String serviceAppVersion;
     /**
      * 应用code-关联字段
      */
-    @Column(name = "application_code")
+    @Column(name = "application_code", nullable = false, length = 64)
     private String applicationCode;
 
     public String getServiceAppId() {

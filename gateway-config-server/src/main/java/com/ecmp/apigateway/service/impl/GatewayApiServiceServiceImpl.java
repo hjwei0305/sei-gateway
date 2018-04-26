@@ -28,7 +28,6 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void save(GatewayApiService gatewayApiService) {
-        //这里需要通过配置中心结果获取配置的AppId；
         gatewayApiServiceDao.save(gatewayApiService);
     }
 

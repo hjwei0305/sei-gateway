@@ -11,7 +11,13 @@ public class GatewayApiAppClientImpl implements IGatewayApiAppClient {
 
     @Override
     public Object findAllApiApp() {
-        logger.error("GatewayApiAppClient Requesting Http Error.");
+        logger.error("GatewayApiAppClient findAllApiApp Requesting Http Error.");
+        return null;
+    }
+
+    @Override
+    public Object findAppByAppId(String appId) {
+        logger.error("GatewayApiAppClient findAppByAppId Requesting Http Error.");
         return null;
     }
 }

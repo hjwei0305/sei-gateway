@@ -1,6 +1,6 @@
-package com.ecmp.apigateway.zuul.config;
+package com.ecmp.routerserver.zuul.config;
 
-import com.ecmp.apigateway.zuul.CustomRouteLocator;
+import com.ecmp.routerserver.zuul.RouteLocator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
@@ -11,10 +11,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 网关-路由配置-配置类
+ * @remark: 路由配置-配置类
  */
 @Configuration
-public class CustomZuulConfig {
+public class RouteConfig {
 
     @Autowired
     ZuulProperties zuulProperties;
@@ -24,8 +24,8 @@ public class CustomZuulConfig {
     JdbcTemplate jdbcTemplate;
 
     @Bean
-    public CustomRouteLocator routeLocator() {
-        CustomRouteLocator routeLocator = new CustomRouteLocator(this.server.getServletPrefix(), this.zuulProperties);
+    public RouteLocator routeLocator() {
+        RouteLocator routeLocator = new RouteLocator(this.server.getServletPrefix(), this.zuulProperties);
         routeLocator.setJdbcTemplate(jdbcTemplate);
         return routeLocator;
     }

@@ -1,4 +1,4 @@
-package com.ecmp.apigateway.zuul.event;
+package com.ecmp.routerserver.zuul.event;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.RoutesRefreshedEvent;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 网关-路由刷新-业务类
+ * @remark: 路由刷新-业务类
  */
 @Service
-public class RefreshRouteService {
+public class RefreshService {
 
     @Autowired
     ApplicationEventPublisher publisher;

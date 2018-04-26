@@ -1,4 +1,4 @@
-package com.ecmp.apigateway.zuul;
+package com.ecmp.routerserver.zuul;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +16,11 @@ import java.util.Map;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 网关-路由定位-定位器
+ * @remark: 路由定位-定位器
  */
-public class CustomRouteLocator extends SimpleRouteLocator implements RefreshableRouteLocator {
+public class RouteLocator extends SimpleRouteLocator implements RefreshableRouteLocator {
 
-    public final static Logger logger = LoggerFactory.getLogger(CustomRouteLocator.class);
+    public final static Logger logger = LoggerFactory.getLogger(RouteLocator.class);
 
     private JdbcTemplate jdbcTemplate;
 
@@ -30,7 +30,7 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public CustomRouteLocator(String servletPath, ZuulProperties properties) {
+    public RouteLocator(String servletPath, ZuulProperties properties) {
         super(servletPath, properties);
         this.properties = properties;
         logger.info("servletPath:{}", servletPath);

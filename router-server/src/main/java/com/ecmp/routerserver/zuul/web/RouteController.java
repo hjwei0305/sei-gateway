@@ -1,6 +1,6 @@
-package com.ecmp.apigateway.zuul.web;
+package com.ecmp.routerserver.zuul.web;
 
-import com.ecmp.apigateway.zuul.event.RefreshRouteService;
+import com.ecmp.routerserver.zuul.event.RefreshService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.web.ZuulHandlerMapping;
 import org.springframework.stereotype.Controller;
@@ -12,18 +12,18 @@ import java.util.Map;
 /**
  * @author: hejun
  * @date: 2018/4/24
- * @remark: 网关-路由配置-控制层跳转
+ * @remark: 路由配置-控制层跳转
  */
 @Controller
-@RequestMapping(value = "/custom_route")
-public class CustomRouteController {
+@RequestMapping(value = "/route_service")
+public class RouteController {
     @Autowired
-    RefreshRouteService refreshRouteService;
+    RefreshService refreshService;
 
     @ResponseBody
     @RequestMapping("refreshRoute")
     public Object refreshRoute() {
-        refreshRouteService.refreshRoute();
+        refreshService.refreshRoute();
         return "refreshRoute";
     }
 

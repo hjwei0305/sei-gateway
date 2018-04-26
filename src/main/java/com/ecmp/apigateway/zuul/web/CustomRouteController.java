@@ -35,6 +35,6 @@ public class CustomRouteController {
     public Object watchNowRoute(){
         //可以用debug模式看里面具体是什么
         Map<String, Object> handlerMap = zuulHandlerMapping.getHandlerMap();
-        return "watchNowRoute";
+        return handlerMap;
     }
 }

@@ -64,12 +64,13 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
             if (!path.startsWith("/")) {
                 path = "/" + path;
             }
-            if (StringUtils.hasText(this.properties.getPrefix())) {
-                path = this.properties.getPrefix() + path;
-                if (!path.startsWith("/")) {
-                    path = "/" + path;
-                }
-            }
+            //如果没有在application.properties不需要此实现
+//            if (StringUtils.hasText(this.properties.getPrefix())) {
+//                path = this.properties.getPrefix() + path;
+//                if (!path.startsWith("/")) {
+//                    path = "/" + path;
+//                }
+//            }
             values.put(path, entry.getValue());
         }
         return values;

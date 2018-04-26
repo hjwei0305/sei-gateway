@@ -1,5 +1,6 @@
 package com.ecmp.apigateway.web;
 
+import com.ecmp.apigateway.enums.InterfaceProtocolEnum;
 import com.ecmp.apigateway.enums.OperationTypeEnum;
 import com.ecmp.apigateway.model.GatewayInterface;
 import com.ecmp.apigateway.model.PageModel;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -111,6 +113,18 @@ public class GatewayInterfaceController {
             List<GatewayInterface> result = this.gatewayInterfaceService.findGatewayInterfaceByNoPage(applicationCode);
             return ResponseModel.SUCCESS(result);
         }
+    }
+
+    /**
+     * 查询接口协议枚举
+     *
+     * @return
+     */
+    @RequestMapping("find_protocol_enum")
+    @ResponseBody
+    public ResponseModel findProtocolEnum() {
+        List<InterfaceProtocolEnum> interfaceProtocolEnums = Arrays.asList(InterfaceProtocolEnum.values());
+        return ResponseModel.SUCCESS(interfaceProtocolEnums);
     }
 
 }

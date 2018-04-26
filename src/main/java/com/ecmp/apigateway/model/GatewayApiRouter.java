@@ -1,5 +1,7 @@
 package com.ecmp.apigateway.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -12,6 +14,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "gateway_api_router")
 public class GatewayApiRouter extends Domain {
+
+    /**
+     * 路由key
+     */
+    @Column(name = "router_key", nullable = false, length = 200)
+    private String routerKey;
+
     /**
      * 请求路径
      */
@@ -48,7 +57,25 @@ public class GatewayApiRouter extends Domain {
     @Column(name = "interface_name")
     private String interfaceName;
 
-    public String getPath() { return path; }
+    public String getRouterKey() {
+        return routerKey;
+    }
+
+    public void setRouterKey(String routerKey) {
+        this.routerKey = routerKey;
+    }
+
+    public String getPath() {
+        if (StringUtils.isNotEmpty(getRouterKey())) {
+            if (!routerKey.startsWith("/")) {
+                path = "/" + path;
+            }
+            if (!routerKey.endsWith("/**") && !routerKey.endsWith("/*")) {
+                path = path + "/**";
+            }
+        }
+        return path;
+    }
     public void setPath(String path) {
         this.path = path;
     }

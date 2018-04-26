@@ -10,7 +10,7 @@ import com.ecmp.apigateway.service.IGatewayApplicationService;
 import com.ecmp.apigateway.service.IGatewayInterfaceService;
 import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.RandomUtil;
-import org.apache.commons.lang3.StringUtils;
+import com.ecmp.apigateway.utils.ToolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class GatewayApplicationServiceImpl implements IGatewayApplicationService
 
     @Override
     public void modifyGatewayApplication(GatewayApplication gatewayApplication) {
-        if (StringUtils.isEmpty(gatewayApplication.getId()) && StringUtils.isEmpty(gatewayApplication.getApplicationCode())) {
+        if (ToolUtils.isEmpty(gatewayApplication.getId()) && ToolUtils.isEmpty(gatewayApplication.getApplicationCode())) {
             throw new RequestParamNullException();
         }
         GatewayApplication application = this.gatewayApplicationDao.findByIdOrAndApplicationCode(gatewayApplication.getId(), gatewayApplication.getApplicationCode());
@@ -66,7 +66,7 @@ public class GatewayApplicationServiceImpl implements IGatewayApplicationService
 
     @Override
     public Page<GatewayApplication> findAllByKeywordAndPage(SearchParam searchParam) {
-        if (StringUtils.isEmpty(searchParam.getKeywords())) {
+        if (ToolUtils.isEmpty(searchParam.getKeywords())) {
             return this.gatewayApplicationDao.findByDeletedFalse(searchParam.getPageable());
         }
         return this.gatewayApplicationDao.findByDeletedFalseAndApplicationNameLike(searchParam.getLikeKeywords(), searchParam.getPageable());

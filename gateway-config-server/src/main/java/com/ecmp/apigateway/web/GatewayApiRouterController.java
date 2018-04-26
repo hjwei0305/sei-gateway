@@ -5,7 +5,7 @@ import com.ecmp.apigateway.model.PageModel;
 import com.ecmp.apigateway.model.ResponseModel;
 import com.ecmp.apigateway.model.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
-import com.ecmp.apigateway.zuul.event.RefreshRouteService;
+//import com.ecmp.apigateway.zuul.event.RefreshRouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -25,33 +25,34 @@ import java.util.List;
 public class GatewayApiRouterController {
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
-    @Autowired
-    private RefreshRouteService refreshRouteService;
 
-    /**
-     * 启用全部
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("startAll")
-    public Object startAll() {
-        refreshRouteService.refreshRoute();
-        return ResponseModel.SUCCESS();
-    }
+//    @Autowired
+//    private RefreshRouteService refreshRouteService;
 
-    /**
-     * 停用全部
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("stopAll")
-    public Object stopAll() {
-        gatewayApiRouterService.removeAll();
-        refreshRouteService.refreshRoute();
-        return ResponseModel.SUCCESS();
-    }
+//    /**
+//     * 启用全部
+//     *
+//     * @return
+//     */
+//    @ResponseBody
+//    @RequestMapping("startAll")
+//    public Object startAll() {
+//        refreshRouteService.refreshRoute();
+//        return ResponseModel.SUCCESS();
+//    }
+//
+//    /**
+//     * 停用全部
+//     *
+//     * @return
+//     */
+//    @ResponseBody
+//    @RequestMapping("stopAll")
+//    public Object stopAll() {
+//        gatewayApiRouterService.removeAll();
+//        refreshRouteService.refreshRoute();
+//        return ResponseModel.SUCCESS();
+//    }
 
     /**
      * 新增
@@ -128,11 +129,9 @@ public class GatewayApiRouterController {
     public Object findAllByPage(@RequestParam(value = "weatherPage", defaultValue = "1") boolean weatherPage, SearchParam searchParam) {
         if (weatherPage) {
             Page<GatewayApiRouter> gatewayApiRouterPage = gatewayApiRouterService.findAllByPage(searchParam);
-            //return ResponseModel.SUCCESS(new PageModel<>(gatewayApiRouterPage));
             return new PageModel<>(gatewayApiRouterPage);
         } else {
             List<GatewayApiRouter> gatewayApiRouterList = gatewayApiRouterService.findAll();
-            //return ResponseModel.SUCCESS(gatewayApiRouterList);
             return gatewayApiRouterList;
         }
     }

@@ -8,8 +8,8 @@ import com.ecmp.apigateway.model.GatewayInterface;
 import com.ecmp.apigateway.model.SearchParam;
 import com.ecmp.apigateway.service.IGatewayInterfaceService;
 import com.ecmp.apigateway.utils.EntityUtils;
+import com.ecmp.apigateway.utils.ToolUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class GatewayInterfaceServiceImpl implements IGatewayInterfaceService {
 
     @Override
     public void removeGatewayInterface(String id) {
-        if (StringUtils.isNotEmpty(id)) {
+        if (ToolUtils.notEmpty(id)) {
             GatewayInterface gatewayInterface = this.gatewayInterfaceDao.getOne(id);
             if (null == gatewayInterface) throw new ObjectNotFoundException();
             gatewayInterface.setDeleted(true);
@@ -47,7 +47,7 @@ public class GatewayInterfaceServiceImpl implements IGatewayInterfaceService {
 
     @Override
     public void removeGatewayInterfaceByApplicationCode(String applicationCode) {
-        if (StringUtils.isNotEmpty(applicationCode)) {
+        if (ToolUtils.notEmpty(applicationCode)) {
             List<GatewayInterface> gatewayInterfaces = this.gatewayInterfaceDao.findByDeletedFalseAndApplicationCode(applicationCode);
             if (CollectionUtils.isNotEmpty(gatewayInterfaces)) {
                 gatewayInterfaces.forEach(gatewayInterface -> gatewayInterface.setDeleted(true));
@@ -73,7 +73,7 @@ public class GatewayInterfaceServiceImpl implements IGatewayInterfaceService {
 
     @Override
     public Page<GatewayInterface> findGatewayInterfaceByPage(String applicationCode, SearchParam searchParam) {
-        if (StringUtils.isNotEmpty(searchParam.getKeywords())) {
+        if (ToolUtils.notEmpty(searchParam.getKeywords())) {
             Page<GatewayInterface> gatewayInterfaces = this.gatewayInterfaceDao.findByDeletedFalseAndApplicationCodeAndInterfaceNameLikeOrInterfaceURILike(applicationCode, searchParam.getLikeKeywords(), searchParam.getLikeKeywords(), searchParam.getPageable());
             return gatewayInterfaces;
         }

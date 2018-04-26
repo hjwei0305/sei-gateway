@@ -54,7 +54,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
         } else {
             for (GatewayApiRouter gatewayApiRouter : gatewayApiRouterList) {
                 if (ToolUtils.isEmpty(gatewayApiRouter)) {
-                    //这里为空时可以不任何的处理
+                    //这里为空时可以不做任何的处理
                     //throw new ObjectNotFoundException();
                 } else {
                     gatewayApiRouter.setDeleted(true);

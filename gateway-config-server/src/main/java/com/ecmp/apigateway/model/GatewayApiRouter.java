@@ -1,7 +1,6 @@
 package com.ecmp.apigateway.model;
 
-import org.apache.commons.lang3.StringUtils;
-
+import com.ecmp.apigateway.utils.ToolUtils;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -64,7 +63,7 @@ public class GatewayApiRouter extends Domain {
     }
 
     public String getPath() {
-        if (StringUtils.isNotEmpty(getRouterKey())) {
+        if (ToolUtils.notEmpty(getRouterKey())) {
             if (!routerKey.startsWith("/")) {
                 path = "/" + path;
             }

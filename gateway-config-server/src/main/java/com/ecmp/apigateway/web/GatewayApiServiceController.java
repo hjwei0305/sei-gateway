@@ -7,12 +7,14 @@ import com.ecmp.apigateway.model.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -26,7 +28,7 @@ public class GatewayApiServiceController {
     @Autowired
     private IGatewayApiServiceService gatewayApiServiceService;
 
-    @Autowired
+    @Resource
     private IGatewayApiAppClient gatewayApiAppClient;
 
     /**
@@ -127,11 +129,9 @@ public class GatewayApiServiceController {
     public Object findAllByPage(@RequestParam(value = "weatherPage", defaultValue = "1") boolean weatherPage, SearchParam searchParam) {
         if (weatherPage) {
             Page<GatewayApiService> gatewayApiServicePage = gatewayApiServiceService.findAllByPage(searchParam);
-            //return ResponseModel.SUCCESS(new PageModel<>(gatewayApiServicePage));
             return new PageModel<>(gatewayApiServicePage);
         } else {
             List<GatewayApiService> gatewayApiServiceList = gatewayApiServiceService.findAll();
-            //return ResponseModel.SUCCESS(gatewayApiServiceList);
             return gatewayApiServiceList;
         }
     }

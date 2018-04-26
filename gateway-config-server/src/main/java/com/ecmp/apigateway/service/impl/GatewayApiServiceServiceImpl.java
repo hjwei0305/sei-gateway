@@ -55,7 +55,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         } else {
             for (GatewayApiService gatewayApiService : gatewayApiServiceList) {
                 if (ToolUtils.isEmpty(gatewayApiService)) {
-                    //这里为空时可以不任何的处理
+                    //这里为空时可以不做任何的处理
                     //throw new ObjectNotFoundException();
                 } else {
                     gatewayApiService.setDeleted(true);

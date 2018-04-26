@@ -65,7 +65,7 @@ public class ApiGatewayApplicationTests {
     @Ignore
     public void testFind() {
         SearchParam searchParam = new SearchParam();
-        searchParam.setKeywords("%测试%");
+        searchParam.setKeywords("99");
         Page<GatewayApplication> all1 = this.gatewayApplicationService.findAllByKeywordAndPage(searchParam);
         List<GatewayApplication> content = all1.getContent();
         System.out.println(content.size());

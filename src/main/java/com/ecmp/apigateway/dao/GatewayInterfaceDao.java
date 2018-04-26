@@ -20,10 +20,9 @@ public interface GatewayInterfaceDao extends JpaRepository<GatewayInterface, Str
      *
      * @param applicationCode 应用code
      * @param interfaceName   接口名称
-     * @param interfaceURI    接口URI
      * @return
      */
-    Page<GatewayInterface> findByDeletedFalseAndApplicationCodeOrInterfaceNameLikeOrInterfaceURILike
+    Page<GatewayInterface> findByDeletedFalseAndApplicationCodeAndInterfaceNameLikeOrInterfaceURILike
     (@Param("applicationCode") String applicationCode, @Param("interfaceName") String interfaceName, @Param("interfaceURI") String interfaceURI, Pageable pageable);
 
     /**

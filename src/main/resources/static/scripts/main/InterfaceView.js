@@ -100,7 +100,10 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
             //searchDisplayText: "请输入关键字查询",
             displayText: g.lang.searchDisplayText,
             onSearch: function (v) {
-                g.gridCmp.localSearch(v);
+                g.gridCmp.setPostParams({
+                    keywords: v,
+                    applicationCode: g.curApplication && g.curApplication.applicationCode
+                },true);
             }
         }];
     },

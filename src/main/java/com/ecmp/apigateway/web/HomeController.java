@@ -35,7 +35,8 @@ public class HomeController {
     public List<MenuVo> getMenus() {
         return Arrays.asList(
                 new MenuVo("application", "/gateway_application/show", "应用", "配置【应用】", "ecmp-sys-default"),
-                new MenuVo("interface", "/gateway_interface/show", "接口", "配置应用的【接口】", "ecmp-sys-apply")
+                new MenuVo("interface", "/gateway_interface/show", "接口", "配置应用的【接口】", "ecmp-sys-default"),
+                new MenuVo("applicationService", "/gateway_api_service/show", "应用服务", "配置应用的【应用服务】", "ecmp-sys-default")
         );
     }
 }

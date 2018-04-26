@@ -65,8 +65,8 @@ public class ApiGatewayApplicationTests {
     @Ignore
     public void testFind() {
         SearchParam searchParam = new SearchParam();
-        searchParam.setKeywords("测试");
-        Page<GatewayApplication> all1 = this.gatewayApplicationDao.findByDeletedFalse(searchParam.getPageable());
+        searchParam.setKeywords("%测试%");
+        Page<GatewayApplication> all1 = this.gatewayApplicationService.findAllByKeywordAndPage(searchParam);
         List<GatewayApplication> content = all1.getContent();
         System.out.println(content.size());
     }

@@ -70,7 +70,7 @@ public class GatewayApplicationServiceImpl implements IGatewayApplicationService
         if (StringUtils.isEmpty(searchParam.getKeywords())) {
             return this.gatewayApplicationDao.findByDeletedFalse(searchParam.getPageable());
         }
-        return this.gatewayApplicationDao.findByDeletedFalseAndApplicationNameLike(searchParam.getKeywords(), searchParam.getPageable());
+        return this.gatewayApplicationDao.findByDeletedFalseAndApplicationNameLike(searchParam.getLikeKeywords(), searchParam.getPageable());
     }
 
     @Override

@@ -18,27 +18,6 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
         });
         this.addEvents();
     },
-   /* getApplications:function(){
-        var g=this, myMask = EUI.LoadMask({ msg: g.lang.getApplicationText });
-        EUI.Store({
-            url:_ctxPath + "/application/listAll",
-            async: false,
-            success: function (result) {
-                myMask.hide();
-                g.gridCmp.setDataInGrid(result);
-                EUI.getCmp("searchBox_gridPanel").doSearch();
-            },
-            failure: function () {
-                myMask.remove();
-                var status = {
-                    msg: g.lang.getApplicationModuleFailText,
-                    success: false,
-                    showTime: 60
-                };
-                EUI.ProcessStatus(status);
-            }
-        });
-    },*/
     initTbar: function () {
         var g = this;
         return [{
@@ -66,9 +45,9 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
             loadonce: true,
             // datatype: "local",
             url:_ctxPath + "/gateway_application/find_gateway_applications",
-            postData: {
+           /* postData: {
                 //weatherPage: false
-            },
+            },*/
             colModel: [
                 {
                     label: g.lang.operateText,
@@ -131,7 +110,8 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
                             },
                             success: function (status) {
                                 myMask.hide();
-                                g.gridCmp.refreshGrid();
+                               // g.gridCmp.refreshGrid();
+                                g.gridCmp.setPostParams({},true);
                                 EUI.ProcessStatus({
                                     success: true,
                                     msg: status.message
@@ -269,18 +249,22 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
         EUI.Store({
             url: url,
             params: data,
-            success: function (result) {
+            success: function (status) {
                 myMask.hide();
                 g.editWin.remove();
-                g.gridCmp.refreshGrid();
+              //  g.gridCmp.refreshGrid();
+                g.gridCmp.setPostParams({},true);
                 EUI.ProcessStatus({
                     success: true,
-                    msg: result.message
+                    msg: status.message
                 });
             },
-            failure: function (re) {
+            failure: function (status) {
                 myMask.hide();
-                EUI.ProcessStatus(re);
+                EUI.ProcessStatus({
+                    success: false,
+                    msg: status.message
+                });
             }
         });
     },

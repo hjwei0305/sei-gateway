@@ -17,22 +17,29 @@ var defaultLangs = {
     unFilledText:"有必填项未输入，请确认！",
     rankText: "排序",
     addWinText: "新增{0}",
-    modifyWinText: "编辑{0}"
+    modifyWinText: "编辑{0}",
+    codeText: "代码",
+    nameText: "名称",
+    remarkText: "说明"
 };
 if (EUI.InterfaceView) {
     EUI.InterfaceView.prototype.lang = EUI.applyIf({
+        applicationText: "应用",
         interfaceText:"接口",
-        codeText: "代码",
-        nameText: "名称"
+        getInterfaceText: "正在获取接口...",
+        getInterfaceFailedText: "获取接口失败",
+        interfaceRemarkText: "接口说明",
+        interfaceProtocolText: "接口协议",
+        interfaceURIText: "接口uri地址",
+        modifyWindowText:"编辑{0}【{1}】",
+        addWindowText: "新增{0}【{1}】"
     }, defaultLangs);
 }
 if (EUI.ApplicationView) {
     EUI.ApplicationView.prototype.lang = EUI.applyIf({
         applicationText: "应用",
-        getApplicationText: "正在获取应用模块",
-        codeText: "代码",
-        nameText: "名称",
-        remarkText: "说明"
+        getApplicationText: "正在获取应用..."
+
     }, defaultLangs);
 }
 

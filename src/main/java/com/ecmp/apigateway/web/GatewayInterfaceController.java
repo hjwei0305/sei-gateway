@@ -28,6 +28,11 @@ public class GatewayInterfaceController {
     @Autowired
     private IGatewayInterfaceService gatewayInterfaceService;
 
+    @RequestMapping("/show")
+    public String show() {
+        return "main/InterfaceView";
+    }
+
     /**
      * 新增网关应用接口
      *

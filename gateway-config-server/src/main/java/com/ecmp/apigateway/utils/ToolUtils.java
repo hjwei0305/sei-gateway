@@ -1,6 +1,5 @@
 package com.ecmp.apigateway.utils;
 
-import java.io.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,7 +7,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -18,24 +16,6 @@ import java.util.regex.Pattern;
  */
 public class ToolUtils {
 
-    /**
-     * 正则表达式：验证用户名
-     */
-    public static final String REGEX_USERNAME = "^[a-zA-Z]\\w{5,17}$";
-    /**
-     * 正则表达式：验证密码
-     */
-    public static final String REGEX_PASSWORD = "^[a-zA-Z0-9]{6,16}$";
-    /**
-     * 正则表达式：验证手机号
-     */
-    public static final String REGEX_MOBILE = "^(((13[0-9])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8})|(0\\d{2}-\\d{8})|(0\\d{3}-\\d{7})$";
-    //public static final String REGEX_MOBILE = "^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$";
-    /**
-     * 正则表达式：验证邮箱
-     */
-    public static final String REGEX_EMAIL = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
-    //public static final String REGEX_EMAIL = "^([a-z0-9A-Z]+[-|\\.])+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)\\.)+[a-zA-Z]{2,}$";
     /**
      * 正则表达式：验证汉字
      */
@@ -56,46 +36,6 @@ public class ToolUtils {
      * 正则表达式：验证IP地址
      */
     public static final String REGEX_IP_ADDR = "(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]\\d)";
-
-    /**
-     * 校验用户名
-     *
-     * @param username
-     * @return 校验通过返回true，否则返回false
-     */
-    public static boolean isUsername(String username) {
-        return Pattern.matches(REGEX_USERNAME, username);
-    }
-
-    /**
-     * 校验密码
-     *
-     * @param password
-     * @return 校验通过返回true，否则返回false
-     */
-    public static boolean isPassword(String password) {
-        return Pattern.matches(REGEX_PASSWORD, password);
-    }
-
-    /**
-     * 校验手机号
-     *
-     * @param mobile
-     * @return 校验通过返回true，否则返回false
-     */
-    public static boolean isMobile(String mobile) {
-        return Pattern.matches(REGEX_MOBILE, mobile);
-    }
-
-    /**
-     * 校验邮箱
-     *
-     * @param email
-     * @return 校验通过返回true，否则返回false
-     */
-    public static boolean isEmail(String email) {
-        return Pattern.matches(REGEX_EMAIL, email);
-    }
 
     /**
      * 校验汉字
@@ -348,116 +288,6 @@ public class ToolUtils {
         }
 
         return resultTimes;
-    }
-
-    /**
-     * 写txt里的单行内容
-     *
-     * @param fileP       文件路径
-     * @param content     写入的内容
-     * @param isLocalFile 是否为项目本地文件
-     */
-    public static void writeFile(String fileP, String content, boolean isLocalFile) {
-        String filePath = String.valueOf(Thread.currentThread().getContextClassLoader().getResource("")); // 项目路径
-        if (isLocalFile) filePath = (filePath.trim() + fileP.trim()).substring(6).trim();
-        else filePath = fileP.trim();
-        if (filePath.indexOf(":") != 1) {
-            filePath = File.separator + filePath;
-        }
-        try {
-            OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(filePath), "utf-8");
-            BufferedWriter writer = new BufferedWriter(write);
-            try {
-                writer.write(content);
-            } finally {
-                writer.flush();
-                writer.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 验证邮箱
-     *
-     * @param email
-     * @return
-     */
-    public static boolean checkEmail(String email) {
-        boolean flag = false;
-        try {
-            String check = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
-            //String check = "^([a-z0-9A-Z]+[-|\\.])+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)\\.)+[a-zA-Z]{2,}$";
-            Pattern regex = Pattern.compile(check);
-            Matcher matcher = regex.matcher(email);
-            flag = matcher.matches();
-        } catch (Exception e) {
-            //e.printStackTrace();
-            flag = false;
-        }
-        return flag;
-    }
-
-    /**
-     * 验证手机号码
-     *
-     * @param phone
-     * @return
-     */
-    public static boolean checkPhone(String phone) {
-        boolean flag = false;
-        try {
-            String check = "^(((13[0-9])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8})|(0\\d{2}-\\d{8})|(0\\d{3}-\\d{7})$";
-            //String check = "^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$";
-            Pattern regex = Pattern.compile(check);
-            Matcher matcher = regex.matcher(phone);
-            flag = matcher.matches();
-        } catch (Exception e) {
-            //e.printStackTrace();
-            flag = false;
-        }
-        return flag;
-    }
-
-    /**
-     * 读取txt里的单行内容
-     *
-     * @param fileP       文件路径
-     * @param isLocalFile 是否为项目本地文件
-     */
-    public static String readTxtFile(String fileP, boolean isLocalFile) {
-        try {
-            String filePath = String.valueOf(Thread.currentThread().getContextClassLoader().getResource("")); // 项目路径
-            filePath = filePath.replaceAll("file:/", "");
-            filePath = filePath.replaceAll("%20", " ");
-            if (isLocalFile) filePath = filePath.trim() + fileP.trim();
-            else filePath = fileP.trim();
-            if (filePath.indexOf(":") != 1) {
-                filePath = File.separator + filePath;
-            }
-            String encoding = "utf-8";
-            File file = new File(filePath);
-            if (file.isFile() && file.exists()) { // 判断文件是否存在
-                InputStreamReader read = new InputStreamReader(new FileInputStream(file), encoding); // 考虑到编码格式
-                BufferedReader bufferedReader = new BufferedReader(read);
-                try {
-                    String lineTxt = null;
-                    while ((lineTxt = bufferedReader.readLine()) != null) {
-                        return lineTxt;
-                    }
-                } finally {
-                    bufferedReader.close();
-                    read.close();
-                }
-            } else {
-                System.err.println("找不到指定的文件,查看此路径是否正确:" + filePath);
-            }
-        } catch (Exception e) {
-            System.err.println("读取文件内容出错:" + e.toString());
-            e.printStackTrace();
-        }
-        return "";
     }
 
     public static void main(String[] args) {

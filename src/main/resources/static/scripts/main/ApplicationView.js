@@ -42,12 +42,8 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
     initGridCfg: function () {
         var g = this;
         return {
-            loadonce: true,
-            // datatype: "local",
+            loadonce: false,
             url:_ctxPath + "/gateway_application/find_gateway_applications",
-           /* postData: {
-                //weatherPage: false
-            },*/
             colModel: [
                 {
                     label: g.lang.operateText,
@@ -69,7 +65,7 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
             ],
             rowNum: 15,
             shrinkToFit: false,
-            sortname: 'applicationCode'
+            sortname: 'applicationName'
         };
     },
     addEvents: function () {
@@ -119,10 +115,7 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
                             },
                             failure: function (status) {
                                 myMask.hide();
-                                EUI.ProcessStatus({
-                                    success: false,
-                                    msg: status.message
-                                });
+                                g.message(status.message);
                             }
                         });
                     }
@@ -192,7 +185,7 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
         g.formCmp = EUI.getCmp("editForm");
     },
     save: function () {
-        var g = this, url = "";
+        var g = this, saveUrl = "";
         if (!g.formCmp.isValid()) {
             g.message(g.lang.unFilledText);
             return;
@@ -207,40 +200,42 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
             delete data.id;
         }
         if(g.isEdit){
-            url = _ctxPath + "/gateway_application/modify_gateway_application";
+            saveUrl = _ctxPath + "/gateway_application/modify_gateway_application";
         }else{
-            url = _ctxPath + "/gateway_application/add_gateway_application";
+            saveUrl = _ctxPath + "/gateway_application/add_gateway_application";
         }
-        this.checkAndSave(data,url);
+        this.checkAndSave(data,saveUrl);
 
     },
-    checkAndSave: function(data,url){
-        var g = this;
+    checkAndSave: function(data,saveUrl){
+        var g = this,operationType="ADD";
         var myMask = EUI.LoadMask({
             //saveMaskMessageText:"正在加载，请稍候..."
             msg: g.lang.saveMaskMessageText
         });
+        if(this.isEdit){
+            operationType='EDIT';
+        }else{
+            operationType='ADD';
+        }
         EUI.Store({
             async: true,
-            url: _ctxPath + "/gateway_application/check_application_name",
+            url: _ctxPath + "/gateway_application/check_application_name?operationType="+operationType,
             params: {applicationName: data.applicationName},
             success: function (result) {
                 if(result.data){
+                    g.saveData(data,saveUrl,myMask);
+                }else{
                     myMask.hide();
                     EUI.ProcessStatus({
                         success: false,
                         msg: '名称重复，请修改'
                     });
-                }else{
-                    g.saveData(data,url,myMask);
                 }
             },
             failure: function (re) {
                 myMask.hide();
-                EUI.ProcessStatus({
-                    success: false,
-                    msg: '名称校验请求失败'
-                });
+                g.message('名称校验请求失败');
             }
         });
     },
@@ -261,10 +256,7 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
             },
             failure: function (status) {
                 myMask.hide();
-                EUI.ProcessStatus({
-                    success: false,
-                    msg: status.message
-                });
+                g.message(status.message);
             }
         });
     },

@@ -16,7 +16,7 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
             padding: 0,
             items: [this.initWestContainer(), this.initCenterContainer()]
         });
-        this.gridCmp = EUI.getCmp("applicationService");
+        this.gridCmp = EUI.getCmp("interfaceGrid");
         this.addEvents();
     },
     initWestContainer: function () {
@@ -24,106 +24,64 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
         return {
             xtype: "GridPanel",
             region: "west",
-            id: "runtimeEnvironment",
-            width: 300,
-            // runtimeEnvironmentText: "运行环境",
-            title: this.lang.runtimeEnvironmentText,
+            id: "applicationGrid",
+            width: 380,
+            title: this.lang.applicationText,
             border: true,
             padding: 0,
             gridCfg: {
-                url: _ctxPath + "/interface/listAllByApplicationId",
-                loadonce: true,
+                url:_ctxPath + "/gateway_application/find_gateway_applications",
+                loadonce: false,
                 colModel: [{ name: 'id', hidden: true },
                     // codeText: 代码
-                    { name: 'code', index: 'code', sortable: true, width: 50, label: g.lang.codeText},
+                    { name: 'applicationCode',hidden: true},
                     //nameText: 名称
-                    { name: 'name', index: 'name', sortable: true, width: 125,  label: g.lang.nameText},
-                    //rankText: '排序',
-                    { name: "rank",index: "rank", label: g.lang.rankText,sorttype:"integer",sortable: true, width: 60, align: "center" }
+                    { name: 'applicationName', index: 'applicationName', sortable: true, width: 125,  label: g.lang.nameText},
+                    //remarkText: '说明',
+                    { name: "applicationRemark",index: "applicationRemark", label: g.lang.remarkText,sortable: true, width: 200 }
                 ],
                 rowNum: 15,
                 shrinkToFit: false,
-                sortname: 'rank',
+                sortname: 'applicationName',
                 onSelectRow: function () {
-                    g.currentRuntimeEnvironment = EUI.getCmp("runtimeEnvironment").getSelectRow();
-                    g.getApplicationServices();
+                    g.curApplication = EUI.getCmp("applicationGrid").getSelectRow();
+                    g.refreshInterfaceGrid();
                 },
                 loadComplete: function (data) {
-                    if(data && data.length>0){
-                        EUI.getCmp("runtimeEnvironment").setSelectRowById(data[0].id);
+                    if(data&&data.rows && data.rows.length>0){
+                        EUI.getCmp("applicationGrid").setSelectRowById(data.rows[0].id);
+                        g.refreshInterfaceGrid({
+                            applicationCode: data.rows[0].applicationCode
+                        });
                     }
                 }
-            },
+            }
 
         }
+    },
+    refreshInterfaceGrid: function(postData){
+        if(!postData){
+            postData =  { applicationCode: this.curApplication && this.curApplication.applicationCode };
+        }
+        this.gridCmp.setGridParams({
+            datatype: "json",
+            url: _ctxPath + "/gateway_interface/find_gateway_interfaces",
+            postData: postData
+        },true);
     },
     initCenterContainer: function () {
         return {
             xtype: "GridPanel",
             region: "center",
-            id: "applicationService",
-            // applicationServiceText: "应用服务",
-            title: this.lang.applicationServiceText,
+            id: "interfaceGrid",
+            title: this.lang.interfaceText,
             border: true,
             padding: 0,
             tbar: this.initTbar(),
             gridCfg: this.initGridCfg()
         }
     },
-    getPlatforms:function () {
-        var g=this, myMask = EUI.LoadMask({
-            //getPlatformDataText: "正在获取平台数据，请稍候...",
-            msg: g.lang.getPlatformDataText,
-        });
-        EUI.Store({
-            url: _ctxPath + "/platform/listAllPlatform",
-            async: false,
-            success: function (result) {
-                myMask.hide();
-                g.platforms = result;
-                g.currentPlatForm = result[0];
-            },
-            failure: function () {
-                myMask.remove();
-                var status = {
-                    //getPlatformDataFailText: "平台数据获取失败!",
-                    msg: g.lang.getPlatformDataFailText,
-                    success: false,
-                    showTime: 60
-                };
-                EUI.ProcessStatus(status);
-            }
-        });
-    },
-    getApplicationServices:function(){
-        var g=this, myMask = EUI.LoadMask({
-            //getApplicationServiceText: "正在获取应用服务数据，请稍候...",
-            msg: g.lang.getApplicationServiceText,
-        });
-        EUI.Store({
-            url:_ctxPath + "/applicationService/listAllByPlatformAndEnv",
-            params: {
-                platformId: g.currentPlatForm && g.currentPlatForm.id,
-                runtimeEnvironmentId: g.currentRuntimeEnvironment && g.currentRuntimeEnvironment.id
-            },
-            async: false,
-            success: function (result) {
-                myMask.hide();
-                EUI.getCmp("applicationService").setDataInGrid(result);
-                EUI.getCmp("searchBox_gridPanel").doSearch();
-            },
-            failure: function () {
-                myMask.remove();
-                var status = {
-                    //getApplicationServiceFailText: "应用服务数据获取失败!",
-                    msg: g.lang.getApplicationServiceFailText,
-                    success: false,
-                    showTime: 60
-                };
-                EUI.ProcessStatus(status);
-            }
-        });
-    },
+
     initTbar: function () {
         var g = this;
         return [{
@@ -136,90 +94,6 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
                 g.isEdit = false;
                 g.addAndEdit();
             }
-        },{
-            xtype: "Button",
-            //distributeText: "发布",
-            title: g.lang.distributeText,
-            iconCss: "ecmp-common-effect",
-            selected: true,
-            handler: function () {
-                var rows = g.gridCmp.getSelectRow();
-                if (rows.length == 0) {
-                    //selectServiceText:"请选择要发布的应用服务!",
-                    g.message(g.lang.selectServiceText);
-                    return false;
-                }
-                var applicationServiceIds = new Array();
-                for (var i=0,len=rows.length; i<len; i++) {
-                    applicationServiceIds[i] = rows[i].id;
-                }
-                var infoBox = EUI.MessageBox({
-                    //hintText: 提示
-                    title: g.lang.hintText,
-                    //distributeHintMessageText:"您确定要发布吗？",
-                    msg: g.lang.distributeHintMessageText,
-                    buttons: [{
-                        //cancelText:取消
-                        title: g.lang.cancelText,
-                        handler: function () {
-                            infoBox.remove();
-                        }
-                    }, {
-                        //okText: 确定
-                        title: g.lang.okText,
-                        selected: true,
-                        handler: function () {
-                            infoBox.remove();
-                            g.doDistribute(applicationServiceIds);
-                        }
-                    }]
-                });
-            }
-        },{
-            xtype: "ComboGrid",
-            // platformText:"平台",
-            title: this.lang.platformText,
-            allowBlank: false,
-            listWidth: 390,
-            name: "name",
-            field: ["id"],
-            showSearch: true,
-            canClear: false,
-            searchConfig: {searchCols: ["code", "name"]},
-            gridCfg: {
-                data: g.platforms,
-                loadonce: true,
-                datatype: "local",
-                colModel: [
-                    {name: 'id', hidden: true},
-                    // codeText: "代码",
-                    // nameText: "名称",
-                    {name: 'code', index: 'code', label: g.lang.codeText, width: 80},
-                    {name: 'name', index: 'name', label: g.lang.nameText, width: 250},
-                    { name: "rank",index: "rank",sorttype:"integer",sortable: true, width: 60, align: "center",hidden: true }
-                ],
-                shrinkToFit: false,
-                sortname: 'rank',
-                sortorder: "asc",
-            },
-            onSearch: function (v) {
-                if (v) {
-                    this.grid.localSearch(v);
-                } else {
-                    this.grid.restore();
-                }
-            },
-            afterRender: function () {
-                this.loadData(g.platforms[0]);
-            },
-            reader: {
-                name: "name",
-                field: ["id"]
-            },
-            afterSelect: function (data) {
-                g.currentPlatForm = data.data;
-                g.getApplicationServices();
-            }
         }, "->", {
             xtype: "SearchBox",
             id: "searchBox_gridPanel",
@@ -230,54 +104,35 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
             }
         }];
     },
-    doDistribute:function (applicationServiceIds) {
-        var g=this, myMask = EUI.LoadMask({
-            //doDistributeText: "正在发布应用服务，请稍候...",
-            msg: g.lang.doDistributeText,
-        });
-        EUI.Store({
-            url: _ctxPath + "/applicationService/distribute",
-            params:{ids:applicationServiceIds},
-            async: false,
-            success: function (result) {
-                myMask.remove();
-                EUI.ProcessStatus(result);
-            },
-            failure: function (result) {
-                myMask.remove();
-                EUI.ProcessStatus(result);
-            }
-        });
-    },
     initGridCfg: function () {
         var g = this;
         return {
-            loadonce: true,
+            loadonce: false,
             datatype: "local",
             colModel: [{
                 //operateText:操作
-                label: g.lang.operateText,
-                name: "operate",
-                index: "operate",
-                width: 80,
-                align: "center",
-                formatter: function (cellvalue, options, rowObject) {
-                    return "<i  class='ecmp-common-edit icon-space' title='" + g.lang.modifyText + "' targetId='"+rowObject.id+"'></i><i class='ecmp-common-delete' title='" + g.lang.deleteText + "' targetId='"+rowObject.id+"'></i>";
-                }
-            }, {name: 'id', hidden: true},
-                {name: 'appId', hidden: true},
-                {name: 'applicationModule.id', hidden: true},
-                // applicationModuleText: "应用模块",
-                {name: 'applicationModule.name', index: 'applicationModule.name', sortable: true, width: 100, label: g.lang.applicationModuleText},
-                // remarkText: "应用服务说明",
-                {name: 'remark', index: 'remark', sortable: true, width: 200, label: g.lang.remarkText},
-                // apiDocsUrlText: "API文档地址",
-                {name: 'apiDocsUrl', index: 'apiDocsUrl', sortable: true, width: 300, label: g.lang.apiDocsUrlText, formatter: 'link',formatoptions:{target:"_blank"},}
+                    label: g.lang.operateText,
+                    name: "operate",
+                    index: "operate",
+                    width: 80,
+                    align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        return "<i  class='ecmp-common-edit icon-space' title='" + g.lang.modifyText + "' targetId='"+rowObject.id+"'></i>" +
+                            "<i class='ecmp-common-delete' title='" + g.lang.deleteText + "' targetId='"+rowObject.id+"'></i>";
+                    }
+                },
+                {name: 'id', hidden: true},
+                {name: 'applicationCode', hidden: true},
+                {name: 'interfaceName', index: 'interfaceName', sortable: true, width: 200, label: g.lang.nameText},
+                //interfaceProtocolText: "接口协议"
+                {name: 'interfaceProtocol', index: 'interfaceProtocol', sortable: true, width: 100,label: g.lang.interfaceProtocolText },
+                //interfaceURIText: "接口uri地址"
+                {name: 'interfaceURI', index: 'interfaceURI', sortable: true, width: 300, label: g.lang.interfaceURIText, formatter: 'link',formatoptions:{target:"_blank"}},
+                //interfaceRemarkText: "接口说明"
+                {name: 'interfaceRemark', index: 'interfaceRemark', sortable: true, width: 300, label: g.lang.interfaceRemarkText}
             ],
             rowNum: 15,
-            // shrinkToFit: false,
-            sortname: 'remark',
-            multiselect: true,
+            sortname: 'interfaceName'
         };
     },
     addEvents: function () {
@@ -312,18 +167,21 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
                             msg: g.lang.deleteMaskMessageText
                         });
                         EUI.Store({
-                            url: _ctxPath + "/applicationService/delete",
+                            url: _ctxPath + "/gateway_interface/remove_gateway_interface",
                             params: {
                                 id: rowId
                             },
                             success: function (status) {
                                 myMask.hide();
-                                g.getApplicationServices();
-                                EUI.ProcessStatus(status);
+                                g.refreshInterfaceGrid();
+                                EUI.ProcessStatus({
+                                    success: true,
+                                    msg: status.message
+                                });
                             },
-                            failure: function (re) {
+                            failure: function (status) {
                                 myMask.hide();
-                                EUI.ProcessStatus(re);
+                                g.message(status.message);
                             }
                         });
                     }
@@ -334,87 +192,57 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
     addAndEdit: function () {
         var g = this;
         g.editWin = EUI.Window({
-           // applicationServiceText: "应用服务",
-            title: g.isEdit ? String.format(g.lang.modifyWindowText, g.lang.applicationServiceText, g.currentRuntimeEnvironment.name) : String.format(g.lang.addWindowText, g.lang.applicationServiceText,g.currentRuntimeEnvironment.name),
+            title: g.isEdit ? String.format(g.lang.modifyWindowText, g.lang.interfaceText, g.curApplication.applicationName) : String.format(g.lang.addWindowText, g.lang.interfaceText,g.curApplication.applicationName),
             iconCss: g.isEdit ? "ecmp-eui-edit" : "ecmp-eui-add",
             height: 280,
             padding: 15,
-            width: 430,
+            width: 450,
             items: [{
                 xtype: "FormPanel",
                 id: "editForm",
                 padding: 0,
                 defaultConfig: {
                     labelWidth: 110,
-                    width: 315
+                    allowBlank: false,
+                    width: 330
                 },
                 items: [{
                     xtype: "TextField",
                     hidden: true,
                     name: "id"
-                }, {
-                    xtype: "TextField",
-                    //appIdText:"应用标识",
-                    title: g.lang.appIdText,
-                    name: "appId",
-                    maxlength: 36,
-                    allowBlank: false,
-                    validateText: "请输入有效的uuid!",
-                    readonly: g.isEdit,
-                    validater: function (v) {
-                        return EUI.Common.uuid.isValid(v);
-                    },
                 },{
-                    xtype: "ComboGrid",
-                    //  applicationModuleText: "应用模块",
-                    title: this.lang.applicationModuleText,
-                    allowBlank: false,
-                    listWidth: 390,
-                    name: "applicationModule.name",
-                    field: ["applicationModule.id"],
-                    showSearch: true,
-                    canClear: false,
-                    searchConfig: {searchCols: ["code", "name"]},
-                    gridCfg: {
-                        url:_ctxPath + "/applicationModule/listAllByPlatformId",
-                        postData: {
-                            platformId: g.currentPlatForm.id
-                        },
-                        loadonce: true,
-                        // datatype: "local",
-                        colModel: [
-                            {name: 'id', hidden: true},
-                            {name: 'code', index: 'code', label: "代码", width: 135},
-                            {name: 'name', index: 'name', label: "名称", width: 180}
-                        ],
-                        shrinkToFit: false,
-                        sortname: 'code',
-                        sortorder: "asc",
-                    },
-                    onSearch: function (v) {
-                        if (v) {
-                            this.grid.localSearch(v);
-                        } else {
-                            this.grid.restore();
-                        }
-                    },
-                    reader: {
-                        name: "name",
-                        field: ["id"]
-                    },
+                    xtype: "TextField",
+                    title: g.lang.nameText,
+                    name: "interfaceName",
+                    maxlength: 100
+                },{
+                    xtype: "RadioBoxGroup",
+                    title: this.lang.interfaceProtocolText,
+                    name: "interfaceProtocol",
+                    itemspace: 5,
+                    items: [{
+                        title: "HTTP协议",
+                        name: "HTTP",
+                        checked: true
+                    }, {
+                        title: "RPC协议",
+                        name: "RPC"
+                    }, {
+                        labelWidth: 103,
+                        title: "webservice协议",
+                        name: "WEBSERVICE"
+                    }]
                 }, {
                     xtype: "TextArea",
-                    // remarkText: "应用服务说明",
+                    title: g.lang.interfaceURIText,
+                    name: "interfaceURI",
+                    maxlength: 800
+                }, {
+                    xtype: "TextArea",
                     title: g.lang.remarkText,
-                    name: "remark",
+                    name: "interfaceRemark",
                     maxlength: 100,
-                    allowBlank: false
-                }, {
-                    xtype: "TextArea",
-                    // apiDocsUrlText: "API文档地址",
-                    title: g.lang.apiDocsUrlText,
-                    name: "apiDocsUrl",
-                    maxlength: 800,
+                    allowBlank: true
                 }]
             }],
             buttons: [{
@@ -435,7 +263,7 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
         g.formCmp = EUI.getCmp("editForm");
     },
     save: function () {
-        var g = this;
+        var g = this,saveUrl='';
         if (!g.formCmp.isValid()) {
             g.message(g.lang.unFilledText);
             return;
@@ -449,27 +277,31 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
         if (!g.isEdit) {
             delete data.id;
         }
-
-        data.applicationModuleId = data["applicationModule.id"];
-        data.runtimeEnvironmentId = g.currentRuntimeEnvironment.id;
-        delete data["applicationModule.id"];
-        delete data["applicationModule.name"];
+        data.applicationCode = g.curApplication.applicationCode;
+        if(g.isEdit){
+            saveUrl = _ctxPath + "/gateway_interface/modify_gateway_interface";
+        }else{
+            saveUrl = _ctxPath + "/gateway_interface/add_gateway_interface";
+        }
         var myMask = EUI.LoadMask({
             //saveMaskMessageText:"正在加载，请稍候..."
-            msg: g.lang.saveMaskMessageText,
+            msg: g.lang.saveMaskMessageText
         });
         EUI.Store({
-            url: _ctxPath + "/applicationService/save",
+            url: saveUrl,
             params: data,
-            success: function (result) {
+            success: function (status) {
                 myMask.hide();
                 g.editWin.remove();
-                g.getApplicationServices();
-                EUI.ProcessStatus(result);
+                g.refreshInterfaceGrid();
+                EUI.ProcessStatus({
+                    success: true,
+                    msg: status.message
+                });
             },
-            failure: function (re) {
+            failure: function (status) {
                 myMask.hide();
-                EUI.ProcessStatus(re);
+                g.message(status.message);
             }
         });
     },
@@ -479,7 +311,7 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
             sucess: false,
             //hintText: "温馨提示",
             title: g.lang.hintText,
-            msg: msg,
+            msg: msg
         });
     }
 });

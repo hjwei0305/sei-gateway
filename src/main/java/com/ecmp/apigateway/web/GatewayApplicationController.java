@@ -94,10 +94,10 @@ public class GatewayApplicationController {
     public Object findGatewayApplications(@RequestParam(value = "weatherPage", defaultValue = "1") boolean weatherPage, SearchParam searchParam) {
         if (weatherPage) {
             Page<GatewayApplication> result = this.gatewayApplicationService.findAllByKeywordAndPage(searchParam);
-            return new PageModel<>(result);
+            return ResponseModel.SUCCESS(new PageModel<>(result));
         } else {
             List<GatewayApplication> result = this.gatewayApplicationService.findAll();
-            return result;
+            return ResponseModel.SUCCESS(result);
         }
     }
 

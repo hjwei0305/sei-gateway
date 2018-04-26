@@ -108,7 +108,7 @@ public class GatewayInterfaceController {
     public Object findGatewayInterfaces(@RequestParam String applicationCode, @RequestParam(value = "weatherPage", defaultValue = "1") boolean weatherPage, SearchParam searchParam) {
         if (weatherPage) {
             Page<GatewayInterface> result = this.gatewayInterfaceService.findGatewayInterfaceByPage(applicationCode, searchParam);
-            return new PageModel(result);
+            return ResponseModel.SUCCESS(new PageModel(result));
         } else {
             List<GatewayInterface> result = this.gatewayInterfaceService.findGatewayInterfaceByNoPage(applicationCode);
             return ResponseModel.SUCCESS(result);

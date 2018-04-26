@@ -18,13 +18,13 @@ public class SearchParam {
     //每页查询数量
     private int rows = 15;
     //排序字段名
-    private String sortName = "id";
+    private String sidx = "id";
     //排序规则
-    private Sort.Direction direction = Sort.Direction.DESC;
+    private Sort.Direction sord = Sort.Direction.DESC;
 
     //得到jpa pageable对象
     public Pageable getPageable() {
-        Sort sort = new Sort(this.direction, this.sortName);
+        Sort sort = new Sort(this.sord, this.sidx);
         Pageable pageable = new PageRequest(this.page == 1 ? 0 : this.page - 1, this.rows, sort);
         return pageable;
     }
@@ -57,19 +57,19 @@ public class SearchParam {
         this.rows = rows;
     }
 
-    public String getSortName() {
-        return sortName;
+    public String getSidx() {
+        return sidx;
     }
 
-    public void setSortName(String sortName) {
-        this.sortName = sortName;
+    public void setSidx(String sidx) {
+        this.sidx = sidx;
     }
 
-    public Sort.Direction getDirection() {
-        return direction;
+    public Sort.Direction getSord() {
+        return sord;
     }
 
-    public void setDirection(Sort.Direction direction) {
-        this.direction = direction;
+    public void setSord(Sort.Direction sord) {
+        this.sord = sord;
     }
 }

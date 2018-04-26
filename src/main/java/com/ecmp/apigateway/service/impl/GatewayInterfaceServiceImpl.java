@@ -73,7 +73,7 @@ public class GatewayInterfaceServiceImpl implements IGatewayInterfaceService {
     @Override
     public Page<GatewayInterface> findGatewayInterfaceByPage(String applicationCode, SearchParam searchParam) {
         if (StringUtils.isNotEmpty(searchParam.getKeywords())) {
-            Page<GatewayInterface> gatewayInterfaces = this.gatewayInterfaceDao.findByDeletedFalseAndApplicationCodeOrInterfaceNameLikeOrInterfaceURILike(applicationCode, searchParam.getKeywords(), searchParam.getKeywords(), searchParam.getPageable());
+            Page<GatewayInterface> gatewayInterfaces = this.gatewayInterfaceDao.findByDeletedFalseAndApplicationCodeOrInterfaceNameLikeOrInterfaceURILike(applicationCode, searchParam.getLikeKeywords(), searchParam.getLikeKeywords(), searchParam.getPageable());
             return gatewayInterfaces;
         }
         return this.gatewayInterfaceDao.findByDeletedFalseAndApplicationCode(applicationCode, searchParam.getPageable());

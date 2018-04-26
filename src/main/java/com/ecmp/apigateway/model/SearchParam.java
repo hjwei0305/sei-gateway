@@ -33,6 +33,10 @@ public class SearchParam {
         return keywords;
     }
 
+    public String getLikeKeywords() {
+        return "%" + keywords + "%";
+    }
+
     public void setKeywords(String keywords) {
         this.keywords = keywords;
     }

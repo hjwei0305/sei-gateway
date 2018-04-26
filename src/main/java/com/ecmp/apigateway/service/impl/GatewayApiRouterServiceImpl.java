@@ -58,6 +58,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
                     //throw new ObjectNotFoundException();
                 } else {
                     gatewayApiRouter.setDeleted(true);
+                    gatewayApiRouter.setEnabled(false);
                     gatewayApiRouterDao.save(gatewayApiRouter);
                 }
             }
@@ -71,6 +72,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
             throw new ObjectNotFoundException();
         } else {
             gatewayApiRouter.setDeleted(true);
+            gatewayApiRouter.setEnabled(false);
             gatewayApiRouterDao.save(gatewayApiRouter);
         }
     }

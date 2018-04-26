@@ -8,7 +8,6 @@ import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties.ZuulRoute;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.util.StringUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,12 +64,12 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
                 path = "/" + path;
             }
             //如果没有在application.properties不需要此实现
-//            if (StringUtils.hasText(this.properties.getPrefix())) {
-//                path = this.properties.getPrefix() + path;
-//                if (!path.startsWith("/")) {
-//                    path = "/" + path;
-//                }
-//            }
+            /*if (StringUtils.hasText(this.properties.getPrefix())) {
+                path = this.properties.getPrefix() + path;
+                if (!path.startsWith("/")) {
+                    path = "/" + path;
+                }
+            }*/
             values.put(path, entry.getValue());
         }
         return values;

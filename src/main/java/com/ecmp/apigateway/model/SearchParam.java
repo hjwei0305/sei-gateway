@@ -16,7 +16,7 @@ public class SearchParam {
     //当前页数
     private int page = 1;
     //每页查询数量
-    private int pageSize = 15;
+    private int rows = 15;
     //排序字段名
     private String sortName = "id";
     //排序规则
@@ -25,7 +25,7 @@ public class SearchParam {
     //得到jpa pageable对象
     public Pageable getPageable() {
         Sort sort = new Sort(this.direction, this.sortName);
-        Pageable pageable = new PageRequest(this.page == 1 ? 0 : this.page - 1, this.pageSize, sort);
+        Pageable pageable = new PageRequest(this.page == 1 ? 0 : this.page - 1, this.rows, sort);
         return pageable;
     }
 
@@ -49,12 +49,12 @@ public class SearchParam {
         this.page = page;
     }
 
-    public int getPageSize() {
-        return pageSize;
+    public int getRows() {
+        return rows;
     }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
+    public void setRows(int rows) {
+        this.rows = rows;
     }
 
     public String getSortName() {

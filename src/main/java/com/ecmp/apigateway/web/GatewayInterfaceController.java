@@ -1,5 +1,6 @@
 package com.ecmp.apigateway.web;
 
+import com.ecmp.apigateway.enums.OperationTypeEnum;
 import com.ecmp.apigateway.model.GatewayInterface;
 import com.ecmp.apigateway.model.PageModel;
 import com.ecmp.apigateway.model.ResponseModel;
@@ -85,11 +86,11 @@ public class GatewayInterfaceController {
      * @param interfaceURI    接口地址
      * @return
      */
-    @RequestMapping("find_gateway_interface")
+    @RequestMapping("check_gateway_interface")
     @ResponseBody
-    public ResponseModel findGatewayInterface(@RequestParam String applicationCode, String interfaceName, String interfaceURI) {
-        GatewayInterface gatewayInterface = this.gatewayInterfaceService.findGatewayInterfaceByNameOrURI(applicationCode, interfaceName, interfaceURI);
-        return ResponseModel.SUCCESS(gatewayInterface);
+    public ResponseModel findGatewayInterface(@RequestParam String applicationCode, String interfaceName, String interfaceURI, @RequestParam(name = "operationType") OperationTypeEnum operationType) {
+        boolean result = this.gatewayInterfaceService.checkGatewayInterface(applicationCode, interfaceName, interfaceURI, operationType);
+        return ResponseModel.SUCCESS(result);
     }
 
     /**

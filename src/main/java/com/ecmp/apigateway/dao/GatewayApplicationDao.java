@@ -32,6 +32,8 @@ public interface GatewayApplicationDao extends JpaRepository<GatewayApplication,
     Page<GatewayApplication> findByDeletedFalseAndApplicationNameLike(@Param("applicationName") String keywords, Pageable pageable);
 
     /**
+
+     /**
      * 分页查询网关应用-分页 无关键字
      *
      * @param pageable
@@ -45,7 +47,7 @@ public interface GatewayApplicationDao extends JpaRepository<GatewayApplication,
      * @param applicationName 应用名
      * @return
      */
-    GatewayApplication findFirstByApplicationNameAndDeletedFalse(String applicationName);
+    List<GatewayApplication> findByApplicationNameAndDeletedFalse(String applicationName);
 
     /**
      * 根据id和code查询应用信息

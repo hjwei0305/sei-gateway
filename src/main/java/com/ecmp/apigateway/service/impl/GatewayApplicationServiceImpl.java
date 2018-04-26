@@ -1,6 +1,7 @@
 package com.ecmp.apigateway.service.impl;
 
 import com.ecmp.apigateway.dao.GatewayApplicationDao;
+import com.ecmp.apigateway.enums.OperationTypeEnum;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApplication;
@@ -74,12 +75,18 @@ public class GatewayApplicationServiceImpl implements IGatewayApplicationService
     }
 
     @Override
-    public GatewayApplication findGatewayApplicationByName(String applicationName) {
-        return this.gatewayApplicationDao.findFirstByApplicationNameAndDeletedFalse(applicationName);
+    public List<GatewayApplication> findGatewayApplicationByName(String applicationName) {
+        return this.gatewayApplicationDao.findByApplicationNameAndDeletedFalse(applicationName);
     }
 
     @Override
     public GatewayApplication findGatewayApplicationByIdOrCode(String id, String applicationCode) {
         return this.gatewayApplicationDao.findByIdOrAndApplicationCode(id, applicationCode);
+    }
+
+    @Override
+    public boolean checkApplicationName(String applicationName, OperationTypeEnum operationType) {
+        List<GatewayApplication> applications = this.gatewayApplicationDao.findByApplicationNameAndDeletedFalse(applicationName);
+        return OperationTypeEnum.checkOperationType(operationType, applications);
     }
 }

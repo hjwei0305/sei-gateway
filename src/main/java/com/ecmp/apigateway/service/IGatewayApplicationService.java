@@ -1,6 +1,7 @@
 package com.ecmp.apigateway.service;
 
 
+import com.ecmp.apigateway.enums.OperationTypeEnum;
 import com.ecmp.apigateway.model.GatewayApplication;
 import com.ecmp.apigateway.model.SearchParam;
 import org.springframework.data.domain.Page;
@@ -59,7 +60,7 @@ public interface IGatewayApplicationService {
      * @param applicationName 应用名
      * @return
      */
-    GatewayApplication findGatewayApplicationByName(String applicationName);
+    List<GatewayApplication> findGatewayApplicationByName(String applicationName);
 
     /**
      * 根据id或者code查询网关应用
@@ -69,4 +70,13 @@ public interface IGatewayApplicationService {
      * @return
      */
     GatewayApplication findGatewayApplicationByIdOrCode(String id, String applicationCode);
+
+    /**
+     * 根据操作类型检查应用名称
+     *
+     * @param applicationName
+     * @param operationType
+     * @return
+     */
+    boolean checkApplicationName(String applicationName, OperationTypeEnum operationType);
 }

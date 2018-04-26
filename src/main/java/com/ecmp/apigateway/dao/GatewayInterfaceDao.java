@@ -42,7 +42,7 @@ public interface GatewayInterfaceDao extends JpaRepository<GatewayInterface, Str
      * @param interfaceURI    接口uri地址
      * @return
      */
-    GatewayInterface findFirstByApplicationCodeAndInterfaceNameOrInterfaceURI(String applicationCode, String interfaceName, String interfaceURI);
+    List<GatewayInterface> findByApplicationCodeAndInterfaceNameOrInterfaceURI(String applicationCode, String interfaceName, String interfaceURI);
 
     /**
      * 根据id查询接口信息

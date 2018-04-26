@@ -1,5 +1,6 @@
 package com.ecmp.apigateway.web;
 
+import com.ecmp.apigateway.enums.OperationTypeEnum;
 import com.ecmp.apigateway.model.*;
 import com.ecmp.apigateway.service.IGatewayApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +52,9 @@ public class GatewayApplicationController {
      */
     @RequestMapping("/check_application_name")
     @ResponseBody
-    public Object checkGatewayApplicationName(@RequestParam(name = "applicationName") String applicationName) {
-        GatewayApplication application = this.gatewayApplicationService.findGatewayApplicationByName(applicationName);
-        return ResponseModel.SUCCESS(application);
+    public Object checkGatewayApplicationName(@RequestParam(name = "applicationName") String applicationName, @RequestParam(name = "operationType") OperationTypeEnum operationType) {
+        boolean result = this.gatewayApplicationService.checkApplicationName(applicationName, operationType);
+        return ResponseModel.SUCCESS(result);
     }
 
     /**

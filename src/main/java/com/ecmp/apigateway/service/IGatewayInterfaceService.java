@@ -1,5 +1,6 @@
 package com.ecmp.apigateway.service;
 
+import com.ecmp.apigateway.enums.OperationTypeEnum;
 import com.ecmp.apigateway.model.GatewayInterface;
 import com.ecmp.apigateway.model.SearchParam;
 import org.springframework.data.domain.Page;
@@ -73,6 +74,18 @@ public interface IGatewayInterfaceService {
      * @param interfaceURI    接口uri地址
      * @return
      */
-    GatewayInterface findGatewayInterfaceByNameOrURI(String applicationCode, String interfaceName, String interfaceURI);
+    List<GatewayInterface> findGatewayInterfaceByNameOrURI(String applicationCode, String interfaceName, String interfaceURI);
+
+    /**
+     * 效验当前应用下的接口信息
+     *
+     * @param applicationCode 应用code
+     * @param interfaceName   接口名称
+     * @param interfaceURI    接口uri地址
+     * @param operationType   操作类型
+     * @return
+     */
+    boolean checkGatewayInterface(String applicationCode, String interfaceName, String interfaceURI, OperationTypeEnum operationType);
+
 
 }

@@ -29,23 +29,23 @@ public class GatewayApiRouterController {
     private RefreshRouteService refreshRouteService;
 
     /**
-     * 启动
+     * 启用全部
      * @return
      */
     @ResponseBody
-    @RequestMapping("start")
-    public Object start() {
+    @RequestMapping("startAll")
+    public Object startAll() {
         refreshRouteService.refreshRoute();
         return ResponseModel.SUCCESS();
     }
 
     /**
-     * 停止
+     * 停用全部
      * @return
      */
     @ResponseBody
-    @RequestMapping("stop")
-    public Object stop() {
+    @RequestMapping("stopAll")
+    public Object stopAll() {
         gatewayApiRouterService.removeAll();
         refreshRouteService.refreshRoute();
         return ResponseModel.SUCCESS();
@@ -120,10 +120,12 @@ public class GatewayApiRouterController {
     public Object findAllByPage(@RequestParam(value = "weatherPage", defaultValue = "1") boolean weatherPage, SearchParam searchParam) {
         if(weatherPage){
             Page<GatewayApiRouter> gatewayApiRouterPage = gatewayApiRouterService.findAllByPage(searchParam);
-            return ResponseModel.SUCCESS(new PageModel<>(gatewayApiRouterPage));
+            //return ResponseModel.SUCCESS(new PageModel<>(gatewayApiRouterPage));
+            return new PageModel<>(gatewayApiRouterPage);
         } else {
             List<GatewayApiRouter> gatewayApiRouterList = gatewayApiRouterService.findAll();
-            return ResponseModel.SUCCESS(gatewayApiRouterList);
+            //return ResponseModel.SUCCESS(gatewayApiRouterList);
+            return gatewayApiRouterList;
         }
     }
 

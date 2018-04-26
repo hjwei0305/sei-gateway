@@ -4,6 +4,7 @@ import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.PageModel;
 import com.ecmp.apigateway.model.ResponseModel;
 import com.ecmp.apigateway.model.SearchParam;
+import com.ecmp.apigateway.service.IGatewayApiAppService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,20 @@ import java.util.List;
 public class GatewayApiServiceController {
     @Autowired
     private IGatewayApiServiceService gatewayApiServiceService;
+
+    @Autowired
+    private IGatewayApiAppService gatewayApiAppService;
+
+    /**
+     * 获取配置中心应用服务
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("findAllApiApp")
+    public Object findAllApiApp() {
+        Object apiAppList = gatewayApiAppService.findAllApiApp();
+        return ResponseModel.SUCCESS(apiAppList);
+    }
 
     /**
      * 新增
@@ -95,10 +110,12 @@ public class GatewayApiServiceController {
     public Object findAllByPage(@RequestParam(value = "weatherPage", defaultValue = "1") boolean weatherPage, SearchParam searchParam) {
         if(weatherPage){
             Page<GatewayApiService> gatewayApiServicePage = gatewayApiServiceService.findAllByPage(searchParam);
-            return ResponseModel.SUCCESS(new PageModel<>(gatewayApiServicePage));
+            //return ResponseModel.SUCCESS(new PageModel<>(gatewayApiServicePage));
+            return new PageModel<>(gatewayApiServicePage);
         } else {
             List<GatewayApiService> gatewayApiServiceList = gatewayApiServiceService.findAll();
-            return ResponseModel.SUCCESS(gatewayApiServiceList);
+            //return ResponseModel.SUCCESS(gatewayApiServiceList);
+            return gatewayApiServiceList;
         }
     }
 

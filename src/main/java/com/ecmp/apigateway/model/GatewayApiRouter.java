@@ -14,13 +14,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "gateway_api_router")
 public class GatewayApiRouter extends Domain {
-
     /**
      * 路由key
      */
     @Column(name = "router_key", nullable = false, length = 200)
     private String routerKey;
-
     /**
      * 请求路径
      */

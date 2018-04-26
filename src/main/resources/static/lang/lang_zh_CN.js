@@ -43,7 +43,11 @@ if (EUI.ApplicationView) {
 }
 if (EUI.ApplicationServiceView) {
     EUI.ApplicationServiceView.prototype.lang = EUI.applyIf({
+        applicationText: "应用",
         applicationServiceText: "应用服务",
+        serviceAppNameText: "应用服务名称",
+        serviceAppRemarkText: "应用服务说明",
+        serviceAppVersionText: "应用服务版本",
         getApplicationServiceText: "正在获取应用服务..."
     }, defaultLangs);
 }

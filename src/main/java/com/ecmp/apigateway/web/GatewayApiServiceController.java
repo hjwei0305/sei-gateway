@@ -30,6 +30,14 @@ public class GatewayApiServiceController {
     private IGatewayApiAppClient gatewayApiAppClient;
 
     /**
+     * 显示应用服务页面
+     * @return
+     */
+    @RequestMapping("/show")
+    public String show() {
+        return "main/ApplicationServiceView";
+    }
+    /**
      * 获取配置中心应用服务
      * @return
      */

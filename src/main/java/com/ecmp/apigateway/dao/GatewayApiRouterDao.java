@@ -30,13 +30,13 @@ public interface GatewayApiRouterDao extends JpaRepository<GatewayApiRouter, Str
 
     /**
      * 根据关键字查询数据(分页)
-     * @param kwd1
-     * @param kwd2
-     * @param kwd3
+     * @param path
+     * @param serviceId
+     * @param interfaceName
      * @param pageable
      * @return
      */
-    Page<GatewayApiRouter> findByDeletedFalseAndPathLikeOrServiceIdLikeOrInterfaceNameLike(@Param("path")String kwd1, @Param("serviceId")String kwd2, @Param("interfaceName")String kwd3, Pageable pageable);
+    Page<GatewayApiRouter> findByDeletedFalseAndPathLikeOrServiceIdLikeOrInterfaceNameLike(@Param("path")String path, @Param("serviceId")String serviceId, @Param("interfaceName")String interfaceName, Pageable pageable);
 
     /**
      * 根据ID查询数据

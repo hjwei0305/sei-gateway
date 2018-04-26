@@ -30,13 +30,13 @@ public interface GatewayApiServiceDao extends JpaRepository<GatewayApiService, S
 
     /**
      * 根据关键字查询数据(分页)
-     * @param kwd1
-     * @param kwd2
-     * @param kwd3
+     * @param serviceAppName
+     * @param serviceAppRemark
+     * @param serviceAppVersion
      * @param pageable
      * @return
      */
-    Page<GatewayApiService> findByDeletedFalseAndServiceAppNameLikeOrServiceAppRemarkLikeOrServiceAppVersionLike(@Param("serviceAppName")String kwd1,@Param("serviceAppRemark")String kwd2,@Param("serviceAppVersion")String kwd3, Pageable pageable);
+    Page<GatewayApiService> findByDeletedFalseAndServiceAppNameLikeOrServiceAppRemarkLikeOrServiceAppVersionLike(@Param("serviceAppName")String serviceAppName,@Param("serviceAppRemark")String serviceAppRemark,@Param("serviceAppVersion")String serviceAppVersion, Pageable pageable);
 
     /**
      * 根据ID、应用ID查询数据

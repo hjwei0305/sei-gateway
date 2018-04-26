@@ -35,15 +35,21 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
             id: "searchBox_gridPanel",
             displayText: g.lang.searchDisplayText,
             onSearch: function (v) {
-                g.gridCmp.localSearch(v);
+                g.gridCmp.setPostParams({keywords: v},true);
             }
         }];
+    },
+    getPostData: function(){
+        var searchVal =EUI.getCmp("searchBox_gridPanel")? EUI.getCmp("searchBox_gridPanel").getValue(): "";
+        var postData = {keywords: searchVal};
+        return postData;
     },
     initGridCfg: function () {
         var g = this;
         return {
             loadonce: false,
             url:_ctxPath + "/gateway_application/find_gateway_applications",
+            postData: this.getPostData(),
             colModel: [
                 {
                     label: g.lang.operateText,
@@ -107,7 +113,7 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
                             success: function (status) {
                                 myMask.hide();
                                // g.gridCmp.refreshGrid();
-                                g.gridCmp.setPostParams({},true);
+                                g.gridCmp.setPostParams(g.getPostData(),true);
                                 EUI.ProcessStatus({
                                     success: true,
                                     msg: status.message
@@ -248,7 +254,7 @@ EUI.ApplicationView = EUI.extend(EUI.CustomUI, {
                 myMask.hide();
                 g.editWin.remove();
               //  g.gridCmp.refreshGrid();
-                g.gridCmp.setPostParams({},true);
+                g.gridCmp.setPostParams(g.getPostData(),true);
                 EUI.ProcessStatus({
                     success: true,
                     msg: status.message

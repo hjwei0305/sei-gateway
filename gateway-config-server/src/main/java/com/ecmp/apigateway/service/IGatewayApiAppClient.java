@@ -5,6 +5,11 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * @author: hejun
+ * @date: 2018/4/26
+ * @remark: 访问接口-业务层接口
+ */
 @FeignClient(name = "${config.center.appservice.name}", url = "${config.center.appservice.url}", decode404 = true, fallback = GatewayApiAppClientImpl.class)
 public interface IGatewayApiAppClient {
 

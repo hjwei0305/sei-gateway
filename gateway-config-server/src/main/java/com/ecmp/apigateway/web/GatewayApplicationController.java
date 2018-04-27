@@ -2,6 +2,10 @@ package com.ecmp.apigateway.web;
 
 import com.ecmp.apigateway.enums.OperationTypeEnum;
 import com.ecmp.apigateway.model.*;
+import com.ecmp.apigateway.model.common.PageModel;
+import com.ecmp.apigateway.model.common.ResponseModel;
+import com.ecmp.apigateway.model.common.SearchParam;
+import com.ecmp.apigateway.model.common.StaticVariable;
 import com.ecmp.apigateway.service.IGatewayApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

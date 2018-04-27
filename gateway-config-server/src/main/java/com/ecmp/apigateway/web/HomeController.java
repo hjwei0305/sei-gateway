@@ -1,6 +1,6 @@
 package com.ecmp.apigateway.web;
 
-import com.ecmp.apigateway.vo.MenuVo;
+import com.ecmp.apigateway.model.vo.MenuVo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;

@@ -1,4 +1,4 @@
-package com.ecmp.apigateway.config;
+package com.ecmp.apigateway.exception.resolver;
 
 import com.ecmp.apigateway.exception.MessageRuntimeException;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @remark: 统一异常处理
  */
 @ControllerAdvice
-public class ExceptionHandle {
+public class WebExceptionHandler {
     /**
      * 异常统一处理
      * <p/>

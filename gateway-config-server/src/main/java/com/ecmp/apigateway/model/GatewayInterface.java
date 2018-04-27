@@ -1,6 +1,7 @@
 package com.ecmp.apigateway.model;
 
 import com.ecmp.apigateway.enums.InterfaceProtocolEnum;
+import com.ecmp.apigateway.model.common.Domain;
 
 import javax.persistence.*;
 

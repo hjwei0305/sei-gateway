@@ -1,13 +1,12 @@
 package com.ecmp.apigateway.web;
 
 import com.ecmp.apigateway.model.GatewayApiService;
-import com.ecmp.apigateway.model.PageModel;
-import com.ecmp.apigateway.model.ResponseModel;
-import com.ecmp.apigateway.model.SearchParam;
+import com.ecmp.apigateway.model.common.PageModel;
+import com.ecmp.apigateway.model.common.ResponseModel;
+import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

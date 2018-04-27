@@ -1,9 +1,9 @@
 package com.ecmp.apigateway.web;
 
 import com.ecmp.apigateway.model.GatewayApiRouter;
-import com.ecmp.apigateway.model.PageModel;
-import com.ecmp.apigateway.model.ResponseModel;
-import com.ecmp.apigateway.model.SearchParam;
+import com.ecmp.apigateway.model.common.PageModel;
+import com.ecmp.apigateway.model.common.ResponseModel;
+import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 //import com.ecmp.apigateway.zuul.event.RefreshRouteService;
 import org.springframework.beans.factory.annotation.Autowired;

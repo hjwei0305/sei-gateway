@@ -2,7 +2,7 @@ package com.ecmp.apigateway.service;
 
 import com.ecmp.apigateway.enums.OperationTypeEnum;
 import com.ecmp.apigateway.model.GatewayInterface;
-import com.ecmp.apigateway.model.SearchParam;
+import com.ecmp.apigateway.model.common.SearchParam;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

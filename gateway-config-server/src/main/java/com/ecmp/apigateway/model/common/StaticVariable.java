@@ -1,4 +1,4 @@
-package com.ecmp.apigateway.model;
+package com.ecmp.apigateway.model.common;
 
 /**
  * @author:wangdayin

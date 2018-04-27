@@ -1,5 +1,6 @@
 package com.ecmp.apigateway.model;
 
+import com.ecmp.apigateway.model.common.Domain;
 import com.ecmp.apigateway.utils.ToolUtils;
 import javax.persistence.Column;
 import javax.persistence.Entity;

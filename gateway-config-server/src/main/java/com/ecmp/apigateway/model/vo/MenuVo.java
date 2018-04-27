@@ -1,4 +1,4 @@
-package com.ecmp.apigateway.vo;
+package com.ecmp.apigateway.model.vo;
 
 /**
  * 实现功能：菜单

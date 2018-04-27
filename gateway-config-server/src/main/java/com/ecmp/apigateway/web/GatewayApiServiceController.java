@@ -50,7 +50,6 @@ public class GatewayApiServiceController {
     @RequestMapping("findAllApiApp")
     public Object findAllApiApp() {
         Object apiAppList = gatewayApiAppClient.findAllApiApp();
-        if(ToolUtils.isEmpty(apiAppList)) return ResponseModel.NOT_FOUND();
         return ResponseModel.SUCCESS(apiAppList);
     }
 
@@ -63,7 +62,6 @@ public class GatewayApiServiceController {
     @RequestMapping("findAppByAppId")
     public Object findAppByAppId(String serviceAppId) {
         Object apiAppList = gatewayApiAppClient.findAppByAppId(serviceAppId);
-        if(ToolUtils.isEmpty(apiAppList)) return ResponseModel.NOT_FOUND();
         return ResponseModel.SUCCESS(apiAppList);
     }
 

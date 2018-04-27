@@ -19,7 +19,6 @@ import java.util.Map;
  * @remark: 路由定位-定位器
  */
 public class RouteLocator extends SimpleRouteLocator implements RefreshableRouteLocator {
-
     public final static Logger logger = LoggerFactory.getLogger(RouteLocator.class);
 
     private JdbcTemplate jdbcTemplate;

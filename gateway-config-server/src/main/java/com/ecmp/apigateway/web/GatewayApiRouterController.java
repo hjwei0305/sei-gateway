@@ -26,34 +26,6 @@ public class GatewayApiRouterController {
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
 
-//    @Autowired
-//    private RefreshRouteService refreshRouteService;
-
-//    /**
-//     * 启用全部
-//     *
-//     * @return
-//     */
-//    @ResponseBody
-//    @RequestMapping("startAll")
-//    public Object startAll() {
-//        refreshRouteService.refreshRoute();
-//        return ResponseModel.SUCCESS();
-//    }
-//
-//    /**
-//     * 停用全部
-//     *
-//     * @return
-//     */
-//    @ResponseBody
-//    @RequestMapping("stopAll")
-//    public Object stopAll() {
-//        gatewayApiRouterService.removeAll();
-//        refreshRouteService.refreshRoute();
-//        return ResponseModel.SUCCESS();
-//    }
-
     /**
      * 新增
      *

@@ -5,6 +5,7 @@ import com.ecmp.apigateway.model.common.PageModel;
 import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
+import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.ToolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class GatewayApiServiceController {
     @Autowired
     private IGatewayApiAppClient gatewayApiAppClient;
 
+    @Autowired
+    private IGatewayApiRouterClient gatewayApiRouterClient;
+
     /**
      * 显示应用服务页面
      *
@@ -39,6 +43,28 @@ public class GatewayApiServiceController {
     @RequestMapping("/show")
     public String show() {
         return "main/ApplicationServiceView";
+    }
+
+    /**
+     * 调用网关路由刷新
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("refresh")
+    public Object refresh() {
+        return gatewayApiRouterClient.refresh();
+    }
+
+    /**
+     * 获取网关路由配置信息
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("findAllRoute")
+    public Object findAllRoute() {
+        return gatewayApiRouterClient.findAllRoute();
     }
 
     /**

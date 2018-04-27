@@ -15,25 +15,24 @@ import java.util.Map;
  * @remark: 路由配置-控制层跳转
  */
 @Controller
-@RequestMapping(value = "/route_service")
+@RequestMapping(value = "/gateway_route_service")
 public class RouteController {
     @Autowired
     RefreshService refreshService;
-
-    @ResponseBody
-    @RequestMapping("refreshRoute")
-    public Object refreshRoute() {
-        refreshService.refreshRoute();
-        return "refreshRoute";
-    }
 
     @Autowired
     ZuulHandlerMapping zuulHandlerMapping;
 
     @ResponseBody
-    @RequestMapping("watchNowRoute")
-    public Object watchNowRoute() {
-        //可以用debug模式看里面具体是什么
+    @RequestMapping("refresh")
+    public Object refresh() {
+        refreshService.refreshRoute();
+        return "success";
+    }
+
+    @ResponseBody
+    @RequestMapping("findAllRoute")
+    public Object findAllRoute() {
         Map<String, Object> handlerMap = zuulHandlerMapping.getHandlerMap();
         return handlerMap;
     }

@@ -8,22 +8,20 @@ import com.ecmp.apigateway.service.IGatewayApiAppClient;
 /**
  * @author: hejun
  * @date: 2018/4/26
- * @remark: 访问接口-业务层实现
+ * @remark: 配置中心接口-业务层实现
  */
 public class GatewayApiAppClientImpl implements IGatewayApiAppClient {
     public final static Logger logger = LoggerFactory.getLogger(GatewayApiAppClientImpl.class);
 
     @Override
     public Object findAllApiApp() {
-        logger.error("GatewayApiAppClient Failed By findAllApiApp Requesting Http Error.");
+        logger.error("Failed By findAllApiApp Requesting Http Error.");
         throw new RequestAccessException();
-        //return null;
     }
 
     @Override
     public Object findAppByAppId(String appId) {
-        logger.error("GatewayApiAppClient Failed By findAppByAppId Requesting Http Error.");
+        logger.error("Failed By findAppByAppId Requesting Http Error.");
         throw new RequestAccessException();
-        //return null;
     }
 }

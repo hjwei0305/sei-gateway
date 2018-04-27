@@ -6,6 +6,7 @@ import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
+import com.ecmp.apigateway.utils.ToolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,7 @@ public class GatewayApiServiceController {
     @Autowired
     private IGatewayApiServiceService gatewayApiServiceService;
 
-    @Resource
+    @Autowired
     private IGatewayApiAppClient gatewayApiAppClient;
 
     /**
@@ -49,6 +50,7 @@ public class GatewayApiServiceController {
     @RequestMapping("findAllApiApp")
     public Object findAllApiApp() {
         Object apiAppList = gatewayApiAppClient.findAllApiApp();
+        if(ToolUtils.isEmpty(apiAppList)) return ResponseModel.NOT_FOUND();
         return ResponseModel.SUCCESS(apiAppList);
     }
 
@@ -61,6 +63,7 @@ public class GatewayApiServiceController {
     @RequestMapping("findAppByAppId")
     public Object findAppByAppId(String serviceAppId) {
         Object apiAppList = gatewayApiAppClient.findAppByAppId(serviceAppId);
+        if(ToolUtils.isEmpty(apiAppList)) return ResponseModel.NOT_FOUND();
         return ResponseModel.SUCCESS(apiAppList);
     }
 

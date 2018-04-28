@@ -87,6 +87,7 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
                 org.springframework.beans.BeanUtils.copyProperties(result, zuulRoute);
             } catch (Exception e) {
                 logger.error("Load Zuul Route info from DB with Error：", e);
+                throw e;
             }
             routes.put(zuulRoute.getPath(), zuulRoute);
         }

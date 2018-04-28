@@ -53,10 +53,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
             throw new ObjectNotFoundException();
         } else {
             for (GatewayApiRouter gatewayApiRouter : gatewayApiRouterList) {
-                if (ToolUtils.isEmpty(gatewayApiRouter)) {
-                    //这里为空时可以不做任何的处理
-                    //throw new ObjectNotFoundException();
-                } else {
+                if(ToolUtils.notEmpty(gatewayApiRouter)) {
                     gatewayApiRouter.setDeleted(true);
                     gatewayApiRouter.setEnabled(false);
                     gatewayApiRouterDao.save(gatewayApiRouter);
@@ -94,5 +91,4 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
     public GatewayApiRouter findById(String id) {
         return gatewayApiRouterDao.findById(id);
     }
-
 }

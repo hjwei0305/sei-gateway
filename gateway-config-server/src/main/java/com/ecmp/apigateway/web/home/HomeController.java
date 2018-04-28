@@ -1,4 +1,4 @@
-package com.ecmp.apigateway.web;
+package com.ecmp.apigateway.web.home;
 
 import com.ecmp.apigateway.model.vo.MenuVo;
 import org.springframework.stereotype.Controller;

@@ -63,5 +63,4 @@ public interface IGatewayApiServiceService {
      * @return
      */
     GatewayApiService findById(String id, String serviceAppid);
-
 }

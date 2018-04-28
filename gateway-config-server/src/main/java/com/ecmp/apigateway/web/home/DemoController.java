@@ -1,4 +1,4 @@
-package com.ecmp.apigateway.web;
+package com.ecmp.apigateway.web.home;
 
 import com.ecmp.apigateway.dao.GatewayApplicationDao;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;

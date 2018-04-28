@@ -53,10 +53,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             throw new ObjectNotFoundException();
         } else {
             for (GatewayApiService gatewayApiService : gatewayApiServiceList) {
-                if (ToolUtils.isEmpty(gatewayApiService)) {
-                    //这里为空时可以不做任何的处理
-                    //throw new ObjectNotFoundException();
-                } else {
+                if(ToolUtils.notEmpty(gatewayApiService)) {
                     gatewayApiService.setDeleted(true);
                     gatewayApiServiceDao.save(gatewayApiService);
                 }
@@ -92,5 +89,4 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     public GatewayApiService findById(String id, String serviceAppid) {
         return gatewayApiServiceDao.findByIdOrServiceAppId(id, serviceAppid);
     }
-
 }

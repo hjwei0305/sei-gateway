@@ -61,5 +61,4 @@ public interface IGatewayApiRouterService {
      * @return
      */
     GatewayApiRouter findById(String id);
-
 }

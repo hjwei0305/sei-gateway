@@ -1,6 +1,6 @@
 package com.ecmp.apigateway.service.impl;
 
-import com.ecmp.apigateway.exception.RequestAccessException;
+import com.ecmp.apigateway.exception.RequestAccessedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
@@ -16,12 +16,20 @@ public class GatewayApiAppClientImpl implements IGatewayApiAppClient {
     @Override
     public Object findAllApiApp() {
         logger.error("Failed By findAllApiApp Requesting Http Error.");
-        throw new RequestAccessException();
+        try {
+            throw new RequestAccessedException();
+        } finally {
+            return null;
+        }
     }
 
     @Override
     public Object findAppByAppId(String appId) {
         logger.error("Failed By findAppByAppId Requesting Http Error.");
-        throw new RequestAccessException();
+        try {
+            throw new RequestAccessedException();
+        } finally {
+            return null;
+        }
     }
 }

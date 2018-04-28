@@ -7,7 +7,6 @@ import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
-import com.ecmp.apigateway.utils.ToolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -53,18 +51,8 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("refresh")
     public Object refresh() {
-        return gatewayApiRouterClient.refresh();
-    }
-
-    /**
-     * 获取网关路由配置信息
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findAllRoute")
-    public Object findAllRoute() {
-        return gatewayApiRouterClient.findAllRoute();
+        gatewayApiRouterClient.refresh();
+        return ResponseModel.SUCCESS();
     }
 
     /**
@@ -87,8 +75,8 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("findAppByAppId")
     public Object findAppByAppId(String serviceAppId) {
-        Object apiAppList = gatewayApiAppClient.findAppByAppId(serviceAppId);
-        return ResponseModel.SUCCESS(apiAppList);
+        Object apiApp = gatewayApiAppClient.findAppByAppId(serviceAppId);
+        return ResponseModel.SUCCESS(apiApp);
     }
 
     /**

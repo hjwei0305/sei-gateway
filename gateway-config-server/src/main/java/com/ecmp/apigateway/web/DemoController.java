@@ -2,6 +2,7 @@ package com.ecmp.apigateway.web;
 
 import com.ecmp.apigateway.dao.GatewayApplicationDao;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;
+import com.ecmp.apigateway.exception.RequestAccessedException;
 import com.ecmp.apigateway.model.GatewayApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,9 +23,10 @@ public class DemoController {
 
     @RequestMapping("/test")
     @ResponseBody
-    public String test() {
-        throw new ObjectNotFoundException();
+    public Object test() {
+//        throw new ObjectNotFoundException();
 //        return "success";
+        throw new RequestAccessedException();
     }
 
     @RequestMapping("find")

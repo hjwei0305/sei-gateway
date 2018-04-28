@@ -24,15 +24,15 @@ public class RouteController {
     ZuulHandlerMapping zuulHandlerMapping;
 
     @ResponseBody
-    @RequestMapping("refresh")
+    @RequestMapping("router/refresh")
     public Object refresh() {
         refreshService.refreshRoute();
         return "success";
     }
 
     @ResponseBody
-    @RequestMapping("findAllRoute")
-    public Object findAllRoute() {
+    @RequestMapping("router/findAll")
+    public Object findAll() {
         Map<String, Object> handlerMap = zuulHandlerMapping.getHandlerMap();
         return handlerMap;
     }

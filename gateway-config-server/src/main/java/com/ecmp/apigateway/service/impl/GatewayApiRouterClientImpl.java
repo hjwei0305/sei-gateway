@@ -1,6 +1,6 @@
 package com.ecmp.apigateway.service.impl;
 
-import com.ecmp.apigateway.exception.RequestAccessException;
+import com.ecmp.apigateway.exception.RequestAccessedException;
 import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,14 +14,8 @@ public class GatewayApiRouterClientImpl implements IGatewayApiRouterClient {
     public final static Logger logger = LoggerFactory.getLogger(GatewayApiRouterClientImpl.class);
 
     @Override
-    public Object refresh() {
+    public void refresh() {
         logger.error("Failed By refresh Requesting Http Error.");
-        throw new RequestAccessException();
-    }
-
-    @Override
-    public Object findAllRoute() {
-        logger.error("Failed By findAllRoute Requesting Http Error.");
-        throw new RequestAccessException();
+        throw new RequestAccessedException();
     }
 }

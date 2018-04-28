@@ -17,12 +17,5 @@ public interface IGatewayApiRouterClient {
      * @return
      */
     @GetMapping(value = "${gateway.route.service.path0}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object refresh();
-
-    /**
-     * 获取网关路由配置信息
-     * @return
-     */
-    @GetMapping(value = "${gateway.route.service.path1}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object findAllRoute();
+    void refresh();
 }

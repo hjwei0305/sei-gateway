@@ -16,20 +16,20 @@ import java.util.List;
 public interface GatewayApiServiceDao extends JpaRepository<GatewayApiService, String> {
 
     /**
-     * 查询所有(不分页)
+     * 查询所有应用服务(不分页)
      * @return
      */
     List<GatewayApiService> findByDeletedFalse();
 
     /**
-     * 查询所有(分页)
+     * 查询所有应用服务(分页)
      * @param pageable
      * @return
      */
     Page<GatewayApiService> findByDeletedFalse(Pageable pageable);
 
     /**
-     * 根据关键字查询(分页)
+     * 根据关键字查询应用服务(分页)
      * @param kwd0
      * @param kwd1
      * @param kwd2
@@ -40,7 +40,7 @@ public interface GatewayApiServiceDao extends JpaRepository<GatewayApiService, S
     (@Param("serviceAppName") String kwd0, @Param("serviceAppRemark") String kwd1, @Param("serviceAppVersion") String kwd2, Pageable pageable);
 
     /**
-     * 根据ID查询
+     * 根据ID查询应用服务
      * @param id
      * @return
      */

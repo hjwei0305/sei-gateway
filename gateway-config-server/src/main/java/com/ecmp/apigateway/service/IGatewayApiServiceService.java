@@ -26,26 +26,26 @@ public interface IGatewayApiServiceService {
     void edit(GatewayApiService gatewayApiService);
 
     /**
-     * 根据ID删除
+     * 根据ID删除应用服务
      * @param id
      */
     void removeById(String id);
 
     /**
-     * 查询所有
+     * 查询所有应用服务
      * @return
      */
     List<GatewayApiService> findAll();
 
     /**
-     * 分页查询
+     * 分页查询应用服务
      * @param searchParam
      * @return
      */
     Page<GatewayApiService> findAllByPage(SearchParam searchParam);
 
     /**
-     * 根据ID查询
+     * 根据ID查询应用服务
      * @param id
      * @return
      */

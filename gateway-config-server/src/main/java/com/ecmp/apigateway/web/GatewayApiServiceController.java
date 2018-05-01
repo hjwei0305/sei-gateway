@@ -28,13 +28,10 @@ import java.util.List;
 public class GatewayApiServiceController {
     @Autowired
     private IGatewayApiServiceService gatewayApiServiceService;
-
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
-
     @Autowired
     private IGatewayApiRouterClient gatewayApiRouterClient;
-
     @Autowired
     private IGatewayApiAppClient gatewayApiAppClient;
 
@@ -72,7 +69,7 @@ public class GatewayApiServiceController {
     }
 
     /**
-     * 根据ID删除
+     * 根据ID删除应用服务
      * @param id ID
      * @return
      */
@@ -86,7 +83,7 @@ public class GatewayApiServiceController {
     }
 
     /**
-     * 分页查询
+     * 分页查询应用服务
      * @param weatherPage 是否分页：true|false
      * @param searchParam 页面查询参数
      * @return
@@ -104,7 +101,7 @@ public class GatewayApiServiceController {
     }
 
     /**
-     * 根据ID查询
+     * 根据ID查询应用服务
      * @param id ID
      * @return
      */

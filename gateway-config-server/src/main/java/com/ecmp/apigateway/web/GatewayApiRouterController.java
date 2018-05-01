@@ -21,7 +21,6 @@ import java.util.List;
 public class GatewayApiRouterController {
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
-
     @Autowired
     private IGatewayApiRouterClient gatewayApiRouterClient;
 
@@ -38,7 +37,7 @@ public class GatewayApiRouterController {
     }
 
     /**
-     * 根据应用服务ID删除
+     * 根据应用服务ID删除路由配置
      * @param serviceId 应用服务ID
      * @return
      */
@@ -51,7 +50,7 @@ public class GatewayApiRouterController {
     }
 
     /**
-     * 根据应用服务ID启用
+     * 根据应用服务ID启用路由配置
      * @param serviceId 应用服务ID
      * @return
      */
@@ -64,7 +63,7 @@ public class GatewayApiRouterController {
     }
 
     /**
-     * 根据应用服务ID查询
+     * 根据应用服务ID查询路由配置
      * @param serviceId 应用服务ID
      * @return
      */

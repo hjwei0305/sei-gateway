@@ -14,7 +14,7 @@ import java.util.List;
 public interface GatewayApiRouterDao extends JpaRepository<GatewayApiRouter, String> {
 
     /**
-     * 根据应用服务ID查询
+     * 根据应用服务ID查询路由配置
      * @param serviceId
      * @return
      */

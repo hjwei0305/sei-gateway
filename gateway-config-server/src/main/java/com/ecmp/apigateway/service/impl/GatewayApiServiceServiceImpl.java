@@ -28,12 +28,16 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void save(GatewayApiService gatewayApiService) {
-        gatewayApiServiceDao.save(gatewayApiService);
+        if (ToolUtils.isEmpty(gatewayApiService.getServiceAppId()) || ToolUtils.isEmpty(gatewayApiService.getApplicationCode())) {
+            throw new RequestParamNullException();
+        } else {
+            gatewayApiServiceDao.save(gatewayApiService);
+        }
     }
 
     @Override
     public void edit(GatewayApiService gatewayApiService) {
-        if (ToolUtils.isEmpty(gatewayApiService.getId())) {
+        if (ToolUtils.isEmpty(gatewayApiService.getId()) || ToolUtils.isEmpty(gatewayApiService.getServiceAppId()) || ToolUtils.isEmpty(gatewayApiService.getApplicationCode())) {
             throw new RequestParamNullException();
         } else {
             GatewayApiService apiServiceOnly = gatewayApiServiceDao.findByDeletedFalseAndId(gatewayApiService.getId());

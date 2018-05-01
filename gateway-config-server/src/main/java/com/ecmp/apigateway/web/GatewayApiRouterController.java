@@ -37,6 +37,18 @@ public class GatewayApiRouterController {
     }
 
     /**
+     * 编辑路由配置
+     * @param gatewayApiRouter
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("edit")
+    public Object edit(GatewayApiRouter gatewayApiRouter) {
+        gatewayApiRouterService.edit(gatewayApiRouter);
+        return ResponseModel.SUCCESS();
+    }
+
+    /**
      * 根据应用服务ID删除路由配置
      * @param serviceId 应用服务ID
      * @return

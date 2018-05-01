@@ -18,6 +18,12 @@ public interface IGatewayApiRouterService {
     void save(GatewayApiRouter gatewayApiRouter);
 
     /**
+     * 编辑路由配置
+     * @param gatewayApiRouter
+     */
+    void edit(GatewayApiRouter gatewayApiRouter);
+
+    /**
      * 根据应用服务ID删除路由配置
      * @param serviceId
      */

@@ -9,6 +9,7 @@ import com.ecmp.apigateway.service.IGatewayApiAppClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
+import com.ecmp.apigateway.utils.ToolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -119,7 +120,10 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/setting")
     public Object setting(GatewayApiRouter gatewayApiRouter) {
-        gatewayApiRouterService.save(gatewayApiRouter);
+        if (ToolUtils.isEmpty(gatewayApiRouter.getId()))
+            gatewayApiRouterService.save(gatewayApiRouter);
+        else
+            gatewayApiRouterService.edit(gatewayApiRouter);
         return ResponseModel.SUCCESS();
     }
 

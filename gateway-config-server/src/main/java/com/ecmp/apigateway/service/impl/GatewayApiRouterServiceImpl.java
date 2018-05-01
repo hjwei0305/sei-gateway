@@ -5,6 +5,7 @@ import com.ecmp.apigateway.exception.ObjectNotFoundException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiRouter;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
+import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.ToolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,21 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
             throw new RequestParamNullException();
         } else {
             gatewayApiRouterDao.save(gatewayApiRouter);
+        }
+    }
+
+    @Override
+    public void edit(GatewayApiRouter gatewayApiRouter) {
+        if (ToolUtils.isEmpty(gatewayApiRouter.getId()) || ToolUtils.isEmpty(gatewayApiRouter.getKey()) || ToolUtils.isEmpty(gatewayApiRouter.getServiceId()) || ToolUtils.isEmpty(gatewayApiRouter.getUrl())) {
+            throw new RequestParamNullException();
+        } else {
+            GatewayApiRouter apiRouterOnly = gatewayApiRouterDao.findByDeletedFalseAndId(gatewayApiRouter.getId());
+            if (ToolUtils.isEmpty(apiRouterOnly)) {
+                throw new ObjectNotFoundException();
+            } else {
+                EntityUtils.resolveAllFieldsSet(gatewayApiRouter, apiRouterOnly);
+                gatewayApiRouterDao.save(gatewayApiRouter);
+            }
         }
     }
 

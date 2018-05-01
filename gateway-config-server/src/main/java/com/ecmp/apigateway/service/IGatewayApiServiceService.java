@@ -14,53 +14,40 @@ import java.util.List;
 public interface IGatewayApiServiceService {
 
     /**
-     * 新增
-     *
+     * 新增应用服务
      * @param gatewayApiService
      */
     void save(GatewayApiService gatewayApiService);
 
     /**
-     * 编辑
-     *
+     * 编辑应用服务
      * @param gatewayApiService
      */
     void edit(GatewayApiService gatewayApiService);
 
     /**
-     * 删除所有
-     */
-    void removeAll();
-
-    /**
-     * 根据ID、应用ID删除
-     *
+     * 根据ID删除
      * @param id
-     * @param serviceAppId
      */
-    void removeById(String id, String serviceAppId);
+    void removeById(String id);
 
     /**
      * 查询所有
-     *
      * @return
      */
     List<GatewayApiService> findAll();
 
     /**
      * 分页查询
-     *
      * @param searchParam
      * @return
      */
     Page<GatewayApiService> findAllByPage(SearchParam searchParam);
 
     /**
-     * 根据ID、应用ID查询
-     *
+     * 根据ID查询
      * @param id
-     * @param serviceAppid
      * @return
      */
-    GatewayApiService findById(String id, String serviceAppid);
+    GatewayApiService findById(String id);
 }

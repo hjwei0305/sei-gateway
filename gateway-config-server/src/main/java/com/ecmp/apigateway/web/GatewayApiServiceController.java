@@ -1,11 +1,13 @@
 package com.ecmp.apigateway.web;
 
+import com.ecmp.apigateway.model.GatewayApiRouter;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.PageModel;
 import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterClient;
+import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,14 +30,16 @@ public class GatewayApiServiceController {
     private IGatewayApiServiceService gatewayApiServiceService;
 
     @Autowired
-    private IGatewayApiAppClient gatewayApiAppClient;
+    private IGatewayApiRouterService gatewayApiRouterService;
 
     @Autowired
     private IGatewayApiRouterClient gatewayApiRouterClient;
 
+    @Autowired
+    private IGatewayApiAppClient gatewayApiAppClient;
+
     /**
      * 显示应用服务页面
-     *
      * @return
      */
     @RequestMapping("/show")
@@ -44,44 +48,7 @@ public class GatewayApiServiceController {
     }
 
     /**
-     * 调用网关路由刷新
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("refresh")
-    public Object refresh() {
-        gatewayApiRouterClient.refresh();
-        return ResponseModel.SUCCESS();
-    }
-
-    /**
-     * 获取配置中心应用服务
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findAllApiApp")
-    public Object findAllApiApp() {
-        Object apiAppList = gatewayApiAppClient.findAllApiApp();
-        return ResponseModel.SUCCESS(apiAppList);
-    }
-
-    /**
-     * 根据应用ID获取应用服务信息
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findAppByAppId")
-    public Object findAppByAppId(String serviceAppId) {
-        Object apiApp = gatewayApiAppClient.findAppByAppId(serviceAppId);
-        return ResponseModel.SUCCESS(apiApp);
-    }
-
-    /**
-     * 新增
-     *
+     * 新增应用服务
      * @param gatewayApiService
      * @return
      */
@@ -93,8 +60,7 @@ public class GatewayApiServiceController {
     }
 
     /**
-     * 编辑
-     *
+     * 编辑应用服务
      * @param gatewayApiService
      * @return
      */
@@ -106,46 +72,21 @@ public class GatewayApiServiceController {
     }
 
     /**
-     * 删除所有
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("removeAll")
-    public Object removeAll() {
-        gatewayApiServiceService.removeAll();
-        return ResponseModel.SUCCESS();
-    }
-
-    /**
-     * 根据ID、应用IP删除
-     *
-     * @param id           ID
-     * @param serviceAppId 应用ID
+     * 根据ID删除
+     * @param id ID
      * @return
      */
     @ResponseBody
     @RequestMapping("removeById")
-    public Object removeById(String id, String serviceAppId) {
-        gatewayApiServiceService.removeById(id, serviceAppId);
+    public Object removeById(String id) {
+        gatewayApiRouterService.removeByServiceId(id);
+        gatewayApiServiceService.removeById(id);
+        gatewayApiRouterClient.refresh();
         return ResponseModel.SUCCESS();
     }
 
     /**
-     * 查询所有
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findAll")
-    public Object findAll() {
-        List<GatewayApiService> gatewayApiServiceList = gatewayApiServiceService.findAll();
-        return ResponseModel.SUCCESS(gatewayApiServiceList);
-    }
-
-    /**
      * 分页查询
-     *
      * @param weatherPage 是否分页：true|false
      * @param searchParam 页面查询参数
      * @return
@@ -157,22 +98,77 @@ public class GatewayApiServiceController {
             Page<GatewayApiService> gatewayApiServicePage = gatewayApiServiceService.findAllByPage(searchParam);
             return new PageModel<>(gatewayApiServicePage);
         } else {
-            List<GatewayApiService> gatewayApiServiceList = gatewayApiServiceService.findAll();
-            return gatewayApiServiceList;
+            List<GatewayApiService> gatewayApiServices = gatewayApiServiceService.findAll();
+            return gatewayApiServices;
         }
     }
 
     /**
-     * 根据ID、应用ID查询
-     *
-     * @param id           ID
-     * @param serviceAppId 应用ID
+     * 根据ID查询
+     * @param id ID
      * @return
      */
     @ResponseBody
     @RequestMapping("findById")
-    public Object findById(String id, String serviceAppId) {
-        GatewayApiService gatewayApiService = gatewayApiServiceService.findById(id, serviceAppId);
+    public Object findById(String id) {
+        GatewayApiService gatewayApiService = gatewayApiServiceService.findById(id);
         return ResponseModel.SUCCESS(gatewayApiService);
+    }
+
+    /**
+     * 设置应用服务网关路由
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("router/setting")
+    public Object setting(GatewayApiRouter gatewayApiRouter) {
+        gatewayApiRouterService.save(gatewayApiRouter);
+        return ResponseModel.SUCCESS();
+    }
+
+    /**
+     * 启用应用服务网关路由
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("router/start")
+    public Object start(String id) {
+        gatewayApiRouterService.enableByServiceId(id);
+        gatewayApiRouterClient.refresh();
+        return ResponseModel.SUCCESS();
+    }
+
+    /**
+     * 停用应用服务网关路由
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("router/stop")
+    public Object stop(String id) {
+        gatewayApiRouterService.removeByServiceId(id);
+        gatewayApiRouterClient.refresh();
+        return ResponseModel.SUCCESS();
+    }
+
+    /**
+     * 获取配置中心应用服务
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("findAllApiApp")
+    public Object findAllApiApp() {
+        Object apiApplications = gatewayApiAppClient.findAllApiApp();
+        return ResponseModel.SUCCESS(apiApplications);
+    }
+
+    /**
+     * 根据应用ID获取应用服务信息
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("findAppByAppId")
+    public Object findAppByAppId(String appId) {
+        Object apiApplication = gatewayApiAppClient.findAppByAppId(appId);
+        return ResponseModel.SUCCESS(apiApplication);
     }
 }

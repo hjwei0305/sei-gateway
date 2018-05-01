@@ -33,37 +33,22 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void edit(GatewayApiService gatewayApiService) {
-        if (ToolUtils.isEmpty(gatewayApiService.getId()) || ToolUtils.isEmpty(gatewayApiService.getServiceAppId())) {
+        if (ToolUtils.isEmpty(gatewayApiService.getId())) {
             throw new RequestParamNullException();
         } else {
-            GatewayApiService apiService = gatewayApiServiceDao.findByIdOrServiceAppId(gatewayApiService.getId(), gatewayApiService.getServiceAppId());
-            if (ToolUtils.isEmpty(apiService)) {
+            GatewayApiService apiServiceOnly = gatewayApiServiceDao.findByDeletedFalseAndId(gatewayApiService.getId());
+            if (ToolUtils.isEmpty(apiServiceOnly)) {
                 throw new ObjectNotFoundException();
             } else {
-                EntityUtils.resolveAllFieldsSet(gatewayApiService, apiService);
+                EntityUtils.resolveAllFieldsSet(gatewayApiService, apiServiceOnly);
                 gatewayApiServiceDao.save(gatewayApiService);
             }
         }
     }
 
     @Override
-    public void removeAll() {
-        List<GatewayApiService> gatewayApiServiceList = gatewayApiServiceDao.findByDeletedFalse();
-        if (ToolUtils.isEmpty(gatewayApiServiceList)) {
-            throw new ObjectNotFoundException();
-        } else {
-            for (GatewayApiService gatewayApiService : gatewayApiServiceList) {
-                if(ToolUtils.notEmpty(gatewayApiService)) {
-                    gatewayApiService.setDeleted(true);
-                    gatewayApiServiceDao.save(gatewayApiService);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void removeById(String id, String serviceAppId) {
-        GatewayApiService gatewayApiService = gatewayApiServiceDao.findByIdOrServiceAppId(id, serviceAppId);
+    public void removeById(String id) {
+        GatewayApiService gatewayApiService = gatewayApiServiceDao.findByDeletedFalseAndId(id);
         if (ToolUtils.isEmpty(gatewayApiService)) {
             throw new ObjectNotFoundException();
         } else {
@@ -86,7 +71,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     }
 
     @Override
-    public GatewayApiService findById(String id, String serviceAppid) {
-        return gatewayApiServiceDao.findByIdOrServiceAppId(id, serviceAppid);
+    public GatewayApiService findById(String id) {
+        return gatewayApiServiceDao.findByDeletedFalseAndId(id);
     }
 }

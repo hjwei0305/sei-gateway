@@ -20,14 +20,14 @@ public class GatewayApiRouter extends Domain {
     @Column(name = "key", nullable = false, length = 200)
     private String key;
     /**
-     * 请求路径
+     * 路由路径
      */
     @Column(name = "path", nullable = false, length = 200)
     private String path;
     /**
-     * 路由指定服务id
+     * 路由应用服务id
      */
-    @Column(name = "service_id")
+    @Column(name = "service_id", nullable = false, length = 64)
     private String serviceId;
     /**
      * 路由指定服务url
@@ -38,14 +38,14 @@ public class GatewayApiRouter extends Domain {
      * 是否重试访问
      */
     @Column(name = "retryable")
-    private Boolean retryAble;
+    private Boolean retryAble = false;
     /**
      * 是否启用路由
      */
     @Column(name = "enabled", nullable = false)
-    private Boolean enabled;
+    private Boolean enabled = true;
     /**
-     * 是否过滤请求路径前缀
+     * 是否过滤路由路径前缀
      */
     @Column(name = "strip_prefix")
     private boolean stripPrefix = true;
@@ -65,11 +65,13 @@ public class GatewayApiRouter extends Domain {
 
     public String getPath() {
         if (ToolUtils.notEmpty(getKey())) {
-            if (!key.startsWith("/")) {
-                path = "/" + path;
-            }
+            if (!key.startsWith("/"))
+                path = "/" + key; //path = "/" + path;
             if (!key.endsWith("/**") && !key.endsWith("/*")) {
-                path = path + "/**";
+                if (!key.endsWith("/"))
+                    path = key + "/**"; //path = path + "/**";
+                else
+                    path = key + "**"; //path = path + "**";
             }
         }
         return path;

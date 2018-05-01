@@ -35,7 +35,7 @@ public class GatewayApiService extends Domain {
     @Column(name = "service_appversion", nullable = false, length = 50)
     private String serviceAppVersion;
     /**
-     * 应用code-关联字段
+     * 接口应用code-关联字段
      */
     @Column(name = "application_code", nullable = false, length = 64)
     private String applicationCode;

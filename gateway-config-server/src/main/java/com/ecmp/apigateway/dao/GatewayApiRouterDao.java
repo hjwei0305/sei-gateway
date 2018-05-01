@@ -1,8 +1,6 @@
 package com.ecmp.apigateway.dao;
 
 import com.ecmp.apigateway.model.GatewayApiRouter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -16,38 +14,9 @@ import java.util.List;
 public interface GatewayApiRouterDao extends JpaRepository<GatewayApiRouter, String> {
 
     /**
-     * 查询所有数据(不分页)
-     *
+     * 根据应用服务ID查询
+     * @param serviceId
      * @return
      */
-    List<GatewayApiRouter> findByDeletedFalse();
-
-    /**
-     * 查询所有数据(分页)
-     *
-     * @param pageable
-     * @return
-     */
-    Page<GatewayApiRouter> findByDeletedFalse(Pageable pageable);
-
-    /**
-     * 根据关键字查询数据(分页)
-     *
-     * @param kwd0
-     * @param kwd1
-     * @param kwd2
-     * @param kwd3
-     * @param pageable
-     * @return
-     */
-    Page<GatewayApiRouter> findByDeletedFalseAndKeyLikeOrPathLikeOrServiceIdLikeOrInterfaceNameLike(@Param("key") String kwd0, @Param("path") String kwd1, @Param("serviceId") String kwd2, @Param("interfaceName") String kwd3, Pageable pageable);
-
-    /**
-     * 根据ID查询数据
-     *
-     * @param id
-     * @return
-     */
-    GatewayApiRouter findById(@Param("id") String id);
-
+    List<GatewayApiRouter> findByDeletedFalseAndServiceId(@Param("serviceId") String serviceId);
 }

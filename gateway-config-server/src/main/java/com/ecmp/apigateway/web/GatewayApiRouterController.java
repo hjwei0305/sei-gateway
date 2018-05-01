@@ -1,16 +1,12 @@
 package com.ecmp.apigateway.web;
 
 import com.ecmp.apigateway.model.GatewayApiRouter;
-import com.ecmp.apigateway.model.common.PageModel;
 import com.ecmp.apigateway.model.common.ResponseModel;
-import com.ecmp.apigateway.model.common.SearchParam;
+import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
-//import com.ecmp.apigateway.zuul.event.RefreshRouteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -26,9 +22,11 @@ public class GatewayApiRouterController {
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
 
+    @Autowired
+    private IGatewayApiRouterClient gatewayApiRouterClient;
+
     /**
-     * 新增
-     *
+     * 新增路由配置
      * @param gatewayApiRouter
      * @return
      */
@@ -40,84 +38,40 @@ public class GatewayApiRouterController {
     }
 
     /**
-     * 编辑
-     *
-     * @param gatewayApiRouter
+     * 根据应用服务ID删除
+     * @param serviceId 应用服务ID
      * @return
      */
     @ResponseBody
-    @RequestMapping("edit")
-    public Object edit(GatewayApiRouter gatewayApiRouter) {
-        gatewayApiRouterService.edit(gatewayApiRouter);
+    @RequestMapping("removeByServiceId")
+    public Object removeByServiceId(String serviceId) {
+        gatewayApiRouterService.removeByServiceId(serviceId);
+        gatewayApiRouterClient.refresh();
         return ResponseModel.SUCCESS();
     }
 
     /**
-     * 删除所有
-     *
+     * 根据应用服务ID启用
+     * @param serviceId 应用服务ID
      * @return
      */
     @ResponseBody
-    @RequestMapping("removeAll")
-    public Object removeAll() {
-        gatewayApiRouterService.removeAll();
+    @RequestMapping("enableByServiceId")
+    public Object enableByServiceId(String serviceId) {
+        gatewayApiRouterService.enableByServiceId(serviceId);
+        gatewayApiRouterClient.refresh();
         return ResponseModel.SUCCESS();
     }
 
     /**
-     * 根据ID删除
-     *
-     * @param id ID
+     * 根据应用服务ID查询
+     * @param serviceId 应用服务ID
      * @return
      */
     @ResponseBody
-    @RequestMapping("removeById")
-    public Object removeById(String id) {
-        gatewayApiRouterService.removeById(id);
-        return ResponseModel.SUCCESS();
-    }
-
-    /**
-     * 查询所有
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findAll")
-    public Object findAll() {
-        List<GatewayApiRouter> gatewayApiRouterList = gatewayApiRouterService.findAll();
-        return ResponseModel.SUCCESS(gatewayApiRouterList);
-    }
-
-    /**
-     * 分页查询
-     *
-     * @param weatherPage 是否分页：true|false
-     * @param searchParam 页面查询参数
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findAllByPage")
-    public Object findAllByPage(@RequestParam(value = "weatherPage", defaultValue = "1") boolean weatherPage, SearchParam searchParam) {
-        if (weatherPage) {
-            Page<GatewayApiRouter> gatewayApiRouterPage = gatewayApiRouterService.findAllByPage(searchParam);
-            return new PageModel<>(gatewayApiRouterPage);
-        } else {
-            List<GatewayApiRouter> gatewayApiRouterList = gatewayApiRouterService.findAll();
-            return gatewayApiRouterList;
-        }
-    }
-
-    /**
-     * 根据ID查询
-     *
-     * @param id ID
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findById")
-    public Object findById(String id) {
-        GatewayApiRouter gatewayApiRouter = gatewayApiRouterService.findById(id);
-        return ResponseModel.SUCCESS(gatewayApiRouter);
+    @RequestMapping("findByServiceId")
+    public Object findByServiceId(String serviceId) {
+        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterService.findByServiceId(serviceId);
+        return ResponseModel.SUCCESS(gatewayApiRouters);
     }
 }

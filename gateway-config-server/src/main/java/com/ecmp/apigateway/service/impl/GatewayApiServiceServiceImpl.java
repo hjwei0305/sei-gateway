@@ -63,7 +63,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             //throw new ObjectNotFoundException();
         } else {
             gatewayApiService.setDeleted(true);
-            gatewayApiService.setServiceAppEnabled(false);
+            gatewayApiService.setServiceAppEnabled(Boolean.FALSE);
             gatewayApiServiceDao.save(gatewayApiService);
             //删除相关路由配置信息
             gatewayApiRouterService.removeByServiceId(id);
@@ -78,7 +78,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         if (ToolUtils.isEmpty(gatewayApiService)) {
             throw new ObjectNotFoundException();
         } else {
-            gatewayApiService.setServiceAppEnabled(true);
+            gatewayApiService.setServiceAppEnabled(Boolean.TRUE);
             gatewayApiServiceDao.save(gatewayApiService);
             //启用相关路由配置信息
             gatewayApiRouterService.enableByServiceId(id);
@@ -93,7 +93,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         if (ToolUtils.isEmpty(gatewayApiService)) {
             throw new ObjectNotFoundException();
         } else {
-            gatewayApiService.setServiceAppEnabled(false);
+            gatewayApiService.setServiceAppEnabled(Boolean.FALSE);
             gatewayApiServiceDao.save(gatewayApiService);
             //停用相关路由配置信息
             gatewayApiRouterService.removeByServiceId(id);

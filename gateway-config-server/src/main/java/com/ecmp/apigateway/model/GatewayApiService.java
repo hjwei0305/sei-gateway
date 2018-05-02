@@ -38,7 +38,7 @@ public class GatewayApiService extends Domain {
      * 应用服务是否启用路由
      */
     @Column(name = "service_appenabled", nullable = false)
-    private Boolean serviceAppEnabled = false;
+    private Boolean serviceAppEnabled = Boolean.FALSE;
     /**
      * 接口应用code-关联字段
      */

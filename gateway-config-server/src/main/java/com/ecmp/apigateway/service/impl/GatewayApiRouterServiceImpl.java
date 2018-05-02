@@ -55,7 +55,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
             //throw new ObjectNotFoundException();
         } else {
             gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setDeleted(true));
-            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(false));
+            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(Boolean.FALSE));
             gatewayApiRouterDao.save(gatewayApiRouters);
         }
     }
@@ -66,7 +66,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
         if (ToolUtils.isEmpty(gatewayApiRouters)) {
             throw new ObjectNotFoundException();
         } else {
-            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(true));
+            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(Boolean.TRUE));
             gatewayApiRouterDao.save(gatewayApiRouters);
         }
     }

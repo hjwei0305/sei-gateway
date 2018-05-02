@@ -38,12 +38,12 @@ public class GatewayApiRouter extends Domain {
      * 是否重试访问
      */
     @Column(name = "retryable")
-    private Boolean retryAble = false;
+    private Boolean retryAble = Boolean.FALSE;
     /**
      * 是否启用路由
      */
     @Column(name = "enabled", nullable = false)
-    private Boolean enabled = true;
+    private Boolean enabled = Boolean.TRUE;
     /**
      * 是否过滤路由路径前缀
      */

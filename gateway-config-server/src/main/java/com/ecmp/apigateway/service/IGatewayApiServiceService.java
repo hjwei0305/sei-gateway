@@ -15,13 +15,13 @@ public interface IGatewayApiServiceService {
 
     /**
      * 新增应用服务
-     * @param gatewayApiService
+     * @param gatewayApiService 应用服务-实体参数
      */
     void save(GatewayApiService gatewayApiService);
 
     /**
      * 编辑应用服务
-     * @param gatewayApiService
+     * @param gatewayApiService 应用服务-实体参数
      */
     void edit(GatewayApiService gatewayApiService);
 
@@ -51,7 +51,7 @@ public interface IGatewayApiServiceService {
 
     /**
      * 分页查询应用服务
-     * @param searchParam
+     * @param searchParam 查询参数
      * @return
      */
     Page<GatewayApiService> findAllByPage(SearchParam searchParam);

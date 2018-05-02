@@ -13,13 +13,13 @@ public interface IGatewayApiRouterService {
 
     /**
      * 新增路由配置
-     * @param gatewayApiRouter
+     * @param gatewayApiRouter 路由配置-实体参数
      */
     void save(GatewayApiRouter gatewayApiRouter);
 
     /**
      * 编辑路由配置
-     * @param gatewayApiRouter
+     * @param gatewayApiRouter 路由配置-实体参数
      */
     void edit(GatewayApiRouter gatewayApiRouter);
 

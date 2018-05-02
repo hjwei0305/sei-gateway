@@ -44,7 +44,7 @@ public class GatewayApiServiceController {
 
     /**
      * 新增应用服务
-     * @param gatewayApiService
+     * @param gatewayApiService 应用服务-实体参数
      * @return
      */
     @ResponseBody
@@ -56,7 +56,7 @@ public class GatewayApiServiceController {
 
     /**
      * 编辑应用服务
-     * @param gatewayApiService
+     * @param gatewayApiService 应用服务-实体参数
      * @return
      */
     @ResponseBody
@@ -110,7 +110,7 @@ public class GatewayApiServiceController {
 
     /**
      * 设置应用服务网关路由
-     * @param gatewayApiRouter
+     * @param gatewayApiRouter 路由配置-实体参数
      * @return
      */
     @ResponseBody

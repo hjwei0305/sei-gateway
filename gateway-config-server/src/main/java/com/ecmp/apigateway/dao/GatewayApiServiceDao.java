@@ -23,17 +23,17 @@ public interface GatewayApiServiceDao extends JpaRepository<GatewayApiService, S
 
     /**
      * 查询所有应用服务(分页)
-     * @param pageable
+     * @param pageable 分页
      * @return
      */
     Page<GatewayApiService> findByDeletedFalse(Pageable pageable);
 
     /**
      * 根据关键字查询应用服务(分页)
-     * @param kwd0
-     * @param kwd1
-     * @param kwd2
-     * @param pageable
+     * @param kwd0 关键字
+     * @param kwd1 关键字
+     * @param kwd2 关键字
+     * @param pageable 分页
      * @return
      */
     Page<GatewayApiService> findByDeletedFalseAndServiceAppNameLikeOrServiceAppRemarkLikeOrServiceAppVersionLike

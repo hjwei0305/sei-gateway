@@ -22,7 +22,7 @@ public interface IGatewayApiAppClient {
 
     /**
      * 根据应用ID获取应用服务信息
-     * @param appId
+     * @param appId 配置中心AppId
      * @return
      */
     @GetMapping(value = "${config.center.appservice.path1}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

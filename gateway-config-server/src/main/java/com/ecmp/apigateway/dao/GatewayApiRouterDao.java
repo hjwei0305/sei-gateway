@@ -15,14 +15,14 @@ public interface GatewayApiRouterDao extends JpaRepository<GatewayApiRouter, Str
 
     /**
      * 根据ID查询路由配置
-     * @param id
+     * @param id 主键ID
      * @return
      */
     GatewayApiRouter findByDeletedFalseAndId(@Param("id") String id);
 
     /**
      * 根据应用服务ID查询路由配置
-     * @param serviceId
+     * @param serviceId 应用服务ID
      * @return
      */
     List<GatewayApiRouter> findByDeletedFalseAndServiceId(@Param("serviceId") String serviceId);

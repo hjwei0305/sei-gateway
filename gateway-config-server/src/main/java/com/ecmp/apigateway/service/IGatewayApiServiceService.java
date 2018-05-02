@@ -27,19 +27,19 @@ public interface IGatewayApiServiceService {
 
     /**
      * 根据ID删除应用服务
-     * @param id
+     * @param id 主键ID
      */
     void removeById(String id);
 
     /**
      * 根据ID修改应用服务启用状态
-     * @param id
+     * @param id 主键ID
      */
     void startById(String id);
 
     /**
      * 根据ID修改应用服务停用状态
-     * @param id
+     * @param id 主键ID
      */
     void stopById(String id);
 
@@ -58,7 +58,7 @@ public interface IGatewayApiServiceService {
 
     /**
      * 根据ID查询应用服务
-     * @param id
+     * @param id 主键ID
      * @return
      */
     GatewayApiService findById(String id);

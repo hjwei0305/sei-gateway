@@ -68,7 +68,7 @@ public class GatewayApiServiceController {
 
     /**
      * 根据ID删除应用服务
-     * @param id ID
+     * @param id 主键ID
      * @return
      */
     @ResponseBody
@@ -98,7 +98,7 @@ public class GatewayApiServiceController {
 
     /**
      * 根据ID查询应用服务
-     * @param id ID
+     * @param id 主键ID
      * @return
      */
     @ResponseBody
@@ -125,7 +125,7 @@ public class GatewayApiServiceController {
 
     /**
      * 启用应用服务网关路由
-     * @param id ID
+     * @param id 主键ID
      * @return
      */
     @ResponseBody
@@ -137,7 +137,7 @@ public class GatewayApiServiceController {
 
     /**
      * 停用应用服务网关路由
-     * @param id ID
+     * @param id 主键ID
      * @return
      */
     @ResponseBody
@@ -160,7 +160,7 @@ public class GatewayApiServiceController {
 
     /**
      * 根据应用ID获取应用服务信息
-     * @param appId AppId
+     * @param appId 配置中心AppId
      * @return
      */
     @ResponseBody

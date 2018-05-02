@@ -25,19 +25,19 @@ public interface IGatewayApiRouterService {
 
     /**
      * 根据应用服务ID删除路由配置
-     * @param serviceId
+     * @param serviceId 应用服务ID
      */
     void removeByServiceId(String serviceId);
 
     /**
      * 根据应用服务ID启用路由配置
-     * @param serviceId
+     * @param serviceId 应用服务ID
      */
     void enableByServiceId(String serviceId);
 
     /**
      * 根据应用服务ID查询路由配置
-     * @param serviceId
+     * @param serviceId 应用服务ID
      * @return
      */
     List<GatewayApiRouter> findByServiceId(String serviceId);

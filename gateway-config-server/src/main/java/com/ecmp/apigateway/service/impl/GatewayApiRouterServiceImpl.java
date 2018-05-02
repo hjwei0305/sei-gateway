@@ -26,7 +26,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
 
     @Override
     public void save(GatewayApiRouter gatewayApiRouter) {
-        if (ToolUtils.isEmpty(gatewayApiRouter.getKey()) || ToolUtils.isEmpty(gatewayApiRouter.getServiceId()) || ToolUtils.isEmpty(gatewayApiRouter.getUrl())) {
+        if (ToolUtils.isEmpty(gatewayApiRouter.getRoute_key()) || ToolUtils.isEmpty(gatewayApiRouter.getServiceId()) || ToolUtils.isEmpty(gatewayApiRouter.getUrl())) {
             throw new RequestParamNullException();
         } else {
             gatewayApiRouterDao.save(gatewayApiRouter);
@@ -35,7 +35,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
 
     @Override
     public void edit(GatewayApiRouter gatewayApiRouter) {
-        if (ToolUtils.isEmpty(gatewayApiRouter.getId()) || ToolUtils.isEmpty(gatewayApiRouter.getKey()) || ToolUtils.isEmpty(gatewayApiRouter.getServiceId()) || ToolUtils.isEmpty(gatewayApiRouter.getUrl())) {
+        if (ToolUtils.isEmpty(gatewayApiRouter.getId()) || ToolUtils.isEmpty(gatewayApiRouter.getRoute_key()) || ToolUtils.isEmpty(gatewayApiRouter.getServiceId()) || ToolUtils.isEmpty(gatewayApiRouter.getUrl())) {
             throw new RequestParamNullException();
         } else {
             GatewayApiRouter apiRouterOnly = gatewayApiRouterDao.findByDeletedFalseAndId(gatewayApiRouter.getId());
@@ -55,7 +55,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
             //throw new ObjectNotFoundException();
         } else {
             gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setDeleted(true));
-            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(Boolean.FALSE));
+            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(false));
             gatewayApiRouterDao.save(gatewayApiRouters);
         }
     }
@@ -66,7 +66,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
         if (ToolUtils.isEmpty(gatewayApiRouters)) {
             throw new ObjectNotFoundException();
         } else {
-            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(Boolean.TRUE));
+            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(true));
             gatewayApiRouterDao.save(gatewayApiRouters);
         }
     }

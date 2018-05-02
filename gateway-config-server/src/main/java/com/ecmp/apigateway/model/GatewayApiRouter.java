@@ -17,8 +17,8 @@ public class GatewayApiRouter extends Domain {
     /**
      * 路由key
      */
-    @Column(name = "key", nullable = false, length = 200)
-    private String key;
+    @Column(name = "route_key", nullable = false, length = 200)
+    private String route_key;
     /**
      * 路由路径
      */
@@ -38,12 +38,12 @@ public class GatewayApiRouter extends Domain {
      * 是否重试访问
      */
     @Column(name = "retryable")
-    private Boolean retryAble = Boolean.FALSE;
+    private boolean retryAble = false;
     /**
      * 是否启用路由
      */
     @Column(name = "enabled", nullable = false)
-    private Boolean enabled = Boolean.TRUE;
+    private boolean enabled = true;
     /**
      * 是否过滤路由路径前缀
      */
@@ -55,23 +55,23 @@ public class GatewayApiRouter extends Domain {
     @Column(name = "interface_name")
     private String interfaceName;
 
-    public String getKey() {
-        return key;
+    public String getRoute_key() {
+        return route_key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setRoute_key(String route_key) {
+        this.route_key = route_key;
     }
 
     public String getPath() {
-        if (ToolUtils.notEmpty(getKey())) {
-            if (!key.startsWith("/"))
-                path = "/" + key; //path = "/" + path;
-            if (!key.endsWith("/**") && !key.endsWith("/*")) {
-                if (!key.endsWith("/"))
-                    path = key + "/**"; //path = path + "/**";
+        if (ToolUtils.notEmpty(getRoute_key())) {
+            if (!route_key.startsWith("/"))
+                path = "/" + route_key; //path = "/" + path;
+            if (!route_key.endsWith("/**") && !route_key.endsWith("/*")) {
+                if (!route_key.endsWith("/"))
+                    path = route_key + "/**"; //path = path + "/**";
                 else
-                    path = key + "**"; //path = path + "**";
+                    path = route_key + "**"; //path = path + "**";
             }
         }
         return path;
@@ -97,19 +97,19 @@ public class GatewayApiRouter extends Domain {
         this.url = url;
     }
 
-    public Boolean getRetryAble() {
+    public boolean isRetryAble() {
         return retryAble;
     }
 
-    public void setRetryAble(Boolean retryAble) {
+    public void setRetryAble(boolean retryAble) {
         this.retryAble = retryAble;
     }
 
-    public Boolean getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 

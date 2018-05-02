@@ -25,26 +25,15 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
     private GatewayApiRouterDao gatewayApiRouterDao;
 
     @Override
-    public void save(GatewayApiRouter gatewayApiRouter) {
+    public void setting(GatewayApiRouter gatewayApiRouter) {
         if (ToolUtils.isEmpty(gatewayApiRouter.getRouteKey()) || ToolUtils.isEmpty(gatewayApiRouter.getServiceId()) || ToolUtils.isEmpty(gatewayApiRouter.getUrl())) {
             throw new RequestParamNullException();
         } else {
-            gatewayApiRouterDao.save(gatewayApiRouter);
-        }
-    }
-
-    @Override
-    public void edit(GatewayApiRouter gatewayApiRouter) {
-        if (ToolUtils.isEmpty(gatewayApiRouter.getId()) || ToolUtils.isEmpty(gatewayApiRouter.getRouteKey()) || ToolUtils.isEmpty(gatewayApiRouter.getServiceId()) || ToolUtils.isEmpty(gatewayApiRouter.getUrl())) {
-            throw new RequestParamNullException();
-        } else {
-            GatewayApiRouter apiRouterOnly = gatewayApiRouterDao.findByDeletedFalseAndId(gatewayApiRouter.getId());
-            if (ToolUtils.isEmpty(apiRouterOnly)) {
-                throw new ObjectNotFoundException();
-            } else {
+            GatewayApiRouter apiRouterOnly = gatewayApiRouterDao.findByServiceIdAndUrl(gatewayApiRouter.getServiceId(), gatewayApiRouter.getUrl());
+            if (ToolUtils.notEmpty(apiRouterOnly)) {
                 EntityUtils.resolveAllFieldsSet(gatewayApiRouter, apiRouterOnly);
-                gatewayApiRouterDao.save(gatewayApiRouter);
             }
+            gatewayApiRouterDao.save(gatewayApiRouter);
         }
     }
 

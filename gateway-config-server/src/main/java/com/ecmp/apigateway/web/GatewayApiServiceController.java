@@ -116,10 +116,7 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/setting")
     public Object setting(GatewayApiRouter gatewayApiRouter) {
-        if (ToolUtils.isEmpty(gatewayApiRouter.getId()))
-            gatewayApiRouterService.save(gatewayApiRouter);
-        else
-            gatewayApiRouterService.edit(gatewayApiRouter);
+        gatewayApiRouterService.setting(gatewayApiRouter);
         return ResponseModel.SUCCESS();
     }
 

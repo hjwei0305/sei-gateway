@@ -12,16 +12,10 @@ import java.util.List;
 public interface IGatewayApiRouterService {
 
     /**
-     * 新增路由配置
+     * 设置路由配置
      * @param gatewayApiRouter 路由配置-实体参数
      */
-    void save(GatewayApiRouter gatewayApiRouter);
-
-    /**
-     * 编辑路由配置
-     * @param gatewayApiRouter 路由配置-实体参数
-     */
-    void edit(GatewayApiRouter gatewayApiRouter);
+    void setting(GatewayApiRouter gatewayApiRouter);
 
     /**
      * 根据应用服务ID删除路由配置

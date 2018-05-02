@@ -5,6 +5,7 @@ import com.ecmp.apigateway.exception.ObjectNotFoundException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.SearchParam;
+import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.ToolUtils;
@@ -25,6 +26,8 @@ import java.util.List;
 public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     @Autowired
     private GatewayApiServiceDao gatewayApiServiceDao;
+    @Autowired
+    private IGatewayApiRouterService gatewayApiRouterService;
 
     @Override
     public void save(GatewayApiService gatewayApiService) {
@@ -54,35 +57,39 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     public void removeById(String id) {
         GatewayApiService gatewayApiService = gatewayApiServiceDao.findByDeletedFalseAndId(id);
         if (ToolUtils.isEmpty(gatewayApiService)) {
-            throw new ObjectNotFoundException();
+            //throw new ObjectNotFoundException();
         } else {
             gatewayApiService.setDeleted(true);
             gatewayApiService.setServiceAppEnabled(false);
             gatewayApiServiceDao.save(gatewayApiService);
+            //删除相关路由配置信息
+            gatewayApiRouterService.removeByServiceId(id);
         }
     }
 
     @Override
-    public void enableById(String id) {
+    public void startById(String id) {
         GatewayApiService gatewayApiService = gatewayApiServiceDao.findByDeletedFalseAndId(id);
         if (ToolUtils.isEmpty(gatewayApiService)) {
             throw new ObjectNotFoundException();
         } else {
-            gatewayApiService.setDeleted(false);
             gatewayApiService.setServiceAppEnabled(true);
             gatewayApiServiceDao.save(gatewayApiService);
+            //启用相关路由配置信息
+            gatewayApiRouterService.enableByServiceId(id);
         }
     }
 
     @Override
-    public void disableById(String id) {
+    public void stopById(String id) {
         GatewayApiService gatewayApiService = gatewayApiServiceDao.findByDeletedFalseAndId(id);
         if (ToolUtils.isEmpty(gatewayApiService)) {
             throw new ObjectNotFoundException();
         } else {
-            gatewayApiService.setDeleted(false);
             gatewayApiService.setServiceAppEnabled(false);
             gatewayApiServiceDao.save(gatewayApiService);
+            //停用相关路由配置信息
+            gatewayApiRouterService.removeByServiceId(id);
         }
     }
 

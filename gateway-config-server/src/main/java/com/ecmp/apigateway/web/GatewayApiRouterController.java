@@ -2,7 +2,6 @@ package com.ecmp.apigateway.web;
 
 import com.ecmp.apigateway.model.GatewayApiRouter;
 import com.ecmp.apigateway.model.common.ResponseModel;
-import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +20,6 @@ import java.util.List;
 public class GatewayApiRouterController {
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
-    @Autowired
-    private IGatewayApiRouterClient gatewayApiRouterClient;
 
     /**
      * 新增路由配置
@@ -57,7 +54,6 @@ public class GatewayApiRouterController {
     @RequestMapping("removeByServiceId")
     public Object removeByServiceId(String serviceId) {
         gatewayApiRouterService.removeByServiceId(serviceId);
-        gatewayApiRouterClient.refresh();
         return ResponseModel.SUCCESS();
     }
 
@@ -70,7 +66,6 @@ public class GatewayApiRouterController {
     @RequestMapping("enableByServiceId")
     public Object enableByServiceId(String serviceId) {
         gatewayApiRouterService.enableByServiceId(serviceId);
-        gatewayApiRouterClient.refresh();
         return ResponseModel.SUCCESS();
     }
 

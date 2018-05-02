@@ -6,7 +6,6 @@ import com.ecmp.apigateway.model.common.PageModel;
 import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
-import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.ToolUtils;
@@ -31,8 +30,6 @@ public class GatewayApiServiceController {
     private IGatewayApiServiceService gatewayApiServiceService;
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
-    @Autowired
-    private IGatewayApiRouterClient gatewayApiRouterClient;
     @Autowired
     private IGatewayApiAppClient gatewayApiAppClient;
 
@@ -77,9 +74,7 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("removeById")
     public Object removeById(String id) {
-        gatewayApiRouterService.removeByServiceId(id);
         gatewayApiServiceService.removeById(id);
-        gatewayApiRouterClient.refresh();
         return ResponseModel.SUCCESS();
     }
 
@@ -115,6 +110,7 @@ public class GatewayApiServiceController {
 
     /**
      * 设置应用服务网关路由
+     * @param gatewayApiRouter
      * @return
      */
     @ResponseBody
@@ -129,27 +125,25 @@ public class GatewayApiServiceController {
 
     /**
      * 启用应用服务网关路由
+     * @param id ID
      * @return
      */
     @ResponseBody
-    @RequestMapping("router/start")
-    public Object start(String id) {
-        gatewayApiRouterService.enableByServiceId(id);
-        gatewayApiServiceService.enableById(id);
-        gatewayApiRouterClient.refresh();
+    @RequestMapping("router/startById")
+    public Object startById(String id) {
+        gatewayApiServiceService.startById(id);
         return ResponseModel.SUCCESS();
     }
 
     /**
      * 停用应用服务网关路由
+     * @param id ID
      * @return
      */
     @ResponseBody
-    @RequestMapping("router/stop")
-    public Object stop(String id) {
-        gatewayApiRouterService.removeByServiceId(id);
-        gatewayApiServiceService.disableById(id);
-        gatewayApiRouterClient.refresh();
+    @RequestMapping("router/stopById")
+    public Object stopById(String id) {
+        gatewayApiServiceService.stopById(id);
         return ResponseModel.SUCCESS();
     }
 
@@ -166,6 +160,7 @@ public class GatewayApiServiceController {
 
     /**
      * 根据应用ID获取应用服务信息
+     * @param appId AppId
      * @return
      */
     @ResponseBody

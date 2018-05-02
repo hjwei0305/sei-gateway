@@ -35,13 +35,13 @@ public interface IGatewayApiServiceService {
      * 根据ID修改应用服务启用状态
      * @param id
      */
-    void enableById(String id);
+    void startById(String id);
 
     /**
      * 根据ID修改应用服务停用状态
      * @param id
      */
-    void disableById(String id);
+    void stopById(String id);
 
     /**
      * 查询所有应用服务

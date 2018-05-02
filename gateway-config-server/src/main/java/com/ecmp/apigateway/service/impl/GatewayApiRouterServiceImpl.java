@@ -4,7 +4,6 @@ import com.ecmp.apigateway.dao.GatewayApiRouterDao;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiRouter;
-import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.ToolUtils;
@@ -24,8 +23,6 @@ import java.util.List;
 public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
     @Autowired
     private GatewayApiRouterDao gatewayApiRouterDao;
-    @Autowired
-    private IGatewayApiRouterClient gatewayApiRouterClient;
 
     @Override
     public void save(GatewayApiRouter gatewayApiRouter) {
@@ -60,8 +57,6 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
             gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setDeleted(true));
             gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(false));
             gatewayApiRouterDao.save(gatewayApiRouters);
-            //路由重新刷新
-            gatewayApiRouterClient.refresh();
         }
     }
 
@@ -73,8 +68,6 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
         } else {
             gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(true));
             gatewayApiRouterDao.save(gatewayApiRouters);
-            //路由重新刷新
-            gatewayApiRouterClient.refresh();
         }
     }
 

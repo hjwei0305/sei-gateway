@@ -5,6 +5,7 @@ import com.ecmp.apigateway.exception.ObjectNotFoundException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.SearchParam;
+import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.EntityUtils;
@@ -28,6 +29,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     private GatewayApiServiceDao gatewayApiServiceDao;
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
+    @Autowired
+    private IGatewayApiRouterClient gatewayApiRouterClient;
 
     @Override
     public void save(GatewayApiService gatewayApiService) {
@@ -64,6 +67,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             gatewayApiServiceDao.save(gatewayApiService);
             //删除相关路由配置信息
             gatewayApiRouterService.removeByServiceId(id);
+            //路由重新刷新
+            gatewayApiRouterClient.refresh();
         }
     }
 
@@ -77,6 +82,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             gatewayApiServiceDao.save(gatewayApiService);
             //启用相关路由配置信息
             gatewayApiRouterService.enableByServiceId(id);
+            //路由重新刷新
+            gatewayApiRouterClient.refresh();
         }
     }
 
@@ -90,6 +97,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             gatewayApiServiceDao.save(gatewayApiService);
             //停用相关路由配置信息
             gatewayApiRouterService.removeByServiceId(id);
+            //路由重新刷新
+            gatewayApiRouterClient.refresh();
         }
     }
 

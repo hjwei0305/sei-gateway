@@ -26,7 +26,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
 
     @Override
     public void save(GatewayApiRouter gatewayApiRouter) {
-        if (ToolUtils.isEmpty(gatewayApiRouter.getRoute_key()) || ToolUtils.isEmpty(gatewayApiRouter.getServiceId()) || ToolUtils.isEmpty(gatewayApiRouter.getUrl())) {
+        if (ToolUtils.isEmpty(gatewayApiRouter.getRouteKey()) || ToolUtils.isEmpty(gatewayApiRouter.getServiceId()) || ToolUtils.isEmpty(gatewayApiRouter.getUrl())) {
             throw new RequestParamNullException();
         } else {
             gatewayApiRouterDao.save(gatewayApiRouter);
@@ -35,7 +35,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
 
     @Override
     public void edit(GatewayApiRouter gatewayApiRouter) {
-        if (ToolUtils.isEmpty(gatewayApiRouter.getId()) || ToolUtils.isEmpty(gatewayApiRouter.getRoute_key()) || ToolUtils.isEmpty(gatewayApiRouter.getServiceId()) || ToolUtils.isEmpty(gatewayApiRouter.getUrl())) {
+        if (ToolUtils.isEmpty(gatewayApiRouter.getId()) || ToolUtils.isEmpty(gatewayApiRouter.getRouteKey()) || ToolUtils.isEmpty(gatewayApiRouter.getServiceId()) || ToolUtils.isEmpty(gatewayApiRouter.getUrl())) {
             throw new RequestParamNullException();
         } else {
             GatewayApiRouter apiRouterOnly = gatewayApiRouterDao.findByDeletedFalseAndId(gatewayApiRouter.getId());

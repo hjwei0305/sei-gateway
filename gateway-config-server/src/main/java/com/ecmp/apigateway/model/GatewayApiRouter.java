@@ -18,7 +18,7 @@ public class GatewayApiRouter extends Domain {
      * 路由key
      */
     @Column(name = "route_key", nullable = false, length = 200)
-    private String route_key;
+    private String routeKey;
     /**
      * 路由路径
      */
@@ -55,23 +55,23 @@ public class GatewayApiRouter extends Domain {
     @Column(name = "interface_name")
     private String interfaceName;
 
-    public String getRoute_key() {
-        return route_key;
+    public String getRouteKey() {
+        return routeKey;
     }
 
-    public void setRoute_key(String route_key) {
-        this.route_key = route_key;
+    public void setRouteKey(String route_key) {
+        this.routeKey = routeKey;
     }
 
     public String getPath() {
-        if (ToolUtils.notEmpty(getRoute_key())) {
-            if (!route_key.startsWith("/"))
-                path = "/" + route_key; //path = "/" + path;
-            if (!route_key.endsWith("/**") && !route_key.endsWith("/*")) {
-                if (!route_key.endsWith("/"))
-                    path = route_key + "/**"; //path = path + "/**";
+        if (ToolUtils.notEmpty(getRouteKey())) {
+            if (!routeKey.startsWith("/"))
+                path = "/" + routeKey; //path = "/" + path;
+            if (!routeKey.endsWith("/**") && !routeKey.endsWith("/*")) {
+                if (!routeKey.endsWith("/"))
+                    path = routeKey + "/**"; //path = path + "/**";
                 else
-                    path = route_key + "**"; //path = path + "**";
+                    path = routeKey + "**"; //path = path + "**";
             }
         }
         return path;

@@ -57,6 +57,31 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             throw new ObjectNotFoundException();
         } else {
             gatewayApiService.setDeleted(true);
+            gatewayApiService.setServiceAppEnabled(false);
+            gatewayApiServiceDao.save(gatewayApiService);
+        }
+    }
+
+    @Override
+    public void enableById(String id) {
+        GatewayApiService gatewayApiService = gatewayApiServiceDao.findByDeletedFalseAndId(id);
+        if (ToolUtils.isEmpty(gatewayApiService)) {
+            throw new ObjectNotFoundException();
+        } else {
+            gatewayApiService.setDeleted(false);
+            gatewayApiService.setServiceAppEnabled(true);
+            gatewayApiServiceDao.save(gatewayApiService);
+        }
+    }
+
+    @Override
+    public void disableById(String id) {
+        GatewayApiService gatewayApiService = gatewayApiServiceDao.findByDeletedFalseAndId(id);
+        if (ToolUtils.isEmpty(gatewayApiService)) {
+            throw new ObjectNotFoundException();
+        } else {
+            gatewayApiService.setDeleted(false);
+            gatewayApiService.setServiceAppEnabled(false);
             gatewayApiServiceDao.save(gatewayApiService);
         }
     }

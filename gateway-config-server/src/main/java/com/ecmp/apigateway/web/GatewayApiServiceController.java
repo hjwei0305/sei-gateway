@@ -135,6 +135,7 @@ public class GatewayApiServiceController {
     @RequestMapping("router/start")
     public Object start(String id) {
         gatewayApiRouterService.enableByServiceId(id);
+        gatewayApiServiceService.enableById(id);
         gatewayApiRouterClient.refresh();
         return ResponseModel.SUCCESS();
     }
@@ -147,6 +148,7 @@ public class GatewayApiServiceController {
     @RequestMapping("router/stop")
     public Object stop(String id) {
         gatewayApiRouterService.removeByServiceId(id);
+        gatewayApiServiceService.disableById(id);
         gatewayApiRouterClient.refresh();
         return ResponseModel.SUCCESS();
     }

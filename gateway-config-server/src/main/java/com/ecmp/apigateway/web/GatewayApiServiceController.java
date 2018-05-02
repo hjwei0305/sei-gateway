@@ -40,6 +40,7 @@ public class GatewayApiServiceController {
     public String show() {
         return "main/ApplicationServiceView";
     }
+
     /**
      * 新增应用服务
      * @param gatewayApiService 应用服务-实体参数

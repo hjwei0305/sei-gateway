@@ -50,9 +50,9 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
                 loadComplete: function (data) {
                     if(data&&data.rows && data.rows.length>0){
                         EUI.getCmp("applicationGrid").setSelectRowById(data.rows[0].id);
-                        g.refreshInterfaceGrid({
+                        /*g.refreshInterfaceGrid({
                             applicationCode: data.rows[0].applicationCode
-                        });
+                        });*/
                     }
                 }
             }

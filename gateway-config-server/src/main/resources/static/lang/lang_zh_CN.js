@@ -20,7 +20,7 @@ var defaultLangs = {
     modifyWinText: "编辑{0}",
     codeText: "代码",
     nameText: "名称",
-    remarkText: "说明"
+    remarkText: "说明",
 };
 if (EUI.InterfaceView) {
     EUI.InterfaceView.prototype.lang = EUI.applyIf({
@@ -38,7 +38,7 @@ if (EUI.InterfaceView) {
 if (EUI.ApplicationView) {
     EUI.ApplicationView.prototype.lang = EUI.applyIf({
         applicationText: "应用",
-        getApplicationText: "正在获取应用..."
+        getApplicationText: "正在获取应用，请稍候..."
     }, defaultLangs);
 }
 if (EUI.ApplicationServiceView) {
@@ -48,8 +48,21 @@ if (EUI.ApplicationServiceView) {
         serviceAppNameText: "应用服务名称",
         serviceAppRemarkText: "应用服务说明",
         serviceAppVersionText: "应用服务版本",
-        getApplicationServiceText: "正在获取应用服务..."
+        interfaceText:"接口",
+        interfaceProtocolText: "接口协议",
+        interfaceURIText: "接口uri地址",
+        getApplicationServiceText: "正在获取应用服务，请稍候...",
+        startText: "启动路由",
+        endText: "关闭路由",
+        startHintMessageText: "确定要启动路由吗",
+        endHintMessageText: "确定要关闭路由吗",
+        selectRowText: "请选择要启动的应用服务",
+        endMaskMessageText: "正在关闭路由,请稍侯...",
+        doStartText: "正在启动路由,请稍侯...",
+        configText: "设置",
+        configTitleText: "设置{0}",
+        oneSelectText: "只能选择一条应用服务",
+        keyText: "路由key"
     }, defaultLangs);
 }
-
 

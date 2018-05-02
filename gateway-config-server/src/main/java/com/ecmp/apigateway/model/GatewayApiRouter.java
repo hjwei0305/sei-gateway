@@ -59,7 +59,7 @@ public class GatewayApiRouter extends Domain {
         return routeKey;
     }
 
-    public void setRouteKey(String route_key) {
+    public void setRouteKey(String routeKey) {
         this.routeKey = routeKey;
     }
 

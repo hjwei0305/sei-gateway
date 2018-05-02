@@ -32,7 +32,9 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
             GatewayApiRouter apiRouterOnly = gatewayApiRouterDao.findByServiceIdAndUrl(gatewayApiRouter.getServiceId(), gatewayApiRouter.getUrl());
             if (ToolUtils.notEmpty(apiRouterOnly)) {
                 EntityUtils.resolveAllFieldsSet(gatewayApiRouter, apiRouterOnly);
+                gatewayApiRouter.setId(apiRouterOnly.getId());
             }
+            gatewayApiRouter.setPath(ToolUtils.key2Path(gatewayApiRouter.getRouteKey()));
             gatewayApiRouterDao.save(gatewayApiRouter);
         }
     }
@@ -40,9 +42,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
     @Override
     public void removeByServiceId(String serviceId) {
         List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(serviceId);
-        if (ToolUtils.isEmpty(gatewayApiRouters)) {
-            //throw new ObjectNotFoundException();
-        } else {
+        if (ToolUtils.notEmpty(gatewayApiRouters)) {
             gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setDeleted(true));
             gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(false));
             gatewayApiRouterDao.save(gatewayApiRouters);

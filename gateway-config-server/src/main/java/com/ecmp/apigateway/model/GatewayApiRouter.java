@@ -1,7 +1,6 @@
 package com.ecmp.apigateway.model;
 
 import com.ecmp.apigateway.model.common.Domain;
-import com.ecmp.apigateway.utils.ToolUtils;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -64,16 +63,6 @@ public class GatewayApiRouter extends Domain {
     }
 
     public String getPath() {
-        if (ToolUtils.notEmpty(getRouteKey())) {
-            if (!routeKey.startsWith("/"))
-                path = "/" + routeKey; //path = "/" + path;
-            if (!routeKey.endsWith("/**") && !routeKey.endsWith("/*")) {
-                if (!routeKey.endsWith("/"))
-                    path = routeKey + "/**"; //path = path + "/**";
-                else
-                    path = routeKey + "**"; //path = path + "**";
-            }
-        }
         return path;
     }
 

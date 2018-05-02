@@ -59,9 +59,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     @Override
     public void removeById(String id) {
         List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(id);
-        if (ToolUtils.isEmpty(gatewayApiServices)) {
-            //throw new ObjectNotFoundException();
-        } else {
+        if (ToolUtils.notEmpty(gatewayApiServices)) {
             gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setDeleted(true));
             gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(false));
             gatewayApiServiceDao.save(gatewayApiServices);

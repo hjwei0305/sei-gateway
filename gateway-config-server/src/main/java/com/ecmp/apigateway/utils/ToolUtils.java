@@ -290,6 +290,28 @@ public class ToolUtils {
         return resultTimes;
     }
 
+    /**
+     * 路由Key转正常Path
+     *
+     * @param routeKey
+     * @return
+     */
+    public static String key2Path(String routeKey) {
+        String path = routeKey;
+        if (ToolUtils.notEmpty(routeKey)) {
+            if (!routeKey.startsWith("/")) path = "/" + path;
+            if (!routeKey.endsWith("/**") && !routeKey.endsWith("/*")) {
+                if (!routeKey.endsWith("/")) {
+                    if (routeKey.endsWith("*")) path = path.replace("*", "") + "/**";
+                    else path = path + "/**";
+                } else path = path + "**";
+            } else {
+                if (routeKey.endsWith("/*")) path = path + "*";
+            }
+        }
+        return path;
+    }
+
     public static void main(String[] args) {
         System.out.println(getRandomNum());
     }

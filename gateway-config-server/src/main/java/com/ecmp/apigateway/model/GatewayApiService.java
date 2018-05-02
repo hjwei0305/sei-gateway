@@ -1,7 +1,6 @@
 package com.ecmp.apigateway.model;
 
 import com.ecmp.apigateway.model.common.Domain;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;

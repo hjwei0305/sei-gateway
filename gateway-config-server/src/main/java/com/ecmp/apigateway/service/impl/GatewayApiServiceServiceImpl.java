@@ -58,13 +58,13 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void removeById(String id) {
-        GatewayApiService gatewayApiService = gatewayApiServiceDao.findByDeletedFalseAndId(id);
-        if (ToolUtils.isEmpty(gatewayApiService)) {
+        List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(id);
+        if (ToolUtils.isEmpty(gatewayApiServices)) {
             //throw new ObjectNotFoundException();
         } else {
-            gatewayApiService.setDeleted(true);
-            gatewayApiService.setServiceAppEnabled(false);
-            gatewayApiServiceDao.save(gatewayApiService);
+            gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setDeleted(true));
+            gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(false));
+            gatewayApiServiceDao.save(gatewayApiServices);
             //删除相关路由配置信息
             gatewayApiRouterService.removeByServiceId(id);
             //路由重新刷新
@@ -74,12 +74,12 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void startById(String id) {
-        GatewayApiService gatewayApiService = gatewayApiServiceDao.findByDeletedFalseAndId(id);
-        if (ToolUtils.isEmpty(gatewayApiService)) {
+        List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(id);
+        if (ToolUtils.isEmpty(gatewayApiServices)) {
             throw new ObjectNotFoundException();
         } else {
-            gatewayApiService.setServiceAppEnabled(true);
-            gatewayApiServiceDao.save(gatewayApiService);
+            gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(true));
+            gatewayApiServiceDao.save(gatewayApiServices);
             //启用相关路由配置信息
             gatewayApiRouterService.enableByServiceId(id);
             //路由重新刷新
@@ -89,12 +89,12 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void stopById(String id) {
-        GatewayApiService gatewayApiService = gatewayApiServiceDao.findByDeletedFalseAndId(id);
-        if (ToolUtils.isEmpty(gatewayApiService)) {
+        List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(id);
+        if (ToolUtils.isEmpty(gatewayApiServices)) {
             throw new ObjectNotFoundException();
         } else {
-            gatewayApiService.setServiceAppEnabled(false);
-            gatewayApiServiceDao.save(gatewayApiService);
+            gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(false));
+            gatewayApiServiceDao.save(gatewayApiServices);
             //停用相关路由配置信息
             gatewayApiRouterService.removeByServiceId(id);
             //路由重新刷新

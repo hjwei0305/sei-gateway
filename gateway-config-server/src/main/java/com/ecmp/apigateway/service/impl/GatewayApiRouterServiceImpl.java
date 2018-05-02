@@ -50,7 +50,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
 
     @Override
     public void removeByServiceId(String serviceId) {
-        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceId(serviceId);
+        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(serviceId);
         if (ToolUtils.isEmpty(gatewayApiRouters)) {
             //throw new ObjectNotFoundException();
         } else {
@@ -62,7 +62,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
 
     @Override
     public void enableByServiceId(String serviceId) {
-        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceId(serviceId);
+        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(serviceId);
         if (ToolUtils.isEmpty(gatewayApiRouters)) {
             throw new ObjectNotFoundException();
         } else {

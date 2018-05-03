@@ -7,6 +7,7 @@
 EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
     renderTo: "",
     isEdit: false,
+    checkRowIds: [],
     initComponent: function () {
         EUI.Container({
             renderTo: this.renderTo,
@@ -71,7 +72,13 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                 rowNum: 15,
                 shrinkToFit: false,
                 sortname: 'serviceAppName',
-                onSelectRow: function () {
+                onSelectRow: function (id) {
+                    $("#jqg_g_applicationServiceGrid_"+id).attr("checked",false);
+                    //控制只能单选
+                    if(id && id!==g.lastSelectRowId){
+                        $(this).jqGrid('setSelection',g.lastSelectRowId,false);
+                        g.lastSelectRowId = id;
+                    }
                     g.curApplication = g.gridCmp.getSelectRow();
                     if(!g.curApplication || g.curApplication.length == 0){
                         g.curApplication = null;
@@ -92,7 +99,34 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                     var $myGrid = $(this),
                         i = $.jgrid.getCellIndex($(e.target).closest('td')[0]),
                         cm = $myGrid.jqGrid('getGridParam', 'colModel');
-                    return (cm[i].name !== 'operate');
+                    if(cm[i].name == 'cb'){
+                        if($("#jqg_g_applicationServiceGrid_"+rowid).attr("checked")){
+                            g.checkRowIds.push(rowid);
+                        }else{
+                            var i = g.checkRowIds.indexOf(rowid);
+                            g.checkRowIds.splice(i,1);
+                        }
+                    }
+                    return (cm[i].name !== 'operate'&&cm[i].name !== 'cb');
+                },
+                onSelectAll: function(aRowids, status){
+                    if(status){
+                        g.checkRowIds = [];
+                        for(var ri = 0;ri<aRowids.length;ri++){
+                            var temp = aRowids[ri];
+                            g.checkRowIds.push(temp);
+                            if(temp!=g.lastSelectRowId){
+                                $(this).jqGrid('setSelection',temp,false);
+                            }
+                            $("#jqg_g_applicationServiceGrid_"+temp).attr("checked",true);
+                        }
+                        $("#cb_g_applicationServiceGrid").attr("checked",true);
+                    }else{
+                        g.checkRowIds = [];
+                        $(this).jqGrid('setSelection',g.lastSelectRowId,false);
+                        $("#jqg_g_applicationServiceGrid_"+g.lastSelectRowId).attr("checked",false);
+                    }
+                    return false;
                 }
             }
 
@@ -128,7 +162,11 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             iconCss: "ecmp-flow-start",
             selected: true,
             handler: function () {
-                var rows = g.gridCmp.getSelectRow();
+               //  var rows = g.gridCmp.getSelectRow();
+                var rows = [];
+                for (var i = 0; i < g.checkRowIds.length; i++) {
+                    rows.push(g.gridCmp.getRowData(g.checkRowIds[i]));
+                }
                 if (!rows||rows.length == 0) {
                     g.message(g.lang.selectRowText);
                     return false;
@@ -153,14 +191,17 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             iconCss: "ecmp-common-pause",
             selected: true,
             handler: function () {
-                var rows = g.gridCmp.getSelectRow();
+                var rows = [];
+                for (var i = 0; i < g.checkRowIds.length; i++) {
+                    rows.push(g.gridCmp.getRowData(g.checkRowIds[i]));
+                }
                 if (!rows||rows.length == 0) {
                     g.message(g.lang.selectRowText);
                     return false;
                 }
                 var applicationServiceIds = new Array();
                 for (var i=0,len=rows.length; i<len; i++) {
-                    if(rows[i].serviceAppEnabled=='false'){
+                    if(rows[i].serviceAppEnabled=='true'){
                         applicationServiceIds[i] = rows[i].id;
                     }
                 }
@@ -296,8 +337,11 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
         });
         $(".ecmp-common-configuration").live("click", function () {
             var data = g.interfaceGridCmp.getRowData($(this).attr("targetId"));
-            g.configForm();
-            g.configFormCmp.loadData(data);
+            var params = {};
+            params.serviceId = g.curApplication.id;
+            params.url = data["interfaceURI"];
+            g.getSettingData(params);
+
         });
         $(".ecmp-flow-start.item").live("click",function () {
             var data = g.gridCmp.getRowData($(this).attr("targetId"));
@@ -324,11 +368,13 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                     labelWidth: 110,
                     width: 315
                 },
-                items: [{
+                items: [
+                {
                     xtype: "TextField",
                     hidden: true,
-                    name: "id"
-                },{
+                    name: "serviceId"
+                },
+                {
                     xtype: "TextField",
                     title: g.lang.nameText,
                     name: "interfaceName",
@@ -336,10 +382,10 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                 }, {
                     xtype: "TextArea",
                     title: g.lang.interfaceURIText,
-                    name: "interfaceURI",
+                    name: "url",
                     readonly: true
                 }, {
-                    xtype: "TextField",
+                    xtype: "TextArea",
                     title: g.lang.keyText,
                     name: "routeKey",
                     allowBlank: false
@@ -424,6 +470,25 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             }]
         });
     },
+    getSettingData: function (params) {
+        var g = this;
+        var myMask = EUI.LoadMask({
+            msg: g.lang.queryMaskMessageText
+        });
+        EUI.Store({
+            url: _ctxPath + "/gateway_api_service/router/getting",
+            params: params,
+            success: function (status) {
+                myMask.hide();
+                g.configForm();
+                g.configFormCmp.loadData(status.data);
+            },
+            failure: function (status) {
+                myMask.hide();
+                g.message(status.message);
+            }
+        });
+    },
     doSetting: function () {
         var g = this;
         if (!g.configFormCmp.isValid()) {
@@ -431,10 +496,9 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             return;
         }
         var data = g.configFormCmp.getFormValue();
-        data.serviceId = data["id"];
-        data.url = data["interfaceURI"];
-        delete data["id"];
-        delete data["interfaceURI"];
+      //  data.serviceId = g.curApplication.id;
+      //  data.url = data["interfaceURI"];
+      //  delete data["interfaceURI"];
         var myMask = EUI.LoadMask({
             //saveMaskMessageText:"正在加载，请稍候..."
             msg: g.lang.saveMaskMessageText
@@ -445,7 +509,10 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             success: function (status) {
                 myMask.hide();
                 g.editWin.remove();
-                g.message(status.message);
+                EUI.ProcessStatus({
+                    success: true,
+                    msg: status.message
+                });
             },
             failure: function (status) {
                 myMask.hide();

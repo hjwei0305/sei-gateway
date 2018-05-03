@@ -14,6 +14,7 @@ public interface IGatewayApiRouterService {
     /**
      * 获取路由设置
      * @param gatewayApiRouter 路由设置-实体参数
+     * @return
      */
     GatewayApiRouter getting(GatewayApiRouter gatewayApiRouter);
 

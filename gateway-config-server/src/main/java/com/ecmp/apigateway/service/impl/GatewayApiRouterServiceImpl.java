@@ -61,6 +61,17 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
     }
 
     @Override
+    public void disableByServiceId(String serviceId) {
+        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(serviceId);
+        if (ToolUtils.isEmpty(gatewayApiRouters)) {
+            throw new ObjectNotFoundException();
+        } else {
+            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(false));
+            gatewayApiRouterDao.save(gatewayApiRouters);
+        }
+    }
+
+    @Override
     public List<GatewayApiRouter> findByServiceId(String serviceId) {
         return gatewayApiRouterDao.findByDeletedFalseAndServiceId(serviceId);
     }

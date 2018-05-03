@@ -89,7 +89,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         } else {
             gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(false));
             gatewayApiServiceDao.save(gatewayApiServices);
-            gatewayApiRouterService.removeByServiceId(id); //停用关联路由配置信息
+            gatewayApiRouterService.disableByServiceId(id); //停用关联路由配置信息
             gatewayApiRouterClient.refresh(); //路由关系重新刷新
         }
     }

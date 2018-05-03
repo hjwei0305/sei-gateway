@@ -63,8 +63,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setDeleted(true));
             gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(false));
             gatewayApiServiceDao.save(gatewayApiServices);
-            gatewayApiRouterService.removeByServiceId(id); //删除关联路由配置信息
-            gatewayApiRouterClient.refresh(); //路由关系重新刷新
+            gatewayApiRouterService.removeByServiceId(id); //删除关联路由配置
+            gatewayApiRouterClient.refresh(); //重新刷新路由配置
         }
     }
 
@@ -76,8 +76,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         } else {
             gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(true));
             gatewayApiServiceDao.save(gatewayApiServices);
-            gatewayApiRouterService.enableByServiceId(id); //启用关联路由配置信息
-            gatewayApiRouterClient.refresh(); //路由关系重新刷新
+            gatewayApiRouterService.enableByServiceId(id); //启用关联路由配置
+            gatewayApiRouterClient.refresh(); //重新刷新路由配置
         }
     }
 
@@ -89,8 +89,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         } else {
             gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(false));
             gatewayApiServiceDao.save(gatewayApiServices);
-            gatewayApiRouterService.disableByServiceId(id); //停用关联路由配置信息
-            gatewayApiRouterClient.refresh(); //路由关系重新刷新
+            gatewayApiRouterService.disableByServiceId(id); //停用关联路由配置
+            gatewayApiRouterClient.refresh(); //重新刷新路由配置
         }
     }
 

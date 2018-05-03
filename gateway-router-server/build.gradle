@@ -40,7 +40,7 @@ dependencies {
 	//compile("org.springframework.cloud:spring-cloud-starter-feign:${springCloudVersion}")
 	//compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	//compile('org.springframework.boot:spring-boot-starter-aop')
-	//compile('org.springframework.boot:spring-boot-devtools')
+	compile('org.springframework.boot:spring-boot-devtools')
 	runtime('mysql:mysql-connector-java')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

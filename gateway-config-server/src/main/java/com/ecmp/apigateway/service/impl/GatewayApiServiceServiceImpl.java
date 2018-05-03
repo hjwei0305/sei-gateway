@@ -60,8 +60,10 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     public void removeById(String id) {
         List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(ToolUtils.id2List(id));
         if (ToolUtils.notEmpty(gatewayApiServices)) {
-            gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setDeleted(true));
-            gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(false));
+            gatewayApiServices.forEach(gatewayApiService -> {
+                gatewayApiService.setDeleted(true);
+                gatewayApiService.setServiceAppEnabled(false);
+            });
             gatewayApiServiceDao.save(gatewayApiServices);
             gatewayApiRouterService.removeByServiceId(id);
             gatewayApiRouterClient.refresh();
@@ -74,7 +76,9 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         if (ToolUtils.isEmpty(gatewayApiServices)) {
             throw new ObjectNotFoundException();
         } else {
-            gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(enable));
+            gatewayApiServices.forEach(gatewayApiService -> {
+                gatewayApiService.setServiceAppEnabled(enable);
+            });
             gatewayApiServiceDao.save(gatewayApiServices);
             gatewayApiRouterService.enableByServiceId(id, enable);
             gatewayApiRouterClient.refresh();

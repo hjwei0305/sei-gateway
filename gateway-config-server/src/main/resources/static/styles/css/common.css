@@ -4,6 +4,9 @@
 .ecmp-common-delete {
     cursor: pointer;
 }
+.ecmp-common-configuration {
+    cursor: pointer;
+}
 .icon-space{
     margin-right: 10px;
 }

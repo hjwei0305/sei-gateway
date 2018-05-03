@@ -14,7 +14,6 @@ import java.util.UUID;
  */
 @MappedSuperclass
 public class Domain implements Serializable {
-
     //主键ID
     @Id
     private String id = UUID.randomUUID().toString();

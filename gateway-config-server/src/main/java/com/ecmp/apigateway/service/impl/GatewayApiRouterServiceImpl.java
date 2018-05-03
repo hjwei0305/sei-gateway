@@ -45,7 +45,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
             GatewayApiRouter apiRouterOnly = gatewayApiRouterDao.findByServiceIdAndUrl(gatewayApiRouter.getServiceId(), gatewayApiRouter.getUrl());
             if (ToolUtils.notEmpty(apiRouterOnly)) {
                 EntityUtils.resolveAllFieldsSet(gatewayApiRouter, apiRouterOnly);
-                gatewayApiRouter.setId(apiRouterOnly.getId()); //用当前已存在的ID
+                gatewayApiRouter.setId(apiRouterOnly.getId());
             }
             gatewayApiRouter.setPath(ToolUtils.key2Path(gatewayApiRouter.getRouteKey()));
             gatewayApiRouterDao.save(gatewayApiRouter);
@@ -63,23 +63,12 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
     }
 
     @Override
-    public void enableByServiceId(String serviceId) {
+    public void enableByServiceId(String serviceId, boolean enable) {
         List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(ToolUtils.id2List(serviceId));
         if (ToolUtils.isEmpty(gatewayApiRouters)) {
             throw new ObjectNotFoundException();
         } else {
-            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(true));
-            gatewayApiRouterDao.save(gatewayApiRouters);
-        }
-    }
-
-    @Override
-    public void disableByServiceId(String serviceId) {
-        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(ToolUtils.id2List(serviceId));
-        if (ToolUtils.isEmpty(gatewayApiRouters)) {
-            throw new ObjectNotFoundException();
-        } else {
-            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(false));
+            gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(enable));
             gatewayApiRouterDao.save(gatewayApiRouters);
         }
     }

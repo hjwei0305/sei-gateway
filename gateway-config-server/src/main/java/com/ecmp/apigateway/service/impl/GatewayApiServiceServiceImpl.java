@@ -63,34 +63,21 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setDeleted(true));
             gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(false));
             gatewayApiServiceDao.save(gatewayApiServices);
-            gatewayApiRouterService.removeByServiceId(id); //删除关联路由配置
-            gatewayApiRouterClient.refresh(); //重新刷新路由配置
+            gatewayApiRouterService.removeByServiceId(id);
+            gatewayApiRouterClient.refresh();
         }
     }
 
     @Override
-    public void startById(String id) {
+    public void enableById(String id, boolean enable) {
         List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(ToolUtils.id2List(id));
         if (ToolUtils.isEmpty(gatewayApiServices)) {
             throw new ObjectNotFoundException();
         } else {
-            gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(true));
+            gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(enable));
             gatewayApiServiceDao.save(gatewayApiServices);
-            gatewayApiRouterService.enableByServiceId(id); //启用关联路由配置
-            gatewayApiRouterClient.refresh(); //重新刷新路由配置
-        }
-    }
-
-    @Override
-    public void stopById(String id) {
-        List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(ToolUtils.id2List(id));
-        if (ToolUtils.isEmpty(gatewayApiServices)) {
-            throw new ObjectNotFoundException();
-        } else {
-            gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(false));
-            gatewayApiServiceDao.save(gatewayApiServices);
-            gatewayApiRouterService.disableByServiceId(id); //停用关联路由配置
-            gatewayApiRouterClient.refresh(); //重新刷新路由配置
+            gatewayApiRouterService.enableByServiceId(id, enable);
+            gatewayApiRouterClient.refresh();
         }
     }
 

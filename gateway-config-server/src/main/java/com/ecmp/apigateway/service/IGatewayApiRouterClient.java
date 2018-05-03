@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @FeignClient(name = "${gateway.route.service.name}", url = "${gateway.route.service.url}", decode404 = true, fallback = GatewayApiRouterClientImpl.class)
 public interface IGatewayApiRouterClient {
+
     /**
      * 调用网关路由刷新
      * @return

@@ -41,7 +41,6 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
         super.doRefresh();
     }*/
 
-
     @Override
     public void refresh() {
         doRefresh();

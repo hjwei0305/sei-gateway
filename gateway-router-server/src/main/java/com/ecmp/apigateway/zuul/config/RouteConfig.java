@@ -15,7 +15,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 @Configuration
 public class RouteConfig {
-
     @Autowired
     ZuulProperties zuulProperties;
     @Autowired

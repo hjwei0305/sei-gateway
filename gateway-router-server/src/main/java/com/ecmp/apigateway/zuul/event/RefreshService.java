@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RefreshService {
-
     @Autowired
     ApplicationEventPublisher publisher;
     @Autowired

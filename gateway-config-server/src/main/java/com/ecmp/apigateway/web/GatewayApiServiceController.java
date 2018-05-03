@@ -115,8 +115,8 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/getting")
     public Object getting(GatewayApiRouter gatewayApiRouter) {
-        GatewayApiRouter gatewayApiRouter0 = gatewayApiRouterService.getting(gatewayApiRouter);
-        return ResponseModel.SUCCESS(gatewayApiRouter0);
+        GatewayApiRouter apiRouterOnly = gatewayApiRouterService.getting(gatewayApiRouter);
+        return ResponseModel.SUCCESS(apiRouterOnly);
     }
 
     /**
@@ -139,7 +139,7 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/startById")
     public Object startById(String id) {
-        gatewayApiServiceService.startById(id);
+        gatewayApiServiceService.enableById(id, true);
         return ResponseModel.SUCCESS();
     }
 
@@ -151,7 +151,7 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/stopById")
     public Object stopById(String id) {
-        gatewayApiServiceService.stopById(id);
+        gatewayApiServiceService.enableById(id, false);
         return ResponseModel.SUCCESS();
     }
 

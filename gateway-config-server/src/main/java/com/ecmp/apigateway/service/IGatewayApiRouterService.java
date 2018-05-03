@@ -31,16 +31,11 @@ public interface IGatewayApiRouterService {
     void removeByServiceId(String serviceId);
 
     /**
-     * 根据应用服务ID启用路由配置
+     * 根据应用服务ID启用|停用路由配置
      * @param serviceId 应用服务ID
+     * @param enable 是否启用：true|false
      */
-    void enableByServiceId(String serviceId);
-
-    /**
-     * 根据应用服务ID停用路由配置
-     * @param serviceId 应用服务ID
-     */
-    void disableByServiceId(String serviceId);
+    void enableByServiceId(String serviceId, boolean enable);
 
     /**
      * 根据应用服务ID查询路由配置

@@ -32,16 +32,11 @@ public interface IGatewayApiServiceService {
     void removeById(String id);
 
     /**
-     * 根据ID修改应用服务启用状态
+     * 根据ID修改应用服务启用|停用状态
      * @param id 主键ID
+     * @param enable 是否启用：true|false
      */
-    void startById(String id);
-
-    /**
-     * 根据ID修改应用服务停用状态
-     * @param id 主键ID
-     */
-    void stopById(String id);
+    void enableById(String id, boolean enable);
 
     /**
      * 查询所有应用服务

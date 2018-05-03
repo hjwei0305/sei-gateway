@@ -19,7 +19,6 @@ import java.util.Map;
 public class RouteController {
     @Autowired
     RefreshService refreshService;
-
     @Autowired
     ZuulHandlerMapping zuulHandlerMapping;
 

@@ -3,10 +3,7 @@ package com.ecmp.apigateway.utils;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -310,6 +307,19 @@ public class ToolUtils {
             }
         }
         return path;
+    }
+
+    /**
+     * 转换成in参数
+     *
+     * @param str
+     * @return
+     */
+    public static List<String> id2List(String str) {
+        List<String> result = new ArrayList<String>();
+        String[] temp = str.split(",");
+        for (String s : temp) result.add(s);
+        return result;
     }
 
     public static void main(String[] args) {

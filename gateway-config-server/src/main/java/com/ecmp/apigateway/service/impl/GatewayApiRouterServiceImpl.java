@@ -41,7 +41,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
 
     @Override
     public void removeByServiceId(String serviceId) {
-        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(serviceId);
+        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(ToolUtils.id2List(serviceId));
         if (ToolUtils.notEmpty(gatewayApiRouters)) {
             gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setDeleted(true));
             gatewayApiRouters.forEach(gatewayApiRouter -> gatewayApiRouter.setEnabled(false));
@@ -51,7 +51,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
 
     @Override
     public void enableByServiceId(String serviceId) {
-        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(serviceId);
+        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(ToolUtils.id2List(serviceId));
         if (ToolUtils.isEmpty(gatewayApiRouters)) {
             throw new ObjectNotFoundException();
         } else {
@@ -62,7 +62,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
 
     @Override
     public void disableByServiceId(String serviceId) {
-        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(serviceId);
+        List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(ToolUtils.id2List(serviceId));
         if (ToolUtils.isEmpty(gatewayApiRouters)) {
             throw new ObjectNotFoundException();
         } else {

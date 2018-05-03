@@ -58,7 +58,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void removeById(String id) {
-        List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(id);
+        List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(ToolUtils.id2List(id));
         if (ToolUtils.notEmpty(gatewayApiServices)) {
             gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setDeleted(true));
             gatewayApiServices.forEach(gatewayApiService -> gatewayApiService.setServiceAppEnabled(false));
@@ -70,7 +70,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void startById(String id) {
-        List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(id);
+        List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(ToolUtils.id2List(id));
         if (ToolUtils.isEmpty(gatewayApiServices)) {
             throw new ObjectNotFoundException();
         } else {
@@ -83,7 +83,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void stopById(String id) {
-        List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(id);
+        List<GatewayApiService> gatewayApiServices = gatewayApiServiceDao.findByDeletedFalseAndIdIn(ToolUtils.id2List(id));
         if (ToolUtils.isEmpty(gatewayApiServices)) {
             throw new ObjectNotFoundException();
         } else {

@@ -108,6 +108,18 @@ public class GatewayApiServiceController {
     }
 
     /**
+     * 获取应用服务网关路由
+     * @param gatewayApiRouter 路由配置-实体参数
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("router/getting")
+    public Object getting(GatewayApiRouter gatewayApiRouter) {
+        GatewayApiRouter gatewayApiRouter0 = gatewayApiRouterService.getting(gatewayApiRouter);
+        return ResponseModel.SUCCESS(gatewayApiRouter0);
+    }
+
+    /**
      * 设置应用服务网关路由
      * @param gatewayApiRouter 路由配置-实体参数
      * @return

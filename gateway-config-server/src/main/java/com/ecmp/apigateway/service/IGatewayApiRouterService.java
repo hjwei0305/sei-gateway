@@ -12,6 +12,12 @@ import java.util.List;
 public interface IGatewayApiRouterService {
 
     /**
+     * 获取路由设置
+     * @param gatewayApiRouter 路由设置-实体参数
+     */
+    GatewayApiRouter getting(GatewayApiRouter gatewayApiRouter);
+
+    /**
      * 设置路由配置
      * @param gatewayApiRouter 路由配置-实体参数
      */

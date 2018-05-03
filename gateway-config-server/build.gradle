@@ -28,6 +28,8 @@ targetCompatibility = 1.8
 
 ext {
 	springCloudVersion = '1.4.4.RELEASE'
+	curator_version = '4.0.1'
+	util_version = '1.+'
 }
 repositories {
 	mavenLocal()
@@ -41,6 +43,8 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-aop')
 	compile('org.springframework.boot:spring-boot-devtools')
+	compile("org.apache.curator:curator-recipes:$curator_version") { exclude group: 'log4j' }
+	compile("com.ecmp:ecmp-util:$util_version")
 	runtime('mysql:mysql-connector-java')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

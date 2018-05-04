@@ -27,7 +27,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             xtype: "GridPanel",
             region: "west",
             id: "applicationServiceGrid",
-            width: "55%",
+            width: "50%",
             title: this.lang.applicationServiceText,
             border: true,
             padding: 0,
@@ -245,7 +245,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             }
         }, "->", {
             xtype: "SearchBox",
-            id: "searchBox_gridPanel",
+            width: 190,
             //searchDisplayText: "请输入关键字查询",
             displayText: g.lang.searchDisplayText,
             onSearch: function (v) {
@@ -261,7 +261,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             "->",
             {
                 xtype: "SearchBox",
-                id: "center_searchBox",
+                width: 190,
                 //searchDisplayText: "请输入关键字查询",
                 displayText: this.lang.searchDisplayText,
                 onSearch: function (v) {

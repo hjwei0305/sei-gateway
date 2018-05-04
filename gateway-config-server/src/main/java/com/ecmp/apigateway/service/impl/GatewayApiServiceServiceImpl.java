@@ -81,7 +81,9 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         } else {
             gatewayApiServices.forEach(gatewayApiService -> {
                 gatewayApiService.setServiceAppEnabled(enable);
-                gatewayApiService.setServiceAppUrl(configCenterContext.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode()));
+                if (enable) { //启用路由时才去获取URL地址
+                    gatewayApiService.setServiceAppUrl(configCenterContext.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode()));
+                }
             });
             gatewayApiServiceDao.save(gatewayApiServices);
             gatewayApiRouterService.enableByServiceId(id, enable);

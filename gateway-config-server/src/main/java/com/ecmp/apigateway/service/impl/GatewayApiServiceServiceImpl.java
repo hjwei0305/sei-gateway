@@ -3,6 +3,7 @@ package com.ecmp.apigateway.service.impl;
 import com.ecmp.apigateway.ConfigCenterContext;
 import com.ecmp.apigateway.dao.GatewayApiServiceDao;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;
+import com.ecmp.apigateway.exception.RequestAccessedException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.SearchParam;
@@ -81,8 +82,15 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         } else {
             gatewayApiServices.forEach(gatewayApiService -> {
                 gatewayApiService.setServiceAppEnabled(enable);
-                if (enable) { //启用路由时才去获取URL地址
-                    gatewayApiService.setServiceAppUrl(configCenterContext.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode()));
+                if (enable) { //应用服务启用路由时才获取URL地址
+                    //通过应用服务AppId和应用服务Code获取得到信息
+                    String appUrl = configCenterContext.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode());
+                    //TODO 这里根据实际返回格式看是否需要解析转换
+                    if (ToolUtils.isEmpty(appUrl)) {
+                        throw new RequestAccessedException();
+                    } else {
+                        gatewayApiService.setServiceAppUrl(appUrl);
+                    }
                 }
             });
             gatewayApiServiceDao.save(gatewayApiServices);

@@ -384,11 +384,12 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
         });
         $(".ecmp-common-configuration").live("click", function () {
             var data = g.interfaceGridCmp.getRowData($(this).attr("targetId"));
-            var params = {};
-            params.serviceId = g.curApplication.id;
-            params.url = data["interfaceURI"];
-            g.getSettingData(params);
-
+            data.serviceId = g.curApplication.id;
+            data.url = data["interfaceURI"];
+            g.getSettingData(data);
+            data.routeKey = g.routeKey;
+            g.configForm();
+            g.configFormCmp.loadData(data);
         });
         $(".ecmp-flow-start.item").live("click",function () {
             var data = g.gridCmp.getRowData($(this).attr("targetId"));
@@ -515,16 +516,18 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
     },
     getSettingData: function (params) {
         var g = this;
-        var myMask = EUI.LoadMask({
+      /*  var myMask = EUI.LoadMask({
             msg: g.lang.queryMaskMessageText
-        });
+        });*/
         EUI.Store({
             url: _ctxPath + "/gateway_api_service/router/getting",
             params: params,
+            async: false,
             success: function (status) {
-                myMask.hide();
-                g.configForm();
-                g.configFormCmp.loadData(status.data);
+              //  myMask.hide();
+               /* g.configForm();
+                g.configFormCmp.loadData(status.data);*/
+               g.routeKey = status.data&&status.data.routeKey;
             },
             failure: function (status) {
                 myMask.hide();

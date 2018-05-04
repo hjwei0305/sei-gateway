@@ -144,8 +144,10 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                     if(status){
                         g.checkRowIds = [];
                         for(var ri = 0;ri<aRowids.length;ri++){
-                            var temp = aRowids[ri];
-                            g.checkRowIds.push(temp);
+                            g.checkRowIds.push(aRowids[ri]);
+                        }
+                        for(var ri = 0;ri<g.checkRowIds.length;ri++){
+                            var temp = g.checkRowIds[ri];
                             if(temp!=g.lastSelectRowId){
                                 $(this).jqGrid('setSelection',temp,false);
                                 $("#jqg_g_applicationServiceGrid_"+temp).attr("checked",true);

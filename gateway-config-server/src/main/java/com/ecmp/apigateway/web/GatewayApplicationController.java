@@ -113,12 +113,13 @@ public class GatewayApplicationController {
      * @return
      */
     @RequestMapping("/find_gateway_application")
-    public String findGatewayApplication(Model model, String id, String applicationCode) {
+    @ResponseBody
+    public Object findGatewayApplication(Model model, String id, String applicationCode) {
         GatewayApplication gatewayApplication = this.gatewayApplicationService.findGatewayApplicationByIdOrCode(id, applicationCode);
-        model.addAttribute(StaticVariable.STATUS, HttpStatus.OK.value());
+     /*   model.addAttribute(StaticVariable.STATUS, HttpStatus.OK.value());
         model.addAttribute(StaticVariable.MESSAGE, StaticVariable.SUCCESS_MESSAGE);
-        model.addAttribute(StaticVariable.DATA, gatewayApplication);
-        return "";
+        model.addAttribute(StaticVariable.DATA, gatewayApplication);*/
+        return ResponseModel.SUCCESS(gatewayApplication);
     }
 
 }

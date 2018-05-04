@@ -4,13 +4,15 @@
 .ecmp-common-delete {
     cursor: pointer;
 }
-.ecmp-common-configuration {
+.ecmp-common-configuration,.ecmp-flow-end,.ecmp-flow-start {
     cursor: pointer;
 }
 .icon-space{
     margin-right: 10px;
 }
-
+.ecmp-flow-end {
+    margin-right: 14px;
+}
 .configtitle > div {
     background: #fff;
     color: #333;

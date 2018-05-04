@@ -72,12 +72,15 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                 rowNum: 15,
                 shrinkToFit: false,
                 sortname: 'serviceAppName',
-                onSelectRow: function (id) {
-                    $("#jqg_g_applicationServiceGrid_"+id).attr("checked",false);
-                    //控制只能单选
-                    if(id && id!==g.lastSelectRowId){
-                        $(this).jqGrid('setSelection',g.lastSelectRowId,false);
-                        g.lastSelectRowId = id;
+                onSelectRow: function (rowid,status,e) {
+                    //还原每行复选框状态
+                    var tempi = g.checkRowIds.indexOf(rowid);
+                    if(tempi==-1){
+                        $("#jqg_g_applicationServiceGrid_"+rowid).attr("checked",false);
+                    }
+                    //还原总复选框的选中状态
+                    if(g.checkRowIds.length>0&&g.totalRecords==g.checkRowIds.length){
+                        $("#cb_g_applicationServiceGrid").attr("checked",true);
                     }
                     g.curApplication = g.gridCmp.getSelectRow();
                     if(!g.curApplication || g.curApplication.length == 0){
@@ -92,22 +95,48 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                 },
                 loadComplete: function (data) {
                     if(data&&data.rows && data.rows.length>0){
+                        g.totalRecords = data.rows.length;
                         g.gridCmp.setSelectRowById(data.rows[0].id);
+                        g.lastSelectRowId = data.rows[0].id;
                     }
                 },
                 beforeSelectRow: function (rowid, e) {
-                    var $myGrid = $(this),
-                        i = $.jgrid.getCellIndex($(e.target).closest('td')[0]),
-                        cm = $myGrid.jqGrid('getGridParam', 'colModel');
-                    if(cm[i].name == 'cb'){
-                        if($("#jqg_g_applicationServiceGrid_"+rowid).attr("checked")){
-                            g.checkRowIds.push(rowid);
+                       var attrId = $(e.target).closest('td').attr('aria-describedby');
+                        if(attrId == 'g_applicationServiceGrid_cb' || attrId =='g_applicationServiceGrid_operate'){
+                            if(attrId == 'g_applicationServiceGrid_cb'){
+                                if($("#jqg_g_applicationServiceGrid_"+rowid).attr("checked")){
+                                    var tempi = g.checkRowIds.indexOf(rowid);
+                                    if(tempi==-1){
+                                        g.checkRowIds.push(rowid);
+                                    }
+                                }else{
+                                    var i = g.checkRowIds.indexOf(rowid);
+                                    g.checkRowIds.splice(i,1);
+                                }
+                                //还原总复选框的选中状态
+                                if(g.checkRowIds.length>0&&g.totalRecords==g.checkRowIds.length){
+                                    $("#cb_g_applicationServiceGrid").attr("checked",true);
+                                }else{
+                                    $("#cb_g_applicationServiceGrid").attr("checked",false);
+                                }
+                            }
                         }else{
-                            var i = g.checkRowIds.indexOf(rowid);
-                            g.checkRowIds.splice(i,1);
+                            //控制只能单选
+                            if(rowid && rowid!==g.lastSelectRowId){
+                                var checkrowflag = false,$lastRow = $("#jqg_g_applicationServiceGrid_"+g.lastSelectRowId);
+                                if($lastRow.attr("checked")){
+                                   checkrowflag = true;
+                                }
+                                //还原选中的行
+                                $(this).jqGrid('setSelection',g.lastSelectRowId,false);
+                                //还原选中行的复选框状态
+                                checkrowflag && $lastRow.attr("checked",true);
+                                g.lastSelectRowId = rowid;
+                                return true;
+                            }
+
                         }
-                    }
-                    return (cm[i].name !== 'operate'&&cm[i].name !== 'cb');
+                    return false;
                 },
                 onSelectAll: function(aRowids, status){
                     if(status){
@@ -117,8 +146,8 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                             g.checkRowIds.push(temp);
                             if(temp!=g.lastSelectRowId){
                                 $(this).jqGrid('setSelection',temp,false);
+                                $("#jqg_g_applicationServiceGrid_"+temp).attr("checked",true);
                             }
-                            $("#jqg_g_applicationServiceGrid_"+temp).attr("checked",true);
                         }
                         $("#cb_g_applicationServiceGrid").attr("checked",true);
                     }else{
@@ -126,7 +155,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                         $(this).jqGrid('setSelection',g.lastSelectRowId,false);
                         $("#jqg_g_applicationServiceGrid_"+g.lastSelectRowId).attr("checked",false);
                     }
-                    return false;
+                    return true;
                 }
             }
 

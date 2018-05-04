@@ -34,7 +34,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     @Autowired
     private IGatewayApiRouterClient gatewayApiRouterClient;
     @Autowired
-    private ConfigCenterContextApplication configCenterContextApplication;
+    private ConfigCenterContextApplication configApplication;
 
     @Override
     public void save(GatewayApiService gatewayApiService) {
@@ -84,8 +84,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
                 gatewayApiService.setServiceAppEnabled(enable);
                 if (enable) { //应用服务启用路由时才获取URL地址
                     //通过应用服务AppId和应用服务Code获取得到信息
-                    String appUrl = configCenterContextApplication.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode());
-                    //TODO 这里可以根据实际返回格式,看是否需要解析转换
+                    String appUrl = configApplication.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode());
                     if (ToolUtils.isEmpty(appUrl)) {
                         throw new RequestAccessedException();
                     } else {

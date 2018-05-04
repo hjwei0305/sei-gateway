@@ -263,7 +263,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                 //searchDisplayText: "请输入关键字查询",
                 displayText: this.lang.searchDisplayText,
                 onSearch: function (v) {
-                    g.gridCmp.setPostParams({
+                    g.interfaceGridCmp.setPostParams({
                         keywords: v,
                         applicationCode: g.curApplication && g.curApplication.applicationCode
                     },true);

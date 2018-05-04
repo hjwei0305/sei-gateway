@@ -18,5 +18,5 @@ public interface IGatewayApiRouterClient {
      * @return
      */
     @GetMapping(value = "${gateway.route.service.path0}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object refresh();
+    void refresh();
 }

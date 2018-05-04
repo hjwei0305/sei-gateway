@@ -11,7 +11,7 @@ import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 public class GatewayApiRouterClientImpl implements IGatewayApiRouterClient {
 
     @Override
-    public Object refresh() {
+    public void refresh() {
         throw new RequestRouterException();
     }
 }

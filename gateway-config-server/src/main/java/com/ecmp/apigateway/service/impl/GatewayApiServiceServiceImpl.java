@@ -1,5 +1,6 @@
 package com.ecmp.apigateway.service.impl;
 
+import com.ecmp.apigateway.ConfigCenterContext;
 import com.ecmp.apigateway.dao.GatewayApiServiceDao;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
@@ -31,6 +32,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     private IGatewayApiRouterService gatewayApiRouterService;
     @Autowired
     private IGatewayApiRouterClient gatewayApiRouterClient;
+    @Autowired
+    private ConfigCenterContext configCenterContext;
 
     @Override
     public void save(GatewayApiService gatewayApiService) {
@@ -78,6 +81,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         } else {
             gatewayApiServices.forEach(gatewayApiService -> {
                 gatewayApiService.setServiceAppEnabled(enable);
+                gatewayApiService.setServiceAppUrl(configCenterContext.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode()));
             });
             gatewayApiServiceDao.save(gatewayApiServices);
             gatewayApiRouterService.enableByServiceId(id, enable);

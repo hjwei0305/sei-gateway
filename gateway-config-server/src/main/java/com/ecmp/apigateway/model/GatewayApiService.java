@@ -19,6 +19,11 @@ public class GatewayApiService extends Domain {
     @Column(name = "service_appid", nullable = false, length = 64)
     private String serviceAppId;
     /**
+     * 应用服务代码
+     */
+    @Column(name = "service_appcode", nullable = false, length = 50)
+    private String serviceAppCode;
+    /**
      * 应用服务名称
      */
     @Column(name = "service_appname", nullable = false, length = 50)
@@ -33,6 +38,11 @@ public class GatewayApiService extends Domain {
      */
     @Column(name = "service_appversion", nullable = false, length = 50)
     private String serviceAppVersion;
+    /**
+     * 应用服务url
+     */
+    @Column(name = "service_appurl")
+    private String serviceAppUrl;
     /**
      * 应用服务是否启用路由
      */
@@ -50,6 +60,14 @@ public class GatewayApiService extends Domain {
 
     public void setServiceAppId(String serviceAppId) {
         this.serviceAppId = serviceAppId;
+    }
+
+    public String getServiceAppCode() {
+        return serviceAppCode;
+    }
+
+    public void setServiceAppCode(String serviceAppCode) {
+        this.serviceAppCode = serviceAppCode;
     }
 
     public String getServiceAppName() {
@@ -74,6 +92,14 @@ public class GatewayApiService extends Domain {
 
     public void setServiceAppVersion(String serviceAppVersion) {
         this.serviceAppVersion = serviceAppVersion;
+    }
+
+    public String getServiceAppUrl() {
+        return serviceAppUrl;
+    }
+
+    public void setServiceAppUrl(String serviceAppUrl) {
+        this.serviceAppUrl = serviceAppUrl;
     }
 
     public boolean isServiceAppEnabled() {

@@ -1,6 +1,5 @@
 package com.ecmp.apigateway.service.impl;
 
-//import com.ecmp.apigateway.ConfigCenterContext;
 import com.ecmp.apigateway.dao.GatewayApiRouterDao;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
@@ -8,7 +7,6 @@ import com.ecmp.apigateway.model.GatewayApiRouter;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.ToolUtils;
-//import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +23,6 @@ import java.util.List;
 public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
     @Autowired
     private GatewayApiRouterDao gatewayApiRouterDao;
-//    @Autowired
-//    private ConfigCenterContext configCenterContext;
 
     @Override
     public GatewayApiRouter getting(GatewayApiRouter gatewayApiRouter) {
@@ -70,19 +66,12 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
 
     @Override
     public void enableByServiceId(String serviceId, boolean enable) {
-//        //根据appId和应用代码获取应用服务地址
-//        //todo 这个BASIC_API应该是GatewayApiRouter中的一个属性或作为参数传进来
-//        String apiUrl = configCenterContext.getZookeeperData(serviceId, "BASIC_API");
-//        if (StringUtils.isBlank(apiUrl)) {
-//            //todo 空处理
-//        }
         List<GatewayApiRouter> gatewayApiRouters = gatewayApiRouterDao.findByDeletedFalseAndServiceIdIn(ToolUtils.id2List(serviceId));
         if (ToolUtils.isEmpty(gatewayApiRouters)) {
             throw new ObjectNotFoundException();
         } else {
             gatewayApiRouters.forEach(gatewayApiRouter -> {
                 gatewayApiRouter.setEnabled(enable);
-//                gatewayApiRouter.setUrl(apiUrl);
             });
             gatewayApiRouterDao.save(gatewayApiRouters);
         }

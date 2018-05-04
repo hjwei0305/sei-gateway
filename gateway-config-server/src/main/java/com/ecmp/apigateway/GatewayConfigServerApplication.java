@@ -17,6 +17,13 @@ import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 @EnableFeignClients
 public class GatewayConfigServerApplication {
 
+    public static void main(String[] args) {
+        SpringApplication.run(GatewayConfigServerApplication.class, args);
+    }
+
+    /**
+     * 配置中心zookeeper的连接地址
+     */
     @Value("${ecmp.config.center}")
     private String connects;
     /**
@@ -25,15 +32,9 @@ public class GatewayConfigServerApplication {
     @Value("${ecmp.config.center.namespace}")
     private String namespace;
 
-    public static void main(String[] args) {
-        SpringApplication.run(GatewayConfigServerApplication.class, args);
-    }
-
     /**
-     * 构建一个zk客户端
-     * <p>
+     * 构建一个zk客户端<p>
      * connects zk连接地址 集群以逗号分隔，如10.4.68.45:2181,10.4.68.46:2182,10.4.68.47:2183
-     *
      * @return zk客户端
      */
     @Bean
@@ -51,5 +52,4 @@ public class GatewayConfigServerApplication {
         client.start();
         return client;
     }
-
 }

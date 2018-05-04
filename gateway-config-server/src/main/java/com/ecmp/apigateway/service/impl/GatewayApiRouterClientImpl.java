@@ -1,6 +1,6 @@
 package com.ecmp.apigateway.service.impl;
 
-import com.ecmp.apigateway.exception.RequestAccessedException;
+import com.ecmp.apigateway.exception.RequestRouterException;
 import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 
 /**
@@ -12,6 +12,6 @@ public class GatewayApiRouterClientImpl implements IGatewayApiRouterClient {
 
     @Override
     public void refresh() {
-        throw new RequestAccessedException();
+        throw new RequestRouterException();
     }
 }

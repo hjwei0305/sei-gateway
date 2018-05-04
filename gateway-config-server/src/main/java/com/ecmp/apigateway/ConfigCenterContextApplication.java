@@ -1,5 +1,6 @@
 package com.ecmp.apigateway;
 
+import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.util.JsonUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
@@ -19,9 +20,12 @@ import java.util.Objects;
  * @version 1.0.1 2018/5/4 0:03
  */
 @Component
-public class ConfigCenterContext implements InitializingBean, DisposableBean {
+public class ConfigCenterContextApplication implements InitializingBean, DisposableBean {
     @Autowired
     private CuratorFramework curatorFramework;
+
+    @Autowired
+    private IGatewayApiRouterClient gatewayApiRouterClient;
 
     /**
      * Invoked by a BeanFactory after it has set all bean properties supplied
@@ -35,7 +39,7 @@ public class ConfigCenterContext implements InitializingBean, DisposableBean {
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        //TODO 监听所以启用的应用服务APP_ID
+        //TODO 监听所有启用的应用服务APP_ID
         //String path = "/" + APP_ID;
         String path = "/{APP_ID}";
         try {
@@ -50,6 +54,7 @@ public class ConfigCenterContext implements InitializingBean, DisposableBean {
                         Map<String, Map<String, String>> configMap = JsonUtils.fromJson(jsonData, HashMap.class);
                         if (Objects.nonNull(configMap) && !configMap.isEmpty()) {
                             //TODO 触发zuul刷新事件
+                            gatewayApiRouterClient.refresh();
                         } else {
                             //LogUtil.console("未获取到配置中心数据", true);
                         }

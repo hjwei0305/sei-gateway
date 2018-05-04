@@ -65,11 +65,11 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                     {name: 'applicationCode',hidden: true},
                     {name: 'serviceAppUrl',hidden: true},
                     //serviceAppNameText: 名称
-                    {name: 'serviceAppName', index: 'serviceAppName', sortable: true, width: 150, label: g.lang.serviceAppNameText},
+                    {name: 'serviceAppName', index: 'serviceAppName', sortable: false, width: 150, label: g.lang.serviceAppNameText},
                     //serviceAppRemarkText: 说明
-                    {name: 'serviceAppRemark', index: 'serviceAppRemark', sortable: true, width: 150, label: g.lang.serviceAppRemarkText},
+                    {name: 'serviceAppRemark', index: 'serviceAppRemark', sortable: false, width: 150, label: g.lang.serviceAppRemarkText},
                     //serviceAppVersionText: 版本
-                    {name: 'serviceAppVersion', index: 'serviceAppVersion', sortable: true, width: 90, label: g.lang.serviceAppVersionText},
+                    {name: 'serviceAppVersion', index: 'serviceAppVersion', sortable: false, width: 90, label: g.lang.serviceAppVersionText},
                 ],
                 rowNum: 15,
                 shrinkToFit: false,
@@ -516,11 +516,17 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
     },
     getSettingData: function (params) {
         var g = this;
+      /*  var myMask = EUI.LoadMask({
+            msg: g.lang.queryMaskMessageText
+        });*/
         EUI.Store({
             url: _ctxPath + "/gateway_api_service/router/getting",
             params: params,
             async: false,
             success: function (status) {
+              //  myMask.hide();
+               /* g.configForm();
+                g.configFormCmp.loadData(status.data);*/
                g.routeKey = status.data&&status.data.routeKey;
             },
             failure: function (status) {

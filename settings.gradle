@@ -1,0 +1,3 @@
+rootProject.name = 'api-gateway'
+include 'gateway-config-server'
+include 'gateway-router-server'

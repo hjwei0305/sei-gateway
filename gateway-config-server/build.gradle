@@ -25,13 +25,6 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-apply plugin: 'war'
-war{
-	//包名称
-	archiveName "${baseName}.${extension}"
-	//包存放路径
-	destinationDir = file("${rootProject.projectDir}/build/war")
-}
 
 ext {
 	springCloudVersion = '1.4.4.RELEASE'

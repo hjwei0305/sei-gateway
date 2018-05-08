@@ -20,7 +20,7 @@ apply plugin: 'io.spring.dependency-management'
 //apply plugin: 'org.springframework.springloaded'
 
 group = 'com.ecmp'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

@@ -1,5 +1,7 @@
 package com.ecmp.apigateway.exception;
 
+import com.ecmp.apigateway.exception.message.MessageRuntimeException;
+
 /**
  * @author: hejun
  * @date: 2018/4/26

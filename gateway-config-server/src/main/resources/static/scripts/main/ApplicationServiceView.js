@@ -195,7 +195,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             iconCss: "ecmp-flow-start",
             selected: true,
             handler: function () {
-               //  var rows = g.gridCmp.getSelectRow();
+                // var rows = g.gridCmp.getSelectRow();
                 var rows = [];
                 for (var i = 0; i < g.checkRowIds.length; i++) {
                     rows.push(g.gridCmp.getRowData(g.checkRowIds[i]));
@@ -211,7 +211,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                     }
                 }
                 if(applicationServiceIds.length==0){
-                    g.message("所选应用的路由已启动");
+                    g.message(g.lang.selectedStartedText);
                     return false;
                 }
                 applicationServiceIds = applicationServiceIds.join(",");
@@ -239,7 +239,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                     }
                 }
                 if(applicationServiceIds.length==0){
-                    g.message("所选应用的路由已停止");
+                    g.message(g.lang.selectedStopedText);
                     return false;
                 }
                 applicationServiceIds = applicationServiceIds.join(",");
@@ -518,7 +518,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
     },
     getSettingData: function (params) {
         var g = this;
-      /*  var myMask = EUI.LoadMask({
+        /* var myMask = EUI.LoadMask({
             msg: g.lang.queryMaskMessageText
         });*/
         EUI.Store({
@@ -526,8 +526,8 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             params: params,
             async: false,
             success: function (status) {
-              //  myMask.hide();
-               /* g.configForm();
+                // myMask.hide();
+                /* g.configForm();
                 g.configFormCmp.loadData(status.data);*/
                g.routeKey = status.data&&status.data.routeKey;
             },

@@ -1,11 +1,11 @@
-package com.ecmp.apigateway.exception;
+package com.ecmp.apigateway.exception.message;
 
 import com.ecmp.apigateway.utils.ResourceBundleUtil;
 
 /**
  * @author:wangdayin
  * @date:2018/4/25
- * @remark: 异常统一处理
+ * @remark: 运行异常统一处理
  */
 public class MessageRuntimeException extends RuntimeException {
     private String messageKey;

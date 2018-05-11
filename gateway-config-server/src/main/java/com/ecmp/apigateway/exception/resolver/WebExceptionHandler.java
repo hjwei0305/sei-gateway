@@ -1,6 +1,6 @@
 package com.ecmp.apigateway.exception.resolver;
 
-import com.ecmp.apigateway.exception.MessageRuntimeException;
+import com.ecmp.apigateway.exception.message.MessageRuntimeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @date: 2018/4/26
  * @remark: 配置中心接口-业务层接口
  */
-@FeignClient(name = "${config.center.appservice.name}", url = "${config.center.appservice.url}", decode404 = true, fallback = GatewayApiAppClientImpl.class)
+@FeignClient(name = "${config.center.appservice.name}", url = "${config.center.appservice.url}", fallbackFactory = GatewayApiAppClientImpl.class)
 public interface IGatewayApiAppClient {
 
     /**

@@ -111,6 +111,17 @@ public class GatewayApiServiceController {
     }
 
     /**
+     * 获取配置中心应用服务
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("config/findAllApiApp")
+    public Object findAllApiApp() {
+        Object apiApplications = gatewayApiAppClient.findAllApiApp();
+        return ResponseModel.SUCCESS(apiApplications);
+    }
+
+    /**
      * 获取应用服务网关路由
      * @param gatewayApiRouter 路由配置-实体参数
      * @return
@@ -167,28 +178,5 @@ public class GatewayApiServiceController {
     public Object refresh() {
         gatewayApiRouterClient.refresh();
         return ResponseModel.SUCCESS();
-    }
-
-    /**
-     * 获取配置中心应用服务
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findAllApiApp")
-    public Object findAllApiApp() {
-        Object apiApplications = gatewayApiAppClient.findAllApiApp();
-        return ResponseModel.SUCCESS(apiApplications);
-    }
-
-    /**
-     * 根据应用ID获取应用服务信息
-     * @param appId 配置中心AppId
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findAppByAppId")
-    public Object findAppByAppId(String appId) {
-        Object apiApplication = gatewayApiAppClient.findAppByAppId(appId);
-        return ResponseModel.SUCCESS(apiApplication);
     }
 }

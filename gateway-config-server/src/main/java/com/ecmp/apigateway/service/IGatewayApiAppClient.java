@@ -17,14 +17,6 @@ public interface IGatewayApiAppClient {
      * 获取配置中心应用服务
      * @return
      */
-    @GetMapping(value = "${config.center.appservice.path0}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "${config.center.appservice.path}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Object findAllApiApp();
-
-    /**
-     * 根据应用ID获取应用服务信息
-     * @param appId 配置中心AppId
-     * @return
-     */
-    @GetMapping(value = "${config.center.appservice.path1}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object findAppByAppId(String appId);
 }

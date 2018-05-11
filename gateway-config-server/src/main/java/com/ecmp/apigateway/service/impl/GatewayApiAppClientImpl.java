@@ -20,11 +20,6 @@ public class GatewayApiAppClientImpl implements FallbackFactory<IGatewayApiAppCl
             public Object findAllApiApp() {
                 throw new RequestAccessedException();
             }
-
-            @Override
-            public Object findAppByAppId(String appId) {
-                throw new RequestAccessedException();
-            }
         };
     }
 }

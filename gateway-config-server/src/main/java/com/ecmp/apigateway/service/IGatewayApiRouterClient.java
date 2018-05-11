@@ -17,6 +17,6 @@ public interface IGatewayApiRouterClient {
      * 调用网关路由刷新
      * @return
      */
-    @GetMapping(value = "${gateway.route.service.path0}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "${gateway.route.service.path}")
     void refresh();
 }

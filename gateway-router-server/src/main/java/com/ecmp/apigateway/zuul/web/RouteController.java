@@ -26,7 +26,7 @@ public class RouteController {
     @RequestMapping("router/refresh")
     public Object refresh() {
         refreshService.refreshRoute();
-        return "success";
+        return "\"success\"";
     }
 
     @ResponseBody

@@ -2,6 +2,7 @@ package com.ecmp.apigateway.service.impl;
 
 import com.ecmp.apigateway.ConfigCenterContextApplication;
 import com.ecmp.apigateway.dao.GatewayApiServiceDao;
+import com.ecmp.apigateway.exception.InvokeRouteFailException;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;
 import com.ecmp.apigateway.exception.InvokeConfigFailException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
@@ -70,7 +71,10 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             });
             gatewayApiServiceDao.save(gatewayApiServices);
             gatewayApiRouterService.removeByServiceId(id);
-            gatewayApiRouterClient.refresh();
+            Object o = gatewayApiRouterClient.refresh();
+            if (ToolUtils.isEmpty(o)) {
+                throw new InvokeRouteFailException();
+            }
         }
     }
 
@@ -94,7 +98,10 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             });
             gatewayApiServiceDao.save(gatewayApiServices);
             gatewayApiRouterService.enableByServiceId(id, enable);
-            gatewayApiRouterClient.refresh();
+            Object o = gatewayApiRouterClient.refresh();
+            if (ToolUtils.isEmpty(o)) {
+                throw new InvokeRouteFailException();
+            }
         }
     }
 

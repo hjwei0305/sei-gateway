@@ -6,7 +6,6 @@ import com.ecmp.apigateway.model.common.PageModel;
 import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
-import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +29,6 @@ public class GatewayApiServiceController {
     private IGatewayApiServiceService gatewayApiServiceService;
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
-    @Autowired
-    private IGatewayApiRouterClient gatewayApiRouterClient;
     @Autowired
     private IGatewayApiAppClient gatewayApiAppClient;
 
@@ -166,17 +163,6 @@ public class GatewayApiServiceController {
     @RequestMapping("router/stopById")
     public Object stopById(String id) {
         gatewayApiServiceService.enableById(id, false);
-        return ResponseModel.SUCCESS();
-    }
-
-    /**
-     * 刷新网关路由配置
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("router/refresh")
-    public Object refresh() {
-        gatewayApiRouterClient.refresh();
         return ResponseModel.SUCCESS();
     }
 }

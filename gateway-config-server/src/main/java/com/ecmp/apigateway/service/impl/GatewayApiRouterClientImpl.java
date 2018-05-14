@@ -1,6 +1,6 @@
 package com.ecmp.apigateway.service.impl;
 
-import com.ecmp.apigateway.exception.RequestRouterException;
+import com.ecmp.apigateway.exception.InvokeRouteFailException;
 import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class GatewayApiRouterClientImpl implements FallbackFactory<IGatewayApiRo
         return new IGatewayApiRouterClient() {
             @Override
             public void refresh() {
-                throw new RequestRouterException();
+                throw new InvokeRouteFailException();
             }
         };
     }

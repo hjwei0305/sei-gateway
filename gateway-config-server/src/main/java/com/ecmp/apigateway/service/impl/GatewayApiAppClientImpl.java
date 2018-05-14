@@ -1,6 +1,6 @@
 package com.ecmp.apigateway.service.impl;
 
-import com.ecmp.apigateway.exception.RequestAccessedException;
+import com.ecmp.apigateway.exception.InvokeConfigFailException;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class GatewayApiAppClientImpl implements FallbackFactory<IGatewayApiAppCl
         return new IGatewayApiAppClient() {
             @Override
             public Object findAllApiApp() {
-                throw new RequestAccessedException();
+                throw new InvokeConfigFailException();
             }
         };
     }

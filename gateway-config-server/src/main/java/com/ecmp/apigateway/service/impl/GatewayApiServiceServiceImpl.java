@@ -3,7 +3,7 @@ package com.ecmp.apigateway.service.impl;
 import com.ecmp.apigateway.ConfigCenterContextApplication;
 import com.ecmp.apigateway.dao.GatewayApiServiceDao;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;
-import com.ecmp.apigateway.exception.RequestAccessedException;
+import com.ecmp.apigateway.exception.InvokeConfigFailException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.SearchParam;
@@ -86,7 +86,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
                     //通过应用服务AppId和应用服务Code获取得到信息
                     String appUrl = configApplication.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode());
                     if (ToolUtils.isEmpty(appUrl)) {
-                        throw new RequestAccessedException();
+                        throw new InvokeConfigFailException();
                     } else {
                         gatewayApiService.setServiceAppUrl(appUrl);
                     }

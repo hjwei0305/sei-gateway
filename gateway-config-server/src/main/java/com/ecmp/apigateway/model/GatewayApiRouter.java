@@ -42,7 +42,7 @@ public class GatewayApiRouter extends Domain {
      * 是否启用路由
      */
     @Column(name = "enabled", nullable = false)
-    private boolean enabled = true;
+    private boolean enabled = false;
     /**
      * 是否过滤路由路径前缀
      */

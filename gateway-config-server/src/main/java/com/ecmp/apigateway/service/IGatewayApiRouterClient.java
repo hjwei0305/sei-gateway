@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 /**
  * @author: hejun
  * @date: 2018/4/26
- * @remark: 网关路由接口-业务层接口
+ * @remark: 网关路由接口-远程调用接口
  */
 @FeignClient(name = "${gateway.route.service.name}", url = "${gateway.route.service.url}", fallbackFactory = GatewayApiRouterClientImpl.class)
 public interface IGatewayApiRouterClient {

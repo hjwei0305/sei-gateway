@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author: hejun
  * @date: 2018/4/26
- * @remark: 配置中心接口-业务层实现
+ * @remark: 配置中心接口-远程调用实现-熔断回调
  */
 @Component
 public class GatewayApiAppClientImpl implements FallbackFactory<IGatewayApiAppClient> {

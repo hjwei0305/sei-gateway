@@ -122,7 +122,7 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
                 result = map.get(key);
             } else {
                 //LogUtil.console("未获取到配置中心数据", true);
-                throw new MessageRuntimeException("获取配置中心数据为空");
+                throw new MessageRuntimeException("未获取到配置中心数据");
             }
         } catch (Exception e) {
             //LogUtil.console("获取配置中心数据异常" + e.getMessage(), true);

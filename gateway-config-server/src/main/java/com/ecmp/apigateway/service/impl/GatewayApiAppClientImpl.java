@@ -1,6 +1,5 @@
 package com.ecmp.apigateway.service.impl;
 
-import com.ecmp.apigateway.exception.InvokeConfigFailException;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -8,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author: hejun
  * @date: 2018/4/26
- * @remark: 配置中心接口-业务层实现-熔断异常
+ * @remark: 配置中心接口-业务层实现
  */
 @Component
 public class GatewayApiAppClientImpl implements FallbackFactory<IGatewayApiAppClient> {
@@ -18,7 +17,7 @@ public class GatewayApiAppClientImpl implements FallbackFactory<IGatewayApiAppCl
         return new IGatewayApiAppClient() {
             @Override
             public Object findAllApiApp() {
-                throw new InvokeConfigFailException();
+                return null;
             }
         };
     }

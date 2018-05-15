@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author: hejun
  * @date: 2018/4/26
- * @remark: 网关路由接口-业务层实现-熔断异常
+ * @remark: 网关路由接口-业务层实现
  */
 @Component
 public class GatewayApiRouterClientImpl implements FallbackFactory<IGatewayApiRouterClient> {

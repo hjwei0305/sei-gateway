@@ -8,6 +8,7 @@ import com.ecmp.apigateway.exception.InvokeConfigFailException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.SearchParam;
+import com.ecmp.apigateway.service.IGatewayApiAppClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
@@ -34,6 +35,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     private IGatewayApiRouterService gatewayApiRouterService;
     @Autowired
     private IGatewayApiRouterClient gatewayApiRouterClient;
+    @Autowired
+    private IGatewayApiAppClient gatewayApiAppClient;
     @Autowired
     private ConfigCenterContextApplication configApplication;
 
@@ -121,5 +124,15 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     @Override
     public GatewayApiService findById(String id) {
         return gatewayApiServiceDao.findByDeletedFalseAndId(id);
+    }
+
+    @Override
+    public Object findAllApiApp() {
+        Object o = gatewayApiAppClient.findAllApiApp();
+        if (ToolUtils.isEmpty(o)) {
+            throw new InvokeConfigFailException();
+        } else {
+            return o;
+        }
     }
 }

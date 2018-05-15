@@ -5,7 +5,6 @@ import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.PageModel;
 import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.apigateway.model.common.SearchParam;
-import com.ecmp.apigateway.service.IGatewayApiAppClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +28,6 @@ public class GatewayApiServiceController {
     private IGatewayApiServiceService gatewayApiServiceService;
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
-    @Autowired
-    private IGatewayApiAppClient gatewayApiAppClient;
 
     /**
      * 显示应用服务页面
@@ -114,7 +111,7 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("config/findAllApiApp")
     public Object findAllApiApp() {
-        Object apiApplications = gatewayApiAppClient.findAllApiApp();
+        Object apiApplications = gatewayApiServiceService.findAllApiApp();
         return ResponseModel.SUCCESS(apiApplications);
     }
 

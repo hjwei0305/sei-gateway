@@ -1,9 +1,11 @@
 package com.ecmp.apigateway.service.impl;
 
 import com.ecmp.apigateway.dao.GatewayApiRouterDao;
+import com.ecmp.apigateway.exception.InvokeRouteFailException;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiRouter;
+import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.ToolUtils;
@@ -23,6 +25,8 @@ import java.util.List;
 public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
     @Autowired
     private GatewayApiRouterDao gatewayApiRouterDao;
+    @Autowired
+    private IGatewayApiRouterClient gatewayApiRouterClient;
 
     @Override
     public GatewayApiRouter getting(GatewayApiRouter gatewayApiRouter) {
@@ -80,5 +84,15 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
     @Override
     public List<GatewayApiRouter> findByServiceId(String serviceId) {
         return gatewayApiRouterDao.findByDeletedFalseAndServiceId(serviceId);
+    }
+
+    @Override
+    public Object refresh() {
+        Object o = gatewayApiRouterClient.refresh();
+        if (ToolUtils.isEmpty(o)) {
+            throw new InvokeRouteFailException();
+        } else {
+            return o;
+        }
     }
 }

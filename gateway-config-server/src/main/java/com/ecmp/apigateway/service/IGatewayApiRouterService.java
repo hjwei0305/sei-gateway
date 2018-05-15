@@ -43,4 +43,10 @@ public interface IGatewayApiRouterService {
      * @return
      */
     List<GatewayApiRouter> findByServiceId(String serviceId);
+
+    /**
+     * 调用网关路由刷新
+     * @return
+     */
+    Object refresh();
 }

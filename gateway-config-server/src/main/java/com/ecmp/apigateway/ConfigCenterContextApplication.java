@@ -1,8 +1,9 @@
 package com.ecmp.apigateway;
 
 import com.ecmp.apigateway.dao.GatewayApiServiceDao;
+import com.ecmp.apigateway.exception.message.MessageRuntimeException;
 import com.ecmp.apigateway.model.GatewayApiService;
-import com.ecmp.apigateway.service.IGatewayApiRouterClient;
+import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.ToolUtils;
 import com.ecmp.util.JsonUtils;
@@ -33,7 +34,7 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
     @Autowired
     private GatewayApiServiceDao gatewayApiServiceDao;
     @Autowired
-    private IGatewayApiRouterClient gatewayApiRouterClient;
+    private IGatewayApiRouterService gatewayApiRouterService;
     @Autowired
     private IGatewayApiServiceService gatewayApiServiceService;
 
@@ -84,7 +85,7 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
                 });
                 //更新路由配置并刷新
                 gatewayApiServiceDao.save(gatewayApiServices);
-                gatewayApiRouterClient.refresh();
+                gatewayApiRouterService.refresh();
             }
         } catch (Exception e) {
             //LogUtil.console("获取配置中心数据异常" + e.getMessage(), true);
@@ -121,9 +122,11 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
                 result = map.get(key);
             } else {
                 //LogUtil.console("未获取到配置中心数据", true);
+                throw new MessageRuntimeException("获取配置中心数据为空");
             }
         } catch (Exception e) {
             //LogUtil.console("获取配置中心数据异常" + e.getMessage(), true);
+            throw new MessageRuntimeException("获取配置中心数据异常");
         }
         return result;
     }

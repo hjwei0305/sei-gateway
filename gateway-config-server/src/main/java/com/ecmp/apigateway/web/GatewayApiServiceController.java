@@ -105,7 +105,7 @@ public class GatewayApiServiceController {
     }
 
     /**
-     * 获取配置中心应用服务
+     * 获取所有应用服务
      * @return
      */
     @ResponseBody
@@ -161,5 +161,16 @@ public class GatewayApiServiceController {
     public Object stopById(String id) {
         gatewayApiServiceService.enableById(id, false);
         return ResponseModel.SUCCESS();
+    }
+
+    /**
+     * 刷新应用服务网关路由
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("router/refresh")
+    public Object refresh() {
+        Object success = gatewayApiRouterService.refresh();
+        return ResponseModel.SUCCESS(success);
     }
 }

@@ -18,7 +18,7 @@ public class ResourceBundleUtil {
         try {
             return bundle.getString(key);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return key;
     }
@@ -36,6 +36,7 @@ public class ResourceBundleUtil {
         try {
             return bundle.getString(key);
         } catch (Exception e) {
+            //e.printStackTrace();
         }
         return key;
     }

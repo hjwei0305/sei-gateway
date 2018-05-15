@@ -2,14 +2,12 @@ package com.ecmp.apigateway.service.impl;
 
 import com.ecmp.apigateway.ConfigCenterContextApplication;
 import com.ecmp.apigateway.dao.GatewayApiServiceDao;
-import com.ecmp.apigateway.exception.InvokeRouteFailException;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;
 import com.ecmp.apigateway.exception.InvokeConfigFailException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiAppClient;
-import com.ecmp.apigateway.service.IGatewayApiRouterClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.EntityUtils;
@@ -33,8 +31,6 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     private GatewayApiServiceDao gatewayApiServiceDao;
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
-    @Autowired
-    private IGatewayApiRouterClient gatewayApiRouterClient;
     @Autowired
     private IGatewayApiAppClient gatewayApiAppClient;
     @Autowired
@@ -74,10 +70,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             });
             gatewayApiServiceDao.save(gatewayApiServices);
             gatewayApiRouterService.removeByServiceId(id);
-            Object o = gatewayApiRouterClient.refresh();
-            if (ToolUtils.isEmpty(o)) {
-                throw new InvokeRouteFailException();
-            }
+            gatewayApiRouterService.refresh();
         }
     }
 
@@ -101,10 +94,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             });
             gatewayApiServiceDao.save(gatewayApiServices);
             gatewayApiRouterService.enableByServiceId(id, enable);
-            Object o = gatewayApiRouterClient.refresh();
-            if (ToolUtils.isEmpty(o)) {
-                throw new InvokeRouteFailException();
-            }
+            gatewayApiRouterService.refresh();
         }
     }
 

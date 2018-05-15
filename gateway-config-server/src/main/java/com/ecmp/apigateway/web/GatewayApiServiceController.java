@@ -170,7 +170,7 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/refresh")
     public Object refresh() {
-        Object success = gatewayApiRouterService.refresh();
-        return ResponseModel.SUCCESS(success);
+        Object status = gatewayApiRouterService.refresh();
+        return ResponseModel.SUCCESS(status);
     }
 }

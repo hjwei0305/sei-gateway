@@ -49,7 +49,7 @@ public class GatewayApiRouterServiceImpl implements IGatewayApiRouterService {
             GatewayApiRouter apiRouterOnly = gatewayApiRouterDao.findByServiceIdAndUrl(gatewayApiRouter.getServiceId(), gatewayApiRouter.getUrl());
             if (ToolUtils.notEmpty(apiRouterOnly)) {
                 EntityUtils.resolveAllFieldsSet(gatewayApiRouter, apiRouterOnly);
-                gatewayApiRouter.setId(apiRouterOnly.getId());
+                gatewayApiRouter.setId(apiRouterOnly.getId()); //*ID值保持一致
             }
             gatewayApiRouter.setPath(ToolUtils.key2Path(gatewayApiRouter.getRouteKey()));
             gatewayApiRouterDao.save(gatewayApiRouter);

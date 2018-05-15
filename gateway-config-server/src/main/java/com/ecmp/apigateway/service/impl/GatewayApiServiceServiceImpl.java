@@ -82,8 +82,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         } else {
             gatewayApiServices.forEach(gatewayApiService -> {
                 gatewayApiService.setServiceAppEnabled(enable);
-                if (enable) { //应用服务启用路由时才获取URL地址
-                    //通过应用服务AppId和应用服务Code获取得到信息
+                if (enable) { //*应用服务启用路由时才获取
+                    //*通过应用服务AppId和应用服务Code获取
                     String appUrl = configApplication.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode());
                     if (ToolUtils.isEmpty(appUrl)) {
                         throw new InvokeConfigFailException();

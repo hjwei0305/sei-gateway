@@ -2,13 +2,16 @@ package com.ecmp.apigateway.zuul;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.RefreshableRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.SimpleRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties.ZuulRoute;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
+import javax.persistence.Column;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,28 +21,16 @@ import java.util.Map;
  * @date: 2018/4/24
  * @remark: 路由定位-定位器
  */
+@Component
 public class RouteLocator extends SimpleRouteLocator implements RefreshableRouteLocator {
-    public final static Logger logger = LoggerFactory.getLogger(RouteLocator.class);
+    private static final  Logger logger = LoggerFactory.getLogger(RouteLocator.class);
 
-    private JdbcTemplate jdbcTemplate;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
-    private ZuulProperties properties;
-
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public RouteLocator(ZuulProperties properties) {
+        super(null, properties);
     }
-
-    public RouteLocator(String servletPath, ZuulProperties properties) {
-        super(servletPath, properties);
-        this.properties = properties;
-        logger.info("servletPath:{}", servletPath);
-    }
-
-    //父类已经提供了这个方法，这里写出来只是为了说明这一个方法很重要！！！
-    /*@Override
-    protected void doRefresh() {
-        super.doRefresh();
-    }*/
 
     @Override
     public void refresh() {
@@ -48,7 +39,7 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
 
     @Override
     protected Map<String, ZuulRoute> locateRoutes() {
-        LinkedHashMap<String, ZuulRoute> routesMap = new LinkedHashMap<String, ZuulRoute>();
+        LinkedHashMap<String, ZuulRoute> routesMap = new LinkedHashMap<>();
         //从application.properties中加载路由信息
         routesMap.putAll(super.locateRoutes());
         //从db中加载路由信息
@@ -61,46 +52,71 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
             if (!path.startsWith("/")) {
                 path = "/" + path;
             }
-            //如果没有在application.properties不需要此实现
-            /*if (StringUtils.hasText(this.properties.getPrefix())) {
-                path = this.properties.getPrefix() + path;
-                if (!path.startsWith("/")) {
-                    path = "/" + path;
-                }
-            }*/
             values.put(path, entry.getValue());
         }
+        logger.info("values is {}",values);
         return values;
     }
 
     private Map<String, ZuulRoute> locateRoutesFromDB() {
         Map<String, ZuulRoute> routes = new LinkedHashMap<>();
-        String sql = "select * from gateway_api_router where deleted = false and enabled = true ";
+        final String sql = "select r.id,r.path,r.strip_prefix,r.retryable,r.version,s.service_appurl " +
+                "from gateway_api_router r left join gateway_api_service s on  r.service_id = s.id\n" +
+                " where r.deleted = false and r.enabled = true  ";
         List<ZuulRouteVO> results = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ZuulRouteVO.class));
         for (ZuulRouteVO result : results) {
             if (org.apache.commons.lang3.StringUtils.isBlank(result.getPath()) || org.apache.commons.lang3.StringUtils.isBlank(result.getUrl())) {
                 continue;
             }
             ZuulRoute zuulRoute = new ZuulRoute();
-            try {
-                org.springframework.beans.BeanUtils.copyProperties(result, zuulRoute);
-            } catch (Exception e) {
-                logger.error("Load Zuul Route info from DB with Error：", e);
-                throw e;
-            }
+            zuulRoute.setId(result.getId());
+            zuulRoute.setPath(result.getPath());
+            zuulRoute.setRetryable(false);
+            zuulRoute.setUrl(result.getUrl());
+            zuulRoute.setStripPrefix(true);
             routes.put(zuulRoute.getPath(), zuulRoute);
         }
         return routes;
     }
 
     public static class ZuulRouteVO {
+        /**
+         * id
+         */
         private String id;
+        /**
+         * 路由key
+         */
+        private String routeKey;
+        /**
+         * 路由路径
+         */
         private String path;
+        /**
+         * 路由应用服务id
+         */
         private String serviceId;
+        /**
+         * 路由指定服务url
+         */
         private String url;
+        /**
+         * 是否重试访问
+         */
+        private boolean retryAble = false;
+        /**
+         * 是否启用路由
+         */
+        private boolean enabled = false;
+        /**
+         * 是否过滤路由路径前缀
+         */
         private boolean stripPrefix = true;
-        private Boolean retryable;
-        private Boolean enabled;
+        /**
+         * 路由接口名称
+         */
+        @Column(name = "interface_name")
+        private String interfaceName;
 
         public String getId() {
             return id;
@@ -108,6 +124,14 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
 
         public void setId(String id) {
             this.id = id;
+        }
+
+        public String getRouteKey() {
+            return routeKey;
+        }
+
+        public void setRouteKey(String routeKey) {
+            this.routeKey = routeKey;
         }
 
         public String getPath() {
@@ -134,6 +158,22 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
             this.url = url;
         }
 
+        public boolean isRetryAble() {
+            return retryAble;
+        }
+
+        public void setRetryAble(boolean retryAble) {
+            this.retryAble = retryAble;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
         public boolean isStripPrefix() {
             return stripPrefix;
         }
@@ -142,20 +182,12 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
             this.stripPrefix = stripPrefix;
         }
 
-        public Boolean getRetryable() {
-            return retryable;
+        public String getInterfaceName() {
+            return interfaceName;
         }
 
-        public void setRetryable(Boolean retryable) {
-            this.retryable = retryable;
-        }
-
-        public Boolean getEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(Boolean enabled) {
-            this.enabled = enabled;
+        public void setInterfaceName(String interfaceName) {
+            this.interfaceName = interfaceName;
         }
     }
 }

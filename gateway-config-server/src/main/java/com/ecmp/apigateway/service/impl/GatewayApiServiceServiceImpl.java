@@ -7,7 +7,6 @@ import com.ecmp.apigateway.exception.InvokeConfigFailException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.SearchParam;
-import com.ecmp.apigateway.service.IGatewayApiAppClient;
 import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.EntityUtils;
@@ -32,8 +31,6 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     @Autowired
     private IGatewayApiRouterService gatewayApiRouterService;
     @Autowired
-    private IGatewayApiAppClient gatewayApiAppClient;
-    @Autowired
     private ConfigCenterContextApplication configApplication;
 
     @Override
@@ -41,7 +38,11 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         if (ToolUtils.isEmpty(gatewayApiService.getServiceAppId()) || ToolUtils.isEmpty(gatewayApiService.getApplicationCode())) {
             throw new RequestParamNullException();
         } else {
+            String appUrl = configApplication.getZookeeperData(gatewayApiService.getServiceAppId(),
+                    gatewayApiService.getServiceAppCode());
+            gatewayApiService.setServiceAppUrl(appUrl);
             gatewayApiServiceDao.save(gatewayApiService);
+            gatewayApiRouterService.saveRouterByService(gatewayApiService);
         }
     }
 
@@ -118,11 +119,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public Object findAllApiApp() {
-        Object o = gatewayApiAppClient.findAllApiApp();
-        if (ToolUtils.isEmpty(o)) {
-            throw new InvokeConfigFailException();
-        } else {
-            return o;
-        }
+        //todo 查询所有路由
+        return null;
     }
 }

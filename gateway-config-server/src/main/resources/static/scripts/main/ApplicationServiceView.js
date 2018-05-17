@@ -306,6 +306,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                 {name: 'id', hidden: true},
                 {name: 'applicationCode', hidden: true},
                 {name: 'interfaceName', index: 'interfaceName', sortable: true, width: 200, label: g.lang.nameText},
+                {name: 'valid', index: 'valid', sortable: true, width: 200, label: g.lang.isValid},
                 //interfaceURIText: "接口uri地址"
                 {name: 'interfaceURI', index: 'interfaceURI', sortable: true, width: 300, label: g.lang.interfaceURIText, formatter: 'link',formatoptions:{target:"_blank"}},
             ],
@@ -435,11 +436,19 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                     name: "url",
                     readonly: true
                 }, {
-                    xtype: "TextArea",
-                    title: g.lang.keyText,
-                    name: "routeKey",
-                    allowBlank: false
-                }]
+                        xtype: "RadioBoxGroup",
+                        title: g.lang.isValid,
+                        name: "valid",
+                        itemspace: 2,
+                        items: [{
+                            title: "false",
+                            name: "false",
+                            checked: true
+                        }, {
+                            title: "true",
+                            name: "true"
+                        }]
+                    }]
             }],
             buttons: [{
                 //cancelText:取消

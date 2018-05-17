@@ -29,6 +29,11 @@ public class GatewayInterface extends Domain {
     //应用code-关联字段
     @Column(name = "application_code", nullable = false, length = 64)
     private String applicationCode;
+    /**
+     * 是否可用
+     */
+    @Column(name = "is_valid", nullable = false)
+    private boolean isValid;
 
     public String getInterfaceName() {
         return interfaceName;
@@ -68,5 +73,13 @@ public class GatewayInterface extends Domain {
 
     public void setApplicationCode(String applicationCode) {
         this.applicationCode = applicationCode;
+    }
+
+    public boolean isValid() {
+        return isValid;
+    }
+
+    public void setValid(boolean valid) {
+        isValid = valid;
     }
 }

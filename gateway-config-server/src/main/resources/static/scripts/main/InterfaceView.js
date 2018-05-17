@@ -129,6 +129,8 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
                 {name: 'interfaceName', index: 'interfaceName', sortable: true, width: 200, label: g.lang.nameText},
                 //interfaceProtocolText: "接口协议"
                 {name: 'interfaceProtocol', index: 'interfaceProtocol', sortable: true, width: 100,label: g.lang.interfaceProtocolText },
+                //is valid 是否可用
+                {name: 'valid', index: 'valid', sortable: true, width: 100,label: g.lang.isValid },
                 //interfaceURIText: "接口uri地址"
                 {name: 'interfaceURI', index: 'interfaceURI', sortable: true, width: 300, label: g.lang.interfaceURIText, formatter: 'link',formatoptions:{target:"_blank"}},
                 //interfaceRemarkText: "接口说明"
@@ -236,6 +238,19 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
                         name: "WEBSERVICE"
                     }]
                 }, {
+                    xtype: "RadioBoxGroup",
+                    title: g.lang.isValid,
+                    name: "valid",
+                    itemspace: 2,
+                    items: [{
+                        title: "false",
+                        name: "false",
+                        checked: true
+                    }, {
+                        title: "true",
+                        name: "true"
+                    }]
+                },{
                     xtype: "TextArea",
                     title: g.lang.interfaceURIText,
                     name: "interfaceURI",

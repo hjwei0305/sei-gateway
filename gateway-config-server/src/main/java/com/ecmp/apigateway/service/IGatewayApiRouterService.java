@@ -1,6 +1,7 @@
 package com.ecmp.apigateway.service;
 
 import com.ecmp.apigateway.model.GatewayApiRouter;
+import com.ecmp.apigateway.model.GatewayApiService;
 
 import java.util.List;
 
@@ -49,4 +50,10 @@ public interface IGatewayApiRouterService {
      * @return
      */
     Object refresh();
+
+    /**
+     * 根据应用服务生成路由配置
+     * @param gatewayApiService
+     */
+    void saveRouterByService(GatewayApiService gatewayApiService);
 }

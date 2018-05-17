@@ -60,7 +60,7 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
 
     private Map<String, ZuulRoute> locateRoutesFromDB() {
         Map<String, ZuulRoute> routes = new LinkedHashMap<>();
-        final String sql = "select r.id,r.path,r.strip_prefix,r.retryable,r.version,s.service_appurl " +
+        final String sql = "select r.id,r.path,r.strip_prefix,r.retryable,r.version,s.service_appurl as url " +
                 "from gateway_api_router r left join gateway_api_service s on  r.service_id = s.id\n" +
                 " where r.deleted = false and r.enabled = true  ";
         List<ZuulRouteVO> results = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ZuulRouteVO.class));

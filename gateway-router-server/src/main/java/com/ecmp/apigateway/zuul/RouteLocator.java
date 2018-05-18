@@ -25,8 +25,10 @@ import java.util.Map;
 public class RouteLocator extends SimpleRouteLocator implements RefreshableRouteLocator {
     private static final  Logger logger = LoggerFactory.getLogger(RouteLocator.class);
 
+    private static final String PATH_SERPERATE = "/";
+
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     public RouteLocator(ZuulProperties properties) {
         super(null, properties);
@@ -49,8 +51,8 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
         for (Map.Entry<String, ZuulRoute> entry : routesMap.entrySet()) {
             String path = entry.getKey();
             //Prepend with slash if not already present.
-            if (!path.startsWith("/")) {
-                path = "/" + path;
+            if (!path.startsWith(PATH_SERPERATE)) {
+                path = PATH_SERPERATE + path;
             }
             values.put(path, entry.getValue());
         }
@@ -60,9 +62,8 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
 
     private Map<String, ZuulRoute> locateRoutesFromDB() {
         Map<String, ZuulRoute> routes = new LinkedHashMap<>();
-        final String sql = "select r.id,r.path,r.strip_prefix,r.retryable,r.version,s.service_appurl as url " +
-                "from gateway_api_router r left join gateway_api_service s on  r.service_id = s.id\n" +
-                " where r.deleted = false and r.enabled = true  ";
+        final String sql = "select id,service_path path,strip_prefix,retry_able,service_appversion,service_appurl as url " +
+                "from gateway_api_service WHERE deleted = false and service_appenabled = TRUE";
         List<ZuulRouteVO> results = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ZuulRouteVO.class));
         for (ZuulRouteVO result : results) {
             if (org.apache.commons.lang3.StringUtils.isBlank(result.getPath()) || org.apache.commons.lang3.StringUtils.isBlank(result.getUrl())) {

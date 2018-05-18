@@ -27,7 +27,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             xtype: "GridPanel",
             region: "west",
             id: "applicationServiceGrid",
-            width: "50%",
+            width: "61.8%",
             title: this.lang.applicationServiceText,
             border: true,
             padding: 0,
@@ -64,8 +64,14 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                     {name: 'serviceAppCode',hidden: true},
                     {name: 'applicationCode',hidden: true},
                     {name: 'serviceAppUrl',hidden: true},
+                    {name: 'servicePath', hidden: true},
+                    {name: 'retryAble', hidden: true},
+                    {name: 'stripPrefix', hidden: true},
                     //serviceAppNameText: 名称
                     {name: 'serviceAppName', index: 'serviceAppName', sortable: false, width: 150, label: g.lang.serviceAppNameText},
+                    //servicePath：路由规则
+                    {name: 'servicePath', index: 'servicePath', sortable: false, width: 150, label: g.lang.servicePathText},
+
                     //serviceAppRemarkText: 说明
                     {name: 'serviceAppRemark', index: 'serviceAppRemark', sortable: false, width: 150, label: g.lang.serviceAppRemarkText},
                     //serviceAppVersionText: 版本
@@ -292,21 +298,9 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             loadonce: false,
             datatype: "local",
             colModel: [
-                {
-                    //operateText:操作
-                    label: g.lang.operateText,
-                    name: "operate",
-                    index: "operate",
-                    width: 80,
-                    align: "center",
-                    formatter: function (cellvalue, options, rowObject) {
-                        return "<i  class='ecmp-common-configuration icon-space' title='" + g.lang.configText + "' targetId='"+rowObject.id+"'></i>";
-                    }
-                },
                 {name: 'id', hidden: true},
                 {name: 'applicationCode', hidden: true},
                 {name: 'interfaceName', index: 'interfaceName', sortable: true, width: 200, label: g.lang.nameText},
-                {name: 'valid', index: 'valid', sortable: true, width: 200, label: g.lang.isValid},
                 //interfaceURIText: "接口uri地址"
                 {name: 'interfaceURI', index: 'interfaceURI', sortable: true, width: 300, label: g.lang.interfaceURIText, formatter: 'link',formatoptions:{target:"_blank"}},
             ],
@@ -403,70 +397,6 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             g.doStart(data.id,false);
         });
     },
-    configForm: function () {
-        var g = this;
-        g.editWin = EUI.Window({
-            title: String.format(g.lang.configTitleText, g.lang.interfaceText),
-            iconCss: "ecmp-common-configuration",
-            height: 280,
-            padding: 15,
-            width: 430,
-            items: [{
-                xtype: "FormPanel",
-                id: "configForm",
-                padding: 0,
-                defaultConfig: {
-                    labelWidth: 110,
-                    width: 315
-                },
-                items: [
-                {
-                    xtype: "TextField",
-                    hidden: true,
-                    name: "serviceId"
-                },
-                {
-                    xtype: "TextField",
-                    title: g.lang.nameText,
-                    name: "interfaceName",
-                    readonly: true
-                }, {
-                    xtype: "TextArea",
-                    title: g.lang.interfaceURIText,
-                    name: "url",
-                    readonly: true
-                }, {
-                        xtype: "RadioBoxGroup",
-                        title: g.lang.isValid,
-                        name: "valid",
-                        itemspace: 2,
-                        items: [{
-                            title: "false",
-                            name: "false",
-                            checked: true
-                        }, {
-                            title: "true",
-                            name: "true"
-                        }]
-                    }]
-            }],
-            buttons: [{
-                //cancelText:取消
-                title: g.lang.cancelText,
-                handler: function () {
-                    g.editWin.remove();
-                }
-            }, {
-                // saveText:保存
-                title: g.lang.saveText,
-                selected: true,
-                handler: function () {
-                    g.doSetting();
-                }
-            }]
-        });
-        g.configFormCmp = EUI.getCmp("configForm");
-    },
     //执行启动或终止
     doStart: function(id,startFlag){
         var g = this;
@@ -535,38 +465,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             params: params,
             async: false,
             success: function (status) {
-                // myMask.hide();
-                /* g.configForm();
-                g.configFormCmp.loadData(status.data);*/
                g.routeKey = status.data&&status.data.routeKey;
-            },
-            failure: function (status) {
-                myMask.hide();
-                g.message(status.message);
-            }
-        });
-    },
-    doSetting: function () {
-        var g = this;
-        if (!g.configFormCmp.isValid()) {
-            g.message(g.lang.unFilledText);
-            return;
-        }
-        var data = g.configFormCmp.getFormValue();
-        var myMask = EUI.LoadMask({
-            //saveMaskMessageText:"正在加载，请稍候..."
-            msg: g.lang.saveMaskMessageText
-        });
-        EUI.Store({
-            url: _ctxPath + "/gateway_api_service/router/setting",
-            params: data,
-            success: function (status) {
-                myMask.hide();
-                g.editWin.remove();
-                EUI.ProcessStatus({
-                    success: true,
-                    msg: status.message
-                });
             },
             failure: function (status) {
                 myMask.hide();
@@ -599,6 +498,11 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                     },
                     {
                         xtype: "TextField",
+                        name: "serviceAppEnabled",
+                        hidden: true
+                    },
+                    {
+                        xtype: "TextField",
                         title: g.lang.serviceAppIdText,
                         name: "serviceAppId",
                         readonly:g.isEdit
@@ -613,14 +517,47 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                         xtype: "TextArea",
                         title: g.lang.serviceAppUrlText,
                         name: "serviceAppUrl",
-                        allowBlank: true,
-                        readonly: true,
+                        allowBlank: !g.isEdit,
                         hidden: !g.isEdit
                     },
                     {
                         xtype: "TextField",
                         title: g.lang.serviceAppNameText,
                         name: "serviceAppName"
+                    },
+                    {
+                        xtype: "TextField",
+                        title: g.lang.servicePathText,
+                        allowBlank: true,
+                        name: "servicePath"
+                    },
+                    {
+                        xtype: "RadioBoxGroup",
+                        title: g.lang.retryAbleText,
+                        name: "retryAble",
+                        itemspace: 2,
+                        items: [{
+                            title: "否",
+                            name: "false",
+                            checked: true
+                        }, {
+                            title: "是",
+                            name: "true"
+                        }]
+                    },
+                    {
+                        xtype: "RadioBoxGroup",
+                        title: g.lang.stripPrefixText,
+                        name: "stripPrefix",
+                        itemspace: 2,
+                        items: [{
+                            title: "否",
+                            name: "false",
+                            checked: true
+                        }, {
+                            title: "是",
+                            name: "true"
+                        }]
                     },
                     {
                         xtype: "TextField",
@@ -706,6 +643,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
     saveData: function(data,url){
         var g = this;
         var myMask = EUI.LoadMask({msg: g.lang.saveMaskMessageText});
+        data.serviceAppEnabled = false;
         EUI.Store({
             url: url,
             params: data,

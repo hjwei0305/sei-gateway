@@ -63,4 +63,11 @@ public interface IGatewayApiServiceService {
      * @return
      */
     Object findAllApiApp();
+
+    /**
+     * 刷新路由
+     *
+     * @return
+     */
+    Object refresh();
 }

@@ -43,6 +43,25 @@ public class GatewayApiService extends Domain {
      */
     @Column(name = "service_appurl")
     private String serviceAppUrl;
+
+    /**
+     * 路由匹配路径
+     */
+    @Column(name = "service_path")
+    private String servicePath;
+
+    /**
+     * 是否重试访问
+     */
+    @Column(name = "retry_able")
+    private boolean retryAble;
+
+    /**
+     * 是否过滤路由路径前缀
+     */
+    @Column(name = "strip_prefix")
+    private boolean stripPrefix;
+
     /**
      * 应用服务是否启用路由
      */
@@ -116,5 +135,29 @@ public class GatewayApiService extends Domain {
 
     public void setApplicationCode(String applicationCode) {
         this.applicationCode = applicationCode;
+    }
+
+    public String getServicePath() {
+        return servicePath;
+    }
+
+    public void setServicePath(String servicePath) {
+        this.servicePath = servicePath;
+    }
+
+    public boolean isRetryAble() {
+        return retryAble;
+    }
+
+    public void setRetryAble(boolean retryAble) {
+        this.retryAble = retryAble;
+    }
+
+    public boolean isStripPrefix() {
+        return stripPrefix;
+    }
+
+    public void setStripPrefix(boolean stripPrefix) {
+        this.stripPrefix = stripPrefix;
     }
 }

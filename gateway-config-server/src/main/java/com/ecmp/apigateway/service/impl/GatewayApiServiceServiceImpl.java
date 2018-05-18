@@ -7,15 +7,22 @@ import com.ecmp.apigateway.exception.InvokeConfigFailException;
 import com.ecmp.apigateway.exception.RequestParamNullException;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.SearchParam;
-import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.ToolUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -26,12 +33,19 @@ import java.util.List;
 @Service
 @Transactional
 public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
+
+    private static final Logger logger = LoggerFactory.getLogger(GatewayApiServiceServiceImpl.class);
+
     @Autowired
     private GatewayApiServiceDao gatewayApiServiceDao;
     @Autowired
-    private IGatewayApiRouterService gatewayApiRouterService;
-    @Autowired
     private ConfigCenterContextApplication configApplication;
+
+    @Value("${gateway.route.service.url}")
+    private String gateWayUrl;
+
+    @Value("${gateway.route.service.path}")
+    private String gateWayPath;
 
     @Override
     public void save(GatewayApiService gatewayApiService) {
@@ -41,8 +55,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             String appUrl = configApplication.getZookeeperData(gatewayApiService.getServiceAppId(),
                     gatewayApiService.getServiceAppCode());
             gatewayApiService.setServiceAppUrl(appUrl);
+            gatewayApiService.setServicePath(ToolUtils.key2Path(getRouteKey(appUrl)));
             gatewayApiServiceDao.save(gatewayApiService);
-            gatewayApiRouterService.saveRouterByService(gatewayApiService);
         }
     }
 
@@ -70,8 +84,6 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
                 gatewayApiService.setServiceAppEnabled(false);
             });
             gatewayApiServiceDao.save(gatewayApiServices);
-            gatewayApiRouterService.removeByServiceId(id);
-            gatewayApiRouterService.refresh();
         }
     }
 
@@ -94,8 +106,6 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
                 }
             });
             gatewayApiServiceDao.save(gatewayApiServices);
-            gatewayApiRouterService.enableByServiceId(id, enable);
-            gatewayApiRouterService.refresh();
         }
     }
 
@@ -120,6 +130,29 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     @Override
     public Object findAllApiApp() {
         //todo 查询所有路由
+        return null;
+    }
+
+    /**
+     * 根据配置中心的appUrl获取路由前缀 ，example：/basic-service/
+     *
+     * @param appUrl
+     * @return
+     */
+    private String getRouteKey(String appUrl) {
+        //简单正则匹配ip地址
+        return appUrl.replaceAll("http://\\d*\\.\\d*\\.\\d*\\.\\d*:\\d*","");
+    }
+
+    @Override
+    public Object refresh() {
+        HttpGet get =new HttpGet(gateWayUrl+gateWayPath);
+        try(CloseableHttpClient httpClient = HttpClients.createDefault();
+            CloseableHttpResponse response =httpClient.execute(get)){
+            return org.apache.http.util.EntityUtils.toString(response.getEntity());
+        } catch (IOException e) {
+            logger.error("refresh error",e);
+        }
         return null;
     }
 }

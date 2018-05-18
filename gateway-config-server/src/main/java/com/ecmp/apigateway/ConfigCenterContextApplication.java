@@ -3,8 +3,8 @@ package com.ecmp.apigateway;
 import com.ecmp.apigateway.dao.GatewayApiServiceDao;
 import com.ecmp.apigateway.exception.message.MessageRuntimeException;
 import com.ecmp.apigateway.model.GatewayApiService;
-import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
+import com.ecmp.apigateway.service.impl.GatewayApiServiceServiceImpl;
 import com.ecmp.apigateway.utils.ToolUtils;
 import com.ecmp.util.JsonUtils;
 import org.apache.commons.lang.StringUtils;
@@ -12,6 +12,8 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.NodeCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +31,11 @@ import java.util.Objects;
  */
 @Component
 public class ConfigCenterContextApplication implements InitializingBean, DisposableBean {
+    private static final Logger logger = LoggerFactory.getLogger(GatewayApiServiceServiceImpl.class);
     @Autowired
     private CuratorFramework curatorFramework;
     @Autowired
     private GatewayApiServiceDao gatewayApiServiceDao;
-    @Autowired
-    private IGatewayApiRouterService gatewayApiRouterService;
     @Autowired
     private IGatewayApiServiceService gatewayApiServiceService;
 
@@ -71,24 +72,24 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
                                         String newAppUrl = map.get(gatewayApiService.getServiceAppCode());
                                         gatewayApiService.setServiceAppUrl(newAppUrl);
                                     } else {
-                                        //LogUtil.console("未获取到配置中心数据", true);
+                                        logger.error("未获取到配置中心数据");
                                     }
                                 } else {
-                                    //LogUtil.console("未获取到配置中心数据", true);
+                                    logger.error("未获取到配置中心数据");
                                 }
                             }
                         });
                         watcher.start();
                     } catch (Exception e) {
-                        //LogUtil.console("获取配置中心数据异常" + e.getMessage(), true);
+                        logger.error("未获取到配置中心数据", e);
                     }
                 });
                 //更新路由配置并刷新
                 gatewayApiServiceDao.save(gatewayApiServices);
-                gatewayApiRouterService.refresh();
+                gatewayApiServiceService.refresh();
             }
         } catch (Exception e) {
-            //LogUtil.console("获取配置中心数据异常" + e.getMessage(), true);
+            logger.error("未获取到配置中心数据");
         }
     }
 
@@ -121,11 +122,9 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
                 Map<String, String> map = configMap.get(key);
                 result = map.get(key);
             } else {
-                //LogUtil.console("未获取到配置中心数据", true);
                 throw new MessageRuntimeException("未获取到配置中心数据");
             }
         } catch (Exception e) {
-            //LogUtil.console("获取配置中心数据异常" + e.getMessage(), true);
             throw new MessageRuntimeException("获取配置中心数据异常");
         }
         return result;

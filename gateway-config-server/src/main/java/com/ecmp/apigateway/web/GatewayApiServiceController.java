@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author: hejun
  * @date: 2018/4/24
  * @remark: 应用服务-控制层跳转
+ * @update:liusonglin 把路由刷新放到控制层(数据库事物提交后)
  */
 @Controller
 @RequestMapping(value = "/gateway_api_service")

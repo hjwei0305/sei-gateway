@@ -9,6 +9,7 @@ import javax.persistence.Table;
  * @author: hejun
  * @date: 2018/4/24
  * @remark: 应用服务-实体类
+ * @update:liusonglin 新增路由配置字段
  */
 @Entity
 @Table(name = "gateway_api_service")

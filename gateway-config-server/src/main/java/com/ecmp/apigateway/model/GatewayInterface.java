@@ -9,6 +9,7 @@ import javax.persistence.*;
  * @author:wangdayin
  * @date:2018/4/24
  * @remark: 网关-接口实体
+ * @update:liusonglin 新增部分控制字段
  */
 @Entity
 @Table(name = "gateway_interface")

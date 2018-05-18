@@ -29,6 +29,7 @@ import java.util.List;
  * @author: hejun
  * @date: 2018/4/25
  * @remark: 应用服务-业务层实现
+ * @update：liusonglin 去掉routerService,所有router信息放到service里，事物未提交前调用刷新不会跟新路由
  */
 @Service
 @Transactional
@@ -55,7 +56,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             String appUrl = configApplication.getZookeeperData(gatewayApiService.getServiceAppId(),
                     gatewayApiService.getServiceAppCode());
             gatewayApiService.setServiceAppUrl(appUrl);
-            gatewayApiService.setServicePath(ToolUtils.key2Path(getRouteKey(appUrl)));
+            gatewayApiService.setServicePath(ToolUtils.key2Path(ToolUtils.getRouteKey(appUrl)));
             gatewayApiServiceDao.save(gatewayApiService);
         }
     }
@@ -131,17 +132,6 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     public Object findAllApiApp() {
         //todo 查询所有路由
         return null;
-    }
-
-    /**
-     * 根据配置中心的appUrl获取路由前缀 ，example：/basic-service/
-     *
-     * @param appUrl
-     * @return
-     */
-    private String getRouteKey(String appUrl) {
-        //简单正则匹配ip地址
-        return appUrl.replaceAll("http://\\d*\\.\\d*\\.\\d*\\.\\d*:\\d*","");
     }
 
     @Override

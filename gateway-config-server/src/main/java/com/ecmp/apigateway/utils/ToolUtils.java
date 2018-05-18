@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
  * @author: hejun
  * @date: 2018/4/25
  * @remark: 工具类
+ * @update:liusonglin 新增获取routerKey的方法
  */
 public class ToolUtils {
 
@@ -320,6 +321,17 @@ public class ToolUtils {
         String[] temp = str.split(",");
         for (String s : temp) result.add(s);
         return result;
+    }
+
+    /**
+     * 根据配置中心的appUrl获取路由前缀 ，example：/basic-service/
+     *
+     * @param appUrl
+     * @return
+     */
+    public static String getRouteKey(String appUrl) {
+        //简单正则匹配ip地址
+        return appUrl.replaceAll("http://\\d*\\.\\d*\\.\\d*\\.\\d*:\\d*","");
     }
 
     public static void main(String[] args) {

@@ -52,4 +52,10 @@ public interface GatewayApiServiceDao extends JpaRepository<GatewayApiService, S
      * @return
      */
     List<GatewayApiService> findByDeletedFalseAndIdIn(@Param("id") List<String> id);
+
+    /**
+     * 未删除可用的服务信息
+     * @return
+     */
+    List<GatewayApiService> findByDeletedFalseAndServiceAppEnabledTrue();
 }

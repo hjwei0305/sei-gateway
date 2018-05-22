@@ -58,4 +58,12 @@ public interface GatewayInterfaceDao extends JpaRepository<GatewayInterface, Str
      * @return
      */
     List<GatewayInterface> findByDeletedFalseAndApplicationCode(String applicationCode);
+
+
+    /**
+     * 获取不可用接口集合
+     *
+     * @return
+     */
+    List<GatewayInterface> findByIsValidFalse();
 }

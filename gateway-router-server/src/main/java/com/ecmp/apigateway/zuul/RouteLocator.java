@@ -1,5 +1,7 @@
 package com.ecmp.apigateway.zuul;
 
+import com.ecmp.apigateway.dao.GatewayApiServiceDao;
+import com.ecmp.apigateway.model.GatewayApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,11 +9,8 @@ import org.springframework.cloud.netflix.zuul.filters.RefreshableRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.SimpleRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties.ZuulRoute;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
     private static final String PATH_SERPERATE = "/";
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private GatewayApiServiceDao gatewayApiServiceDao;
 
     public RouteLocator(ZuulProperties properties) {
         super(null, properties);
@@ -62,133 +61,20 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
 
     private Map<String, ZuulRoute> locateRoutesFromDB() {
         Map<String, ZuulRoute> routes = new LinkedHashMap<>();
-        final String sql = "select id,service_path path,strip_prefix,retry_able,service_appversion,service_appurl as url " +
-                "from gateway_api_service WHERE deleted = false and service_appenabled = TRUE";
-        List<ZuulRouteVO> results = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ZuulRouteVO.class));
-        for (ZuulRouteVO result : results) {
-            if (org.apache.commons.lang3.StringUtils.isBlank(result.getPath()) || org.apache.commons.lang3.StringUtils.isBlank(result.getUrl())) {
+        List<GatewayApiService> results = gatewayApiServiceDao.findByDeletedFalseAndServiceAppEnabledTrue();
+        for (GatewayApiService result : results) {
+            if (org.apache.commons.lang3.StringUtils.isBlank(result.getServicePath()) ||
+                    org.apache.commons.lang3.StringUtils.isBlank(result.getServiceAppUrl())) {
                 continue;
             }
             ZuulRoute zuulRoute = new ZuulRoute();
             zuulRoute.setId(result.getId());
-            zuulRoute.setPath(result.getPath());
-            zuulRoute.setRetryable(false);
-            zuulRoute.setUrl(result.getUrl());
-            zuulRoute.setStripPrefix(true);
+            zuulRoute.setPath(result.getServicePath());
+            zuulRoute.setRetryable(result.isRetryAble());
+            zuulRoute.setUrl(result.getServiceAppUrl());
+            zuulRoute.setStripPrefix(result.isStripPrefix());
             routes.put(zuulRoute.getPath(), zuulRoute);
         }
         return routes;
-    }
-
-    public static class ZuulRouteVO {
-        /**
-         * id
-         */
-        private String id;
-        /**
-         * 路由key
-         */
-        private String routeKey;
-        /**
-         * 路由路径
-         */
-        private String path;
-        /**
-         * 路由应用服务id
-         */
-        private String serviceId;
-        /**
-         * 路由指定服务url
-         */
-        private String url;
-        /**
-         * 是否重试访问
-         */
-        private boolean retryAble = false;
-        /**
-         * 是否启用路由
-         */
-        private boolean enabled = false;
-        /**
-         * 是否过滤路由路径前缀
-         */
-        private boolean stripPrefix = true;
-        /**
-         * 路由接口名称
-         */
-        @Column(name = "interface_name")
-        private String interfaceName;
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getRouteKey() {
-            return routeKey;
-        }
-
-        public void setRouteKey(String routeKey) {
-            this.routeKey = routeKey;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        public void setPath(String path) {
-            this.path = path;
-        }
-
-        public String getServiceId() {
-            return serviceId;
-        }
-
-        public void setServiceId(String serviceId) {
-            this.serviceId = serviceId;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public boolean isRetryAble() {
-            return retryAble;
-        }
-
-        public void setRetryAble(boolean retryAble) {
-            this.retryAble = retryAble;
-        }
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public boolean isStripPrefix() {
-            return stripPrefix;
-        }
-
-        public void setStripPrefix(boolean stripPrefix) {
-            this.stripPrefix = stripPrefix;
-        }
-
-        public String getInterfaceName() {
-            return interfaceName;
-        }
-
-        public void setInterfaceName(String interfaceName) {
-            this.interfaceName = interfaceName;
-        }
     }
 }

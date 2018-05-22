@@ -79,6 +79,7 @@ public class GatewayApplicationController {
      * @param gatewayApplication
      * @return
      */
+    @ResponseBody
     @RequestMapping("/modify_gateway_application")
     public Object modifyGatewayApplication(GatewayApplication gatewayApplication) {
         this.gatewayApplicationService.modifyGatewayApplication(gatewayApplication);

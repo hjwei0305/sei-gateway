@@ -12,13 +12,18 @@ import java.util.ResourceBundle;
  * 基础信息获取工具类
  */
 public class ResourceBundleUtil {
-    protected static ResourceBundle bundle = ResourceBundle.getBundle("messages");
+
+    private ResourceBundleUtil(){
+        System.out.println("init ResourceBundleUtil");
+    }
+
+    private static ResourceBundle bundle = ResourceBundle.getBundle("messages");
 
     public static String getString(String key) {
         try {
             return bundle.getString(key);
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         return key;
     }
@@ -31,7 +36,7 @@ public class ResourceBundleUtil {
         return Boolean.parseBoolean(getString(key));
     }
 
-    public static String getString(String key, String resource) {
+    private static String getString(String key, String resource) {
         bundle = ResourceBundle.getBundle(resource);
         try {
             return bundle.getString(key);

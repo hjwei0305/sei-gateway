@@ -53,7 +53,7 @@ public class InterfaceAccessFilter extends ZuulFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
         ctx.setSendZuulResponse(false);
         ctx.setResponseStatusCode(404);
-        ctx.setResponseBody(JsonUtils.toJson(ResponseModel.ERROR()));
+        ctx.setResponseBody(JsonUtils.toJson(ResponseModel.NOT_FOUND("gateway.interface.deny")));
         return null;
     }
 

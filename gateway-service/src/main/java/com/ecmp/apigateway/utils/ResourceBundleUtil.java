@@ -1,5 +1,7 @@
 package com.ecmp.apigateway.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
@@ -11,10 +13,10 @@ import java.util.ResourceBundle;
  * <p>
  * 基础信息获取工具类
  */
+@Slf4j
 public class ResourceBundleUtil {
 
     private ResourceBundleUtil(){
-        System.out.println("init ResourceBundleUtil");
     }
 
     private static ResourceBundle bundle = ResourceBundle.getBundle("messages");
@@ -23,7 +25,7 @@ public class ResourceBundleUtil {
         try {
             return bundle.getString(key);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("国际化出错，error is {}",e);
         }
         return key;
     }
@@ -41,7 +43,7 @@ public class ResourceBundleUtil {
         try {
             return bundle.getString(key);
         } catch (Exception e) {
-            //e.printStackTrace();
+            log.error("国际化出错，error is {}",e);
         }
         return key;
     }
@@ -82,10 +84,9 @@ public class ResourceBundleUtil {
     private static String builder(String key, ResourceBundle bundles, Object[] params) {
         try {
             String value = bundles.getString(key);
-            MessageFormat form = new MessageFormat(value);
-            return form.format(value, params);
+            return MessageFormat.format(value, params);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("ResourceBundle builder error,{}",e);
             return "error";
         }
     }

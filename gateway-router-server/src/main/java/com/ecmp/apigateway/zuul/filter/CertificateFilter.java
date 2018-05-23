@@ -50,7 +50,7 @@ public class CertificateFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        return false;
+        return true;
     }
 
     /***
@@ -67,7 +67,7 @@ public class CertificateFilter extends ZuulFilter {
             log.error("没有权限认证信息");
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(503);
-            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.ERROR()));
+            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.ERROR("gateway.certification.empty")));
             return null;
         }
         String jwt = authorization.replace(TOKEN_PREFIX,"");
@@ -83,7 +83,7 @@ public class CertificateFilter extends ZuulFilter {
             log.error("公钥解密失败,error is {}",e);
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(503);
-            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.NOT_FOUND("公钥解密失败，系统无法认证")));
+            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.NOT_FOUND("gateway.certification.error")));
             return null;
         }
         return null;

@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "/gateway_route_service")
 public class RouteController {
+
     @Autowired
-    RefreshService refreshService;
+    private RefreshService refreshService;
+
     @Autowired
-    ZuulHandlerMapping zuulHandlerMapping;
+    private ZuulHandlerMapping zuulHandlerMapping;
 
     @ResponseBody
     @RequestMapping("/router/refresh")

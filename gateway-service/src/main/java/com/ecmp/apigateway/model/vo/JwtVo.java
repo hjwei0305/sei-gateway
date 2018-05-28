@@ -11,9 +11,6 @@ import lombok.ToString;
  * </p>
  * User:liusonglin; Date:2018/5/22;ProjectName:api-gateway;
  */
-@Setter
-@Getter
-@ToString
 public class JwtVo {
 
     private String appId;
@@ -23,4 +20,37 @@ public class JwtVo {
     private String key;
 
     private String uri;
+
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public String getVal() {
+        return val;
+    }
+
+    public void setVal(String val) {
+        this.val = val;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 }

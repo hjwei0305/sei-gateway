@@ -35,8 +35,19 @@ repositories {
 	mavenLocal()
 	maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group/' }
 }
+
+
+apply plugin: 'war'
+war{
+	//包名称
+	archiveName "${baseName}.${extension}"
+	//包存放路径
+	destinationDir = file("${rootProject.projectDir}/build/war")
+}
+
 dependencies {
 	compile project (':gateway-service')
+	compile project (':gateway-config-server')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile("org.springframework.cloud:spring-cloud-starter-netflix-zuul:${springCloudVersion}")
 	compile('org.springframework.boot:spring-boot-devtools')

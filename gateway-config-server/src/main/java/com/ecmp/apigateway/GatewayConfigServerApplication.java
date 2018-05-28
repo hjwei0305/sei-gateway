@@ -1,5 +1,6 @@
 package com.ecmp.apigateway;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -39,9 +40,15 @@ public class GatewayConfigServerApplication {
      */
     @Bean
     public CuratorFramework curatorFramework() {
+        //优先从系统环境变量中读取
+        String zkHost = System.getenv().get("ECMP_CONFIG_CENTER");
+        if (StringUtils.isBlank(zkHost)) {
+            zkHost = connects;
+        }
+
         CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
         CuratorFramework client = builder
-                .connectString(connects)
+                .connectString(zkHost)
                 .sessionTimeoutMs(5000)
                 .connectionTimeoutMs(5000)
                 .canBeReadOnly(true)

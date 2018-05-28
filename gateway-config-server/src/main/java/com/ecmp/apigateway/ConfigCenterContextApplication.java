@@ -106,12 +106,24 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
     }
 
     /**
-     * 根据appId和应用代码获取应用服务地址
+     * 根据appId和参数键获取应用服务地址
      * @param appId 应用标识
      * @param key   应用代码
      * @return 返回应用服务API地址
      */
     public String getZookeeperData(String appId, String key) {
+        String result = getZookeeperData(appId, key, key);
+
+        return result;
+    }
+
+    /**
+     * 根据appId、参数键、配置键获取应用服务地址
+     * @param appId 应用标识
+     * @param key   应用代码
+     * @return 返回应用服务API地址
+     */
+    public String getZookeeperData(String appId, String key, String mapKey) {
         String result = null;
         try {
             this.checkZookeeperState();
@@ -120,7 +132,7 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
             if (StringUtils.isNotBlank(jsonData)) {
                 Map<String, Map<String, String>> configMap = JsonUtils.fromJson(jsonData, HashMap.class);
                 Map<String, String> map = configMap.get(key);
-                result = map.get(key);
+                result = map.get(mapKey);
             } else {
                 throw new MessageRuntimeException("未获取到配置中心数据");
             }

@@ -10,8 +10,7 @@ import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.ToolUtils;
-import lombok.extern.log4j.Log4j;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -138,7 +137,18 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public Object refresh() {
-        HttpGet get =new HttpGet(gateWayUrl+gateWayPath);
+        //优先从系统环境变量中读取
+        String gatewayHost;
+        String appId = System.getenv("ECMP_APP_ID");
+        if (StringUtils.isNotBlank(appId)) {
+            String apiGatewayHost =configApplication.getZookeeperData(appId,"API_GATEWAY_HOST");
+            gatewayHost = apiGatewayHost;
+        } else {
+            gatewayHost=gateWayUrl;
+        }
+
+
+        HttpGet get =new HttpGet(gatewayHost+gateWayPath);
         try(CloseableHttpClient httpClient = HttpClients.createDefault();
             CloseableHttpResponse response =httpClient.execute(get)){
             return org.apache.http.util.EntityUtils.toString(response.getEntity());

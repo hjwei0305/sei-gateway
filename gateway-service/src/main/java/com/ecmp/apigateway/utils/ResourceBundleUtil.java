@@ -13,7 +13,6 @@ import java.util.ResourceBundle;
  * <p>
  * 基础信息获取工具类
  */
-@Slf4j
 public class ResourceBundleUtil {
 
     private ResourceBundleUtil(){
@@ -25,7 +24,7 @@ public class ResourceBundleUtil {
         try {
             return bundle.getString(key);
         } catch (Exception e) {
-            log.error("国际化出错，error is {}",e);
+            System.err.println(e);
         }
         return key;
     }
@@ -43,7 +42,7 @@ public class ResourceBundleUtil {
         try {
             return bundle.getString(key);
         } catch (Exception e) {
-            log.error("国际化出错，error is {}",e);
+            System.err.println(e);
         }
         return key;
     }
@@ -86,7 +85,7 @@ public class ResourceBundleUtil {
             String value = bundles.getString(key);
             return MessageFormat.format(value, params);
         } catch (Exception e) {
-            log.error("ResourceBundle builder error,{}",e);
+            System.err.println(e);
             return "error";
         }
     }

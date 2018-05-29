@@ -2,23 +2,25 @@ package com.ecmp.apigateway.zuul.filter;
 
 import com.ecmp.apigateway.ZKService;
 import com.ecmp.apigateway.model.common.ResponseModel;
-import com.ecmp.apigateway.model.vo.JwtVo;
 import com.ecmp.util.JsonUtils;
 import com.ecmp.util.RSAUtils;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import io.jsonwebtoken.*;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.security.Key;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -27,12 +29,13 @@ import java.util.Map;
  * </p>
  * User:liusonglin; Date:2018/5/18;ProjectName:api-gateway;
  */
-@Slf4j
 @Component
 public class CertificateFilter extends ZuulFilter {
+    private static final Logger log = LoggerFactory.getLogger(CertificateFilter.class);
 
     private static final String TOKEN_PREFIX = "Bearer";
-    private static final String HEADER_STRING = "Authorization";
+    private static final String HEADER_STRING = "ecmp-token";
+    private static final String APP_ID = "appId";
 
     @Autowired
     private ZKService zkService;
@@ -42,6 +45,9 @@ public class CertificateFilter extends ZuulFilter {
 
     @Value("${certification.center.path}")
     private String certificationCenterPath;
+
+    @Value("${default.public.key}")
+    private String defaultPublicKey;
 
     @Override
     public String filterType() {
@@ -66,6 +72,10 @@ public class CertificateFilter extends ZuulFilter {
     @Override
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
+        Object isSuccess = ctx.get("isSuccess");
+        if(isSuccess !=null && !((Boolean)isSuccess)){
+            return null;
+        }
         //默认的浏览器权限请求头 如:Authorization:Bearer token
         String authorization = ctx.getRequest().getHeader(HEADER_STRING);
         if(StringUtils.isBlank(authorization)){
@@ -75,18 +85,21 @@ public class CertificateFilter extends ZuulFilter {
             return null;
         }
         String jwt = authorization.replace(TOKEN_PREFIX,"");
-        JwtVo jwtVo = parseJwt(jwt);
-        String result = getPublicKey(jwtVo.getAppId());
-        Map<String,Object> resultMap = JsonUtils.fromJson(result, Map.class);
-        String publicKey = String.valueOf(resultMap.get("publicKey"));
-        String valJson = null;
+        String appId = ctx.getRequest().getHeader(APP_ID);
+        String result = getPublicKey(appId);
+        String publicKey = defaultPublicKey;
+        if(result != null) {
+            Map<String, Object> resultMap = JsonUtils.fromJson(result, Map.class);
+            publicKey = String.valueOf(resultMap.get("publicKey"));
+        }
+        String valJson = parseJWT(jwt,publicKey);
         try {
-            valJson = RSAUtils.decryptByPublicKey(jwtVo.getVal(),publicKey);
             ctx.addZuulRequestHeader("userInfo",valJson);
         } catch (Exception e) {
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(503);
             ctx.setResponseBody(JsonUtils.toJson(ResponseModel.NOT_FOUND("gateway.certification.error")));
+            ctx.set("isSuccess", false);
             return null;
         }
         return null;
@@ -118,29 +131,32 @@ public class CertificateFilter extends ZuulFilter {
             CloseableHttpResponse response =httpClient.execute(get)){
             return org.apache.http.util.EntityUtils.toString(response.getEntity());
         } catch (IOException e) {
-            System.err.println(e);
+            log.error("get public key by appId error",e);
         }
         return null;
     }
 
-    /***
-     * 解析jwt
-     *
-     * @param jwt
-     * @return
-     */
-    private JwtVo parseJwt(String jwt){
+    public String parseJWT(String jwt,String publicKey){
         try {
-            JwtParser parser = Jwts.parser();
+            Key key = RSAUtils.getPublicKey(publicKey);
 
-            Claims claims = parser.parseClaimsJwt(jwt).getBody();
 
-            String userInfo = claims.getSubject();
+            JwtParser parser = Jwts.parser().setSigningKey(key);
 
-            return JsonUtils.fromJson(userInfo, JwtVo.class);
+            if(!parser.isSigned(jwt)){
+                throw new JwtException("token must be signed");
+            }
+
+            Claims claims = parser.parseClaimsJws(jwt).getBody();
+
+            log.info("claims",claims.getExpiration());
+
+            return claims.getSubject();
         }catch (ExpiredJwtException ex){
+            log.error("token is expiration {}",ex);
             throw new JwtException("token is expiration");
         }catch (Exception ex){
+            log.error("parser token exception {}",ex);
             throw new JwtException(ex.getMessage());
         }
     }

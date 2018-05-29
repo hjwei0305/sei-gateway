@@ -11,6 +11,9 @@ buildscript {
 	}
 }
 
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
 ext {
 	springCloudVersion = '1.4.4.RELEASE'
 	curator_version = '4.0.1'
@@ -18,22 +21,6 @@ ext {
 	http_client_version = '4.5.5'
 }
 
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-
-group = 'com.ecmp'
-version = '0.0.1'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-repositories {
-	mavenLocal()
-	maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group/' }
-}
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	runtime('mysql:mysql-connector-java')

@@ -12,18 +12,6 @@ buildscript {
 }
 
 
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-//apply plugin: 'org.springframework.springloaded'
-
-group = 'com.ecmp'
-version = '0.0.1'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 
 ext {
@@ -32,11 +20,9 @@ ext {
 	util_version = '1.+'
 	http_client_version = '4.5.5'
 }
-repositories {
-	mavenLocal()
-	maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group/' }
-}
 
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 apply plugin: 'war'
 war{

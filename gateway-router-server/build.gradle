@@ -33,7 +33,6 @@ war{
 
 dependencies {
 	compile project (':gateway-service')
-	compile project (':gateway-config-server')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile("org.springframework.cloud:spring-cloud-starter-netflix-zuul:${springCloudVersion}")
 	compile('org.springframework.boot:spring-boot-devtools')

@@ -88,4 +88,21 @@ public interface IGatewayInterfaceService {
     boolean checkGatewayInterface(String applicationCode, String interfaceName, String interfaceURI, OperationTypeEnum operationType);
 
 
+    /**
+     * 根据应用code查询可用接口信息 分页
+     *
+     * @param applicationCode 应用code
+     * @param searchParam     查询参数对象
+     * @return
+     */
+    Page<GatewayInterface> findEnabledInterfaceByPage(String applicationCode, SearchParam searchParam);
+
+
+    /**
+     * 根据应用code查询可用接口信息-不分页
+     *
+     * @param applicationCode 应用code
+     * @return
+     */
+    List<GatewayInterface> findEnabledInterfaceByNoPage(String applicationCode);
 }

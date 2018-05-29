@@ -120,6 +120,27 @@ public class GatewayInterfaceController {
         }
     }
 
+
+    /**
+     * 查询网关可用接口信息
+     *
+     * @param applicationCode 应用code
+     * @param weatherPage     是否分页 true:分页 false：不分页
+     * @param searchParam     查询参数
+     * @return
+     */
+    @RequestMapping("find_enabled_interfaces")
+    @ResponseBody
+    public Object findEnabledInterfaces(@RequestParam String applicationCode, @RequestParam(value = "weatherPage", defaultValue = "1") boolean weatherPage, SearchParam searchParam) {
+        if (weatherPage) {
+            Page<GatewayInterface> result = this.gatewayInterfaceService.findEnabledInterfaceByPage(applicationCode, searchParam);
+            return new PageModel<>(result);
+        } else {
+            List<GatewayInterface> result = this.gatewayInterfaceService.findEnabledInterfaceByNoPage(applicationCode);
+            return ResponseModel.SUCCESS(result);
+        }
+    }
+
     /**
      * 查询接口协议枚举
      *

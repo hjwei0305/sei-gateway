@@ -74,8 +74,7 @@ public class GatewayInterfaceServiceImpl implements IGatewayInterfaceService {
     @Override
     public Page<GatewayInterface> findGatewayInterfaceByPage(String applicationCode, SearchParam searchParam) {
         if (ToolUtils.notEmpty(searchParam.getKeywords())) {
-            Page<GatewayInterface> gatewayInterfaces = this.gatewayInterfaceDao.findByDeletedFalseAndApplicationCodeAndInterfaceNameLikeOrInterfaceURILike(applicationCode, searchParam.getLikeKeywords(), searchParam.getLikeKeywords(), searchParam.getPageable());
-            return gatewayInterfaces;
+            return this.gatewayInterfaceDao.findByDeletedFalseAndApplicationCodeAndInterfaceNameLikeOrInterfaceURILike(applicationCode, searchParam.getLikeKeywords(), searchParam.getLikeKeywords(), searchParam.getPageable());
         }
         return this.gatewayInterfaceDao.findByDeletedFalseAndApplicationCode(applicationCode, searchParam.getPageable());
     }
@@ -94,5 +93,18 @@ public class GatewayInterfaceServiceImpl implements IGatewayInterfaceService {
     public boolean checkGatewayInterface(String applicationCode, String interfaceName, String interfaceURI, OperationTypeEnum operationType) {
         List<GatewayInterface> gatewayInterfaces = this.gatewayInterfaceDao.findByApplicationCodeAndInterfaceNameOrInterfaceURI(applicationCode, interfaceName, interfaceURI);
         return OperationTypeEnum.checkOperationType(operationType, gatewayInterfaces);
+    }
+
+    @Override
+    public Page<GatewayInterface> findEnabledInterfaceByPage(String applicationCode, SearchParam searchParam) {
+        if (ToolUtils.notEmpty(searchParam.getKeywords())) {
+            return this.gatewayInterfaceDao.findByDeletedFalseAndIsValidTrueAndApplicationCodeAndInterfaceNameLikeOrInterfaceURILike(applicationCode, searchParam.getLikeKeywords(), searchParam.getLikeKeywords(), searchParam.getPageable());
+        }
+        return this.gatewayInterfaceDao.findByDeletedFalseAndIsValidTrueAndApplicationCode(applicationCode, searchParam.getPageable());
+    }
+
+    @Override
+    public List<GatewayInterface> findEnabledInterfaceByNoPage(String applicationCode) {
+        return this.gatewayInterfaceDao.findByDeletedFalseAndIsValidTrueAndApplicationCode(applicationCode);
     }
 }

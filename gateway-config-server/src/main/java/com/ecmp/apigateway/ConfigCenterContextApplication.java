@@ -1,15 +1,12 @@
 package com.ecmp.apigateway;
 
 import com.ecmp.apigateway.dao.GatewayApiServiceDao;
-import com.ecmp.apigateway.exception.message.MessageRuntimeException;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.service.impl.GatewayApiServiceServiceImpl;
 import com.ecmp.apigateway.utils.ToolUtils;
 import com.ecmp.util.JsonUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.NodeCache;
 import org.slf4j.Logger;
@@ -32,8 +29,9 @@ import java.util.Objects;
 @Component
 public class ConfigCenterContextApplication implements InitializingBean, DisposableBean {
     private static final Logger logger = LoggerFactory.getLogger(GatewayApiServiceServiceImpl.class);
+
     @Autowired
-    private CuratorFramework curatorFramework;
+    private ZKService zkService;
     @Autowired
     private GatewayApiServiceDao gatewayApiServiceDao;
     @Autowired
@@ -51,13 +49,13 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
     public void afterPropertiesSet() {
         //监听所有使用的应用服务AppId
         try {
-            this.checkZookeeperState();
+            zkService.checkZookeeperState();
             List<GatewayApiService> gatewayApiServices = gatewayApiServiceService.findAll();
             if (ToolUtils.notEmpty(gatewayApiServices)) {
                 gatewayApiServices.forEach(gatewayApiService -> {
                     try{
                         // Node watcher 监听nodeChanged事件
-                        NodeCache watcher = new NodeCache(curatorFramework, "/"+gatewayApiService.getServiceAppId());
+                        NodeCache watcher = new NodeCache(zkService.getClient(), "/"+gatewayApiService.getServiceAppId());
                         watcher.getListenable().addListener(() -> {
                             ChildData nodeData = watcher.getCurrentData();
                             //监听发现到内容有变化时
@@ -99,56 +97,6 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
      */
     @Override
     public void destroy() throws Exception {
-        if (curatorFramework != null) {
-            curatorFramework.close();
-        }
-        curatorFramework = null;
-    }
-
-    /**
-     * 根据appId和参数键获取应用服务地址
-     * @param appId 应用标识
-     * @param key   应用代码
-     * @return 返回应用服务API地址
-     */
-    public String getZookeeperData(String appId, String key) {
-        String result = getZookeeperData(appId, key, key);
-
-        return result;
-    }
-
-    /**
-     * 根据appId、参数键、配置键获取应用服务地址
-     * @param appId 应用标识
-     * @param key   应用代码
-     * @return 返回应用服务API地址
-     */
-    public String getZookeeperData(String appId, String key, String mapKey) {
-        String result = null;
-        try {
-            this.checkZookeeperState();
-            //应用服务的配置节点
-            String jsonData = new String(curatorFramework.getData().forPath("/" + appId), "UTF-8");
-            if (StringUtils.isNotBlank(jsonData)) {
-                Map<String, Map<String, String>> configMap = JsonUtils.fromJson(jsonData, HashMap.class);
-                Map<String, String> map = configMap.get(key);
-                result = map.get(mapKey);
-            } else {
-                throw new MessageRuntimeException("未获取到配置中心数据");
-            }
-        } catch (Exception e) {
-            throw new MessageRuntimeException("获取配置中心数据异常");
-        }
-        return result;
-    }
-
-    /**
-     * 检查zk是否启动
-     */
-    public void checkZookeeperState() {
-        // 如果zk尚未启动,则启动
-        if (curatorFramework.getState() == CuratorFrameworkState.LATENT) {
-            curatorFramework.start();
-        }
+        zkService.close();
     }
 }

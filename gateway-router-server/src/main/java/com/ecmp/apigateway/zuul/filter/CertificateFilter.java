@@ -1,6 +1,6 @@
 package com.ecmp.apigateway.zuul.filter;
 
-import com.ecmp.apigateway.ConfigCenterContextApplication;
+import com.ecmp.apigateway.ZKService;
 import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.apigateway.model.vo.JwtVo;
 import com.ecmp.util.JsonUtils;
@@ -35,7 +35,7 @@ public class CertificateFilter extends ZuulFilter {
     private static final String HEADER_STRING = "Authorization";
 
     @Autowired
-    private ConfigCenterContextApplication configApplication;
+    private ZKService zkService;
 
     @Value("${certification.center.url}")
     private String certificationCenterUrl;
@@ -105,7 +105,7 @@ public class CertificateFilter extends ZuulFilter {
         HttpGet get=null;
         String apiGatewayAppId = System.getenv("ECMP_APP_ID");
         if (StringUtils.isNotBlank(apiGatewayAppId)) {
-            String apiGatewayHost =configApplication.getZookeeperData(apiGatewayAppId,"AUTH_CENTER","oauth2.base.url");
+            String apiGatewayHost =zkService.getZookeeperData(apiGatewayAppId,"AUTH_CENTER","oauth2.base.url");
             if (StringUtils.isNotBlank(apiGatewayHost)) {
                 get = new HttpGet(apiGatewayHost + certificationCenterPath + "?appId=" + appId);
             }

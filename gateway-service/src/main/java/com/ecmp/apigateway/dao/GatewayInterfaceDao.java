@@ -66,4 +66,29 @@ public interface GatewayInterfaceDao extends JpaRepository<GatewayInterface, Str
      * @return
      */
     List<GatewayInterface> findByIsValidFalse();
+
+    /**
+     * 分页可用接口集合-带参数查询
+     * @param applicationCode
+     * @param likeKeywords
+     * @param likeKeywords1
+     * @param pageable
+     * @return
+     */
+    Page<GatewayInterface> findByDeletedFalseAndIsValidTrueAndApplicationCodeAndInterfaceNameLikeOrInterfaceURILike(String applicationCode, String likeKeywords, String likeKeywords1, Pageable pageable);
+
+    /***
+     *      分页可用接口集合-不带参数查询
+     * @param applicationCode
+     * @param pageable
+     * @return
+     */
+    Page<GatewayInterface> findByDeletedFalseAndIsValidTrueAndApplicationCode(String applicationCode, Pageable pageable);
+
+    /***
+     *     可用接口集合-不带参数查询
+     * @param applicationCode
+     * @return
+     */
+    List<GatewayInterface> findByDeletedFalseAndIsValidTrueAndApplicationCode(String applicationCode);
 }

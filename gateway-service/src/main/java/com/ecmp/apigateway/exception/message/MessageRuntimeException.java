@@ -8,7 +8,7 @@ import com.ecmp.apigateway.utils.ResourceBundleUtil;
  * @remark: 运行异常统一处理
  */
 public class MessageRuntimeException extends RuntimeException {
-    private String messageKey;
+    private final String messageKey;
 
     public MessageRuntimeException(String messageKey) {
         this.messageKey = messageKey;

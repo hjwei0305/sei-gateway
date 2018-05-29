@@ -1,6 +1,7 @@
 package com.ecmp.apigateway.service.impl;
 
 import com.ecmp.apigateway.ConfigCenterContextApplication;
+import com.ecmp.apigateway.ZKService;
 import com.ecmp.apigateway.dao.GatewayApiServiceDao;
 import com.ecmp.apigateway.exception.InvokeConfigFailException;
 import com.ecmp.apigateway.exception.ObjectNotFoundException;
@@ -40,8 +41,9 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Autowired
     private GatewayApiServiceDao gatewayApiServiceDao;
+
     @Autowired
-    private ConfigCenterContextApplication configApplication;
+    private ZKService zkService;
 
     @Value("${gateway.route.service.url}")
     private String gateWayUrl;
@@ -54,7 +56,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         if (ToolUtils.isEmpty(gatewayApiService.getServiceAppId()) || ToolUtils.isEmpty(gatewayApiService.getApplicationCode())) {
             throw new RequestParamNullException();
         } else {
-            String appUrl = configApplication.getZookeeperData(gatewayApiService.getServiceAppId(),
+            String appUrl = zkService.getZookeeperData(gatewayApiService.getServiceAppId(),
                     gatewayApiService.getServiceAppCode());
             gatewayApiService.setServiceAppUrl(appUrl);
             gatewayApiService.setServicePath(ToolUtils.key2Path(ToolUtils.getRouteKey(appUrl)));
@@ -99,7 +101,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
                 gatewayApiService.setServiceAppEnabled(enable);
                 if (enable) { //*应用服务启用路由时才获取
                     //*通过应用服务AppId和应用服务Code获取
-                    String appUrl = configApplication.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode());
+                    String appUrl = zkService.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode());
                     if (ToolUtils.isEmpty(appUrl)) {
                         throw new InvokeConfigFailException();
                     } else {
@@ -141,7 +143,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         String gatewayHost;
         String appId = System.getenv("ECMP_APP_ID");
         if (StringUtils.isNotBlank(appId)) {
-            String apiGatewayHost =configApplication.getZookeeperData(appId,"API_GATEWAY_HOST");
+            String apiGatewayHost =zkService.getZookeeperData(appId,"API_GATEWAY_HOST");
             gatewayHost = apiGatewayHost;
         } else {
             gatewayHost=gateWayUrl;

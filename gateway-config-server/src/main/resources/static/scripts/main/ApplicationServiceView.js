@@ -274,6 +274,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                 displayText: this.lang.searchDisplayText,
                 onSearch: function (v) {
                     g.interfaceGridCmp.setPostParams({
+                        isValid:true,
                         keywords: v,
                         applicationCode: g.curApplication && g.curApplication.applicationCode
                     },true);
@@ -286,9 +287,10 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
         if(!postData){
             postData =  { applicationCode: this.curApplication && this.curApplication.applicationCode };
         }
+        console.log(postData)
         this.interfaceGridCmp.setGridParams({
             datatype: "json",
-            url: _ctxPath + "/gateway_interface/find_gateway_interfaces",
+            url: _ctxPath + "/gateway_interface/find_enabled_interfaces",
             postData: postData
         },true);
     },
@@ -595,6 +597,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                             sortorder: "asc"
                         },
                         onSearch: function (v) {
+                            console.log(v)
                             this.grid.setPostParams({keywords: v},true);
                         }
                     }

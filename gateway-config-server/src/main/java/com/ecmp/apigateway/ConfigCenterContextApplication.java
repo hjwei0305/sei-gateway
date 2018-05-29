@@ -48,7 +48,7 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
      * @throws Exception in the event of misconfiguration (such as failure to set an essential property) or if initialization fails.
      */
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         //监听所有使用的应用服务AppId
         try {
             this.checkZookeeperState();
@@ -57,7 +57,7 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
                 gatewayApiServices.forEach(gatewayApiService -> {
                     try{
                         // Node watcher 监听nodeChanged事件
-                        NodeCache watcher = new NodeCache(curatorFramework, gatewayApiService.getServiceAppId());
+                        NodeCache watcher = new NodeCache(curatorFramework, "/"+gatewayApiService.getServiceAppId());
                         watcher.getListenable().addListener(() -> {
                             ChildData nodeData = watcher.getCurrentData();
                             //监听发现到内容有变化时

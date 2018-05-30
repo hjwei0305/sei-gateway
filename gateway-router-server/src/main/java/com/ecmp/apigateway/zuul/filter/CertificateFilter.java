@@ -88,10 +88,10 @@ public class CertificateFilter extends ZuulFilter {
         String appId = ctx.getRequest().getHeader(APP_ID);
         String result = getPublicKey(appId);
         String publicKey = defaultPublicKey;
-        if(result != null) {
-            Map<String, Object> resultMap = JsonUtils.fromJson(result, Map.class);
-            publicKey = String.valueOf(resultMap.get("publicKey"));
-        }
+//        if(result != null) {
+//            Map<String, Object> resultMap = JsonUtils.fromJson(result, Map.class);
+//            publicKey = String.valueOf(resultMap.get("publicKey"));
+//        }
         String valJson = parseJWT(jwt,publicKey);
         try {
             ctx.addZuulRequestHeader("userInfo",valJson);

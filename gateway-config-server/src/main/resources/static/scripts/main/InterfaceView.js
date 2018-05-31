@@ -131,7 +131,7 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
                 {name: 'interfaceProtocol', index: 'interfaceProtocol', sortable: true, width: 100,label: g.lang.interfaceProtocolText },
                 //is valid 是否可用
                 {name: 'valid', index: 'valid', hidden: true},
-                {name: 'validTemp', index: 'validTemp', sortable: true, width: 100,label: g.lang.isValid,formatter:customFmatter},
+                {name: 'validTemp', index: 'validTemp', sortable: false, width: 100,label: g.lang.isValid,formatter:customFmatter},
                 //interfaceURIText: "接口uri地址"
                 {name: 'interfaceURI', index: 'interfaceURI', sortable: true, width: 300, label: g.lang.interfaceURIText, formatter: 'link',formatoptions:{target:"_blank"}},
                 //interfaceRemarkText: "接口说明"

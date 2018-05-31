@@ -1,6 +1,5 @@
 package com.ecmp.apigateway.service.impl;
 
-import com.ecmp.apigateway.ConfigCenterContextApplication;
 import com.ecmp.apigateway.ZKService;
 import com.ecmp.apigateway.dao.GatewayApiServiceDao;
 import com.ecmp.apigateway.exception.InvokeConfigFailException;
@@ -149,8 +148,9 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             gatewayHost=gateWayUrl;
         }
 
-
-        HttpGet get =new HttpGet(gatewayHost+gateWayPath);
+        String url = gatewayHost+gateWayPath;
+        HttpGet get =new HttpGet(url);
+        logger.info("the refresh url is {}",url);
         try(CloseableHttpClient httpClient = HttpClients.createDefault();
             CloseableHttpResponse response =httpClient.execute(get)){
             return org.apache.http.util.EntityUtils.toString(response.getEntity());

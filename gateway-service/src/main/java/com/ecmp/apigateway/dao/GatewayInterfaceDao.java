@@ -4,6 +4,7 @@ import com.ecmp.apigateway.model.GatewayInterface;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -22,10 +23,11 @@ public interface GatewayInterfaceDao extends JpaRepository<GatewayInterface, Str
      * @param interfaceName   接口名称
      * @return
      */
-    Page<GatewayInterface> findByDeletedFalseAndApplicationCodeAndInterfaceNameLikeOrInterfaceURILike
+    @Query(value = "SELECT g from GatewayInterface g where g.deleted=FALSE AND g.applicationCode = :applicationCode and (g.interfaceURI like :interfaceURI or g.interfaceName like :interfaceName)")
+    Page<GatewayInterface> findByDeletedInterface
     (@Param("applicationCode") String applicationCode, @Param("interfaceName") String interfaceName, @Param("interfaceURI") String interfaceURI, Pageable pageable);
 
-    /**
+    /**=
      * 根据应用code查询接口信息
      *
      * @param applicationCode 应用code
@@ -75,6 +77,7 @@ public interface GatewayInterfaceDao extends JpaRepository<GatewayInterface, Str
      * @param pageable
      * @return
      */
+    @Query(value = "SELECT g from GatewayInterface g where g.deleted=FALSE AND isValid=true AND g.applicationCode = ?1 and (g.interfaceURI like ?3 or g.interfaceName like ?2)")
     Page<GatewayInterface> findByDeletedFalseAndIsValidTrueAndApplicationCodeAndInterfaceNameLikeOrInterfaceURILike(String applicationCode, String likeKeywords, String likeKeywords1, Pageable pageable);
 
     /***

@@ -6,11 +6,11 @@ import com.ecmp.apigateway.zuul.service.InterfaceService;
 import com.ecmp.util.JsonUtils;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import lombok.extern.log4j.Log4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 
 /**
  * usage:接口是否转发过滤器
@@ -19,8 +19,9 @@ import java.util.List;
  * User:liusonglin; Date:2018/5/18;ProjectName:api-gateway;
  */
 @Component
-@Log4j
 public class InterfaceAccessFilter extends ZuulFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(InterfaceAccessFilter.class);
 
     @Autowired
     private InterfaceService interfaceService;
@@ -37,15 +38,14 @@ public class InterfaceAccessFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        boolean shouldFilter = false;
-        List<GatewayInterface> interfaces = interfaceService.getInvalidInterface();
         RequestContext ctx = RequestContext.getCurrentContext();
         String uri = ctx.getRequest().getRequestURI();
-        for(GatewayInterface item : interfaces){
-            shouldFilter = uri.contains(item.getInterfaceURI());
-            if(shouldFilter) return shouldFilter;
+        GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri);
+        log.info("获取interfaces is {}",interfaces);
+        if(interfaces == null){
+            return true;
         }
-        return shouldFilter;
+        return interfaces.isValid();
     }
 
     @Override

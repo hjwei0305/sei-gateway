@@ -30,6 +30,10 @@ public class GatewayInterface extends Domain {
     //应用code-关联字段
     @Column(name = "application_code", nullable = false, length = 64)
     private String applicationCode;
+
+    @ManyToOne
+    @JoinColumn(name = "application_code", referencedColumnName = "application_code", insertable = false, updatable = false)
+    private GatewayApiService gatewayApiService;
     /**
      * 是否可用
      */
@@ -82,5 +86,27 @@ public class GatewayInterface extends Domain {
 
     public void setValid(boolean valid) {
         isValid = valid;
+    }
+
+    public GatewayApiService getGatewayApiService() {
+        return gatewayApiService;
+    }
+
+    public void setGatewayApiService(GatewayApiService gatewayApiService) {
+        this.gatewayApiService = gatewayApiService;
+    }
+
+
+    @Override
+    public String toString() {
+        return "GatewayInterface{" +
+                "interfaceName='" + interfaceName + '\'' +
+                ", interfaceRemark='" + interfaceRemark + '\'' +
+                ", interfaceProtocol=" + interfaceProtocol +
+                ", interfaceURI='" + interfaceURI + '\'' +
+                ", applicationCode='" + applicationCode + '\'' +
+                ", gatewayApiService=" + gatewayApiService +
+                ", isValid=" + isValid +
+                '}';
     }
 }

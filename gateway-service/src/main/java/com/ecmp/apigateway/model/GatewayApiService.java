@@ -1,9 +1,9 @@
 package com.ecmp.apigateway.model;
 
 import com.ecmp.apigateway.model.common.Domain;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author: hejun
@@ -73,6 +73,9 @@ public class GatewayApiService extends Domain {
      */
     @Column(name = "application_code", nullable = false, length = 64)
     private String applicationCode;
+
+    @OneToMany(mappedBy = "applicationCode")
+    private List<GatewayInterface> gatewayInterfaceList;
 
     public String getServiceAppId() {
         return serviceAppId;
@@ -160,5 +163,13 @@ public class GatewayApiService extends Domain {
 
     public void setStripPrefix(boolean stripPrefix) {
         this.stripPrefix = stripPrefix;
+    }
+
+    public List<GatewayInterface> getGatewayInterfaceList() {
+        return gatewayInterfaceList;
+    }
+
+    public void setGatewayInterfaceList(List<GatewayInterface> gatewayInterfaceList) {
+        this.gatewayInterfaceList = gatewayInterfaceList;
     }
 }

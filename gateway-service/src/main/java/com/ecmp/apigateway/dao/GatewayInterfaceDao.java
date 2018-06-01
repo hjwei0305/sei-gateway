@@ -61,14 +61,6 @@ public interface GatewayInterfaceDao extends JpaRepository<GatewayInterface, Str
      */
     List<GatewayInterface> findByDeletedFalseAndApplicationCode(String applicationCode);
 
-
-    /**
-     * 获取不可用接口集合
-     *
-     * @return
-     */
-    List<GatewayInterface> findByIsValidFalse();
-
     /**
      * 分页可用接口集合-带参数查询
      * @param applicationCode
@@ -94,4 +86,14 @@ public interface GatewayInterfaceDao extends JpaRepository<GatewayInterface, Str
      * @return
      */
     List<GatewayInterface> findByDeletedFalseAndIsValidTrueAndApplicationCode(String applicationCode);
+
+    /**
+     * 通过uri获取接口
+     * @param uri
+     * @return
+     */
+    @Query("select gi from GatewayInterface gi \n" +
+            "left join gi.gatewayApiService gs where :uri like CONCAT('%',gi.interfaceURI,'%')" +
+            "and :uri like REPLACE(gs.servicePath,'/**','%')")
+    GatewayInterface getInterfaceByUri(@Param("uri") String uri);
 }

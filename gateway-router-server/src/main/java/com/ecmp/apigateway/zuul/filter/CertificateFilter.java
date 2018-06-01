@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.Key;
 import java.util.Date;
@@ -77,7 +78,8 @@ public class CertificateFilter extends ZuulFilter {
             return null;
         }
         //默认的浏览器权限请求头 如:Authorization:Bearer token
-        String authorization = ctx.getRequest().getHeader(HEADER_STRING);
+        HttpServletRequest request = ctx.getRequest();
+        String authorization = request.getHeader(HEADER_STRING);
         if(StringUtils.isBlank(authorization)){
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(503);
@@ -85,7 +87,7 @@ public class CertificateFilter extends ZuulFilter {
             return null;
         }
         String jwt = authorization.replace(TOKEN_PREFIX,"");
-        String appId = ctx.getRequest().getHeader(APP_ID);
+        String appId = request.getHeader(APP_ID);
         String result = getPublicKey(appId);
         String publicKey = defaultPublicKey;
 //        if(result != null) {
@@ -95,6 +97,8 @@ public class CertificateFilter extends ZuulFilter {
         String valJson = parseJWT(jwt,publicKey);
         try {
             ctx.addZuulRequestHeader("userInfo",valJson);
+            log.info("get userInfo is {}",valJson);
+            log.info("转发网址：{}",request.getRequestURL().toString());
         } catch (Exception e) {
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(503);

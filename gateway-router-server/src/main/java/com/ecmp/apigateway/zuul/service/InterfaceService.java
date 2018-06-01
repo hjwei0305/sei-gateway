@@ -1,12 +1,10 @@
 package com.ecmp.apigateway.zuul.service;
 
-import com.ecmp.apigateway.dao.GatewayApiServiceDao;
 import com.ecmp.apigateway.dao.GatewayInterfaceDao;
 import com.ecmp.apigateway.model.GatewayInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 
 /**
  * usage:接口服务
@@ -20,9 +18,8 @@ public class InterfaceService {
     @Autowired
     private GatewayInterfaceDao gatewayInterfaceDao;
 
-    public List<GatewayInterface> getInvalidInterface(){
-        //todo redis缓存
-        return gatewayInterfaceDao.findByIsValidFalse();
-    }
 
+    public GatewayInterface getInterfaceByUri(String uri) {
+        return gatewayInterfaceDao.getInterfaceByUri(uri);
+    }
 }

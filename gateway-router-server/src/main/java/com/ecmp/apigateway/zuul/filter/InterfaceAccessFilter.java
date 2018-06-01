@@ -45,7 +45,7 @@ public class InterfaceAccessFilter extends ZuulFilter {
         if(interfaces == null){
             return true;
         }
-        return interfaces.isValid();
+        return !interfaces.isValid();
     }
 
     @Override

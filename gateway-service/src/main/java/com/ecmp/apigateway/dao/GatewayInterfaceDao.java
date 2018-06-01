@@ -94,6 +94,6 @@ public interface GatewayInterfaceDao extends JpaRepository<GatewayInterface, Str
      */
     @Query("select gi from GatewayInterface gi \n" +
             "left join gi.gatewayApiService gs where :uri like CONCAT('%',gi.interfaceURI,'%')" +
-            "and :uri like REPLACE(gs.servicePath,'/**','%')")
+            "and :uri like CONCAT('%',REPLACE(gs.servicePath,'/**','%'))")
     GatewayInterface getInterfaceByUri(@Param("uri") String uri);
 }

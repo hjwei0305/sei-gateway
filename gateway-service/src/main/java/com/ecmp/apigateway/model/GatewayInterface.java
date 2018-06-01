@@ -31,7 +31,7 @@ public class GatewayInterface extends Domain {
     @Column(name = "application_code", nullable = false, length = 64)
     private String applicationCode;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "application_code", referencedColumnName = "application_code", insertable = false, updatable = false)
     private GatewayApiService gatewayApiService;
     /**

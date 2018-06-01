@@ -74,7 +74,7 @@ public class GatewayApiService extends Domain {
     @Column(name = "application_code", nullable = false, length = 64)
     private String applicationCode;
 
-    @OneToMany(mappedBy = "applicationCode")
+    @OneToMany(mappedBy = "applicationCode",fetch = FetchType.LAZY)
     private List<GatewayInterface> gatewayInterfaceList;
 
     public String getServiceAppId() {

@@ -19,7 +19,7 @@ public class InterfaceService {
     private GatewayInterfaceDao gatewayInterfaceDao;
 
 
-    public GatewayInterface getInterfaceByUri(String uri) {
-        return gatewayInterfaceDao.getInterfaceByUri(uri);
+    public GatewayInterface getInterfaceByUri(String path, String uri) {
+        return gatewayInterfaceDao.getInterfaceByUri(path, uri);
     }
 }

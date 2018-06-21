@@ -47,7 +47,7 @@ public class ZKconfig {
                 .sessionTimeoutMs(5000)
                 .connectionTimeoutMs(5000)
                 .canBeReadOnly(true)
-                .retryPolicy(new ExponentialBackoffRetry(1000, 10))
+                .retryPolicy(new ExponentialBackoffRetry(1000, 1))
                 .namespace(namespace)
                 .defaultData(null)
                 .build();

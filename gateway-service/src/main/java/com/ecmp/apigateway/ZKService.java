@@ -1,7 +1,7 @@
 package com.ecmp.apigateway;
 
-import com.ecmp.apigateway.exception.message.MessageRuntimeException;
 import com.ecmp.util.JsonUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
@@ -18,6 +18,7 @@ import java.util.Map;
  * User:liusonglin; Date:2018/5/29;ProjectName:api-gateway;
  */
 @Service
+@Slf4j
 public class ZKService {
 
 
@@ -41,22 +42,28 @@ public class ZKService {
      * @return 返回应用服务API地址
      */
     public String getZookeeperData(String appId, String key, String mapKey) {
-        String result = null;
+        Map<String, String> map = getConfigMap(appId,key);
+        if(map != null){
+            return map.get(mapKey);
+        }
+        return null;
+    }
+
+    public Map<String, String> getConfigMap(String appId, String key){
         try {
             this.checkZookeeperState();
             //应用服务的配置节点
             String jsonData = new String(curatorFramework.getData().forPath("/" + appId), "UTF-8");
             if (StringUtils.isNotBlank(jsonData)) {
                 Map<String, Map<String, String>> configMap = JsonUtils.fromJson(jsonData, HashMap.class);
-                Map<String, String> map = configMap.get(key);
-                result = map.get(mapKey);
+                return configMap.get(key);
             } else {
-                throw new MessageRuntimeException("未获取到配置中心数据");
+                log.error("获取配置中心数据异常1 ");
             }
         } catch (Exception e) {
-            throw new MessageRuntimeException("获取配置中心数据异常");
+            log.error("获取配置中心数据异常2 ",e);
         }
-        return result;
+        return null;
     }
 
     /**

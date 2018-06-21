@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,8 +71,12 @@ public class RedisUtils {
      */
     public void counterAdd(SessionUser sessionUser){
         try {
-            redisTemplate.opsForZSet().add(RedisEnum.ONLINE_USER_COUNTER.getKey()
-                    ,sessionUser.getUserId(),System.currentTimeMillis());
+
+            redisTemplate.opsForValue().set(RedisEnum.ROUTER_SERVICE_PREFIX.getKey()+
+                            RedisEnum.ONLINE_USER_COUNTER.getKey()+
+                            sessionUser.getUserId()
+                    ,JsonUtils.toJson(sessionUser),
+                    5*60*1000, TimeUnit.MILLISECONDS);
         }catch (Exception ex){
             log.error("计数器出错：",ex);
         }
@@ -83,12 +89,11 @@ public class RedisUtils {
      * @return
      */
     public long getCurrentCount(){
-        redisTemplate.opsForZSet().removeRangeByScore(RedisEnum.ONLINE_USER_COUNTER.getKey(),
-                0L,System.currentTimeMillis()-5*60*1000);
-
-        long currentCount = redisTemplate.opsForZSet().size(RedisEnum.ONLINE_USER_COUNTER.getKey());
-        log.info("currentCount is {}",currentCount);
-        return currentCount;
+        Set<String> keys = redisTemplate.keys(RedisEnum.ROUTER_SERVICE_PREFIX.getKey()+
+                RedisEnum.ONLINE_USER_COUNTER.getKey() + "*");
+        List<String> result = redisTemplate.opsForValue().multiGet(keys);
+        log.info("currentCount is {}",result.size());
+        return result.size();
     }
 
 

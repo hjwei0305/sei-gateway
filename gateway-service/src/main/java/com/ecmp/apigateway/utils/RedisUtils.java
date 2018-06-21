@@ -76,11 +76,10 @@ public class RedisUtils {
                             RedisEnum.ONLINE_USER_COUNTER.getKey()+
                             sessionUser.getUserId()
                     ,JsonUtils.toJson(sessionUser),
-                    5*60*1000, TimeUnit.MILLISECONDS);
+                    5, TimeUnit.MINUTES);
         }catch (Exception ex){
             log.error("计数器出错：",ex);
         }
-
     }
 
     /**

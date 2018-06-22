@@ -41,7 +41,6 @@ public class DataBaseConfig {
         dataSource.setMaxActive(Integer.parseInt(config.get("maxActive")));
         dataSource.setTestOnBorrow(true);
         dataSource.setTestOnConnect(true);
-        dataSource.setInitSQL("select 1");
         return dataSource;
     }
 }

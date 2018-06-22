@@ -39,6 +39,9 @@ public class DataBaseConfig {
         dataSource.setInitialSize(Integer.parseInt(config.get("initialSize")));
         dataSource.setMinIdle(Integer.parseInt(config.get("minIdle")));
         dataSource.setMaxActive(Integer.parseInt(config.get("maxActive")));
+        dataSource.setTestOnBorrow(true);
+        dataSource.setTestOnConnect(true);
+        dataSource.setInitSQL("select 1");
         return dataSource;
     }
 }

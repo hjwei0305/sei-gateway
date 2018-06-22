@@ -4,6 +4,7 @@ import com.ecmp.apigateway.ZKService;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ import java.util.Map;
  * User:liusonglin; Date:2018/6/20;ProjectName:api-gateway;
  */
 @Configuration
+@Slf4j
 public class RedisConfig {
 
     @Autowired
@@ -59,6 +61,8 @@ public class RedisConfig {
         poolConfig.setTestOnBorrow(false);
         //获取配置中心redis配置
         Map<String,String> configMap = zkService.getConfigMap(appId,"ECMP_BIZ_CACHE");
+        log.info("ecmp_biz_cache config is {}",configMap);
+
         jedisConnectionFactory.setPoolConfig(poolConfig);
         jedisConnectionFactory.setUsePool(true);
 

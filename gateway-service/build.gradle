@@ -25,7 +25,8 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-data-redis')
 	compile("org.springframework.boot:spring-boot-starter-data-elasticsearch")
-	runtime('mysql:mysql-connector-java')
+	compile("mysql:mysql-connector-java:$mysql_version")
+	compile("com.oracle:ojdbc:$oracle_version")
 	compile("com.ecmp:ecmp-util:$util_version")
 	compile("org.apache.httpcomponents:httpclient:$http_client_version")
 	compile("org.apache.curator:curator-recipes:$curator_version") { exclude group: 'log4j' }

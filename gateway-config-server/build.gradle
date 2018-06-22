@@ -40,7 +40,8 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-aop')
 	compile('org.springframework.boot:spring-boot-devtools')
-	runtime('mysql:mysql-connector-java')
+	compile("mysql:mysql-connector-java:$mysql_version")
+	compile("com.oracle:ojdbc:$oracle_version")
 	compile("com.ecmp:ecmp-util:$util_version")
 	compile("org.apache.curator:curator-recipes:$curator_version") { exclude group: 'log4j' }
 	testCompile('org.springframework.boot:spring-boot-starter-test')

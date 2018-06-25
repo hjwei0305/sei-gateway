@@ -59,6 +59,4 @@ public class InterfaceAccessFilter extends ZuulFilter {
         ctx.set("isSuccess", false);
         return null;
     }
-
-
 }

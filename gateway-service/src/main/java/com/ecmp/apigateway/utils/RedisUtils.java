@@ -1,15 +1,17 @@
 package com.ecmp.apigateway.utils;
 
+import com.ecmp.apigateway.dao.UserCounterDao;
 import com.ecmp.apigateway.enums.RedisEnum;
+import com.ecmp.apigateway.model.UserCounter;
 import com.ecmp.apigateway.model.vo.SessionUser;
 import com.ecmp.util.JsonUtils;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,6 +26,9 @@ public class RedisUtils {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private UserCounterDao userCounterDao;
 
     /**
      * 存储缓存
@@ -77,6 +82,15 @@ public class RedisUtils {
                             sessionUser.getUserId()
                     ,JsonUtils.toJson(sessionUser),
                     5, TimeUnit.MINUTES);
+            UserCounter userCounter = new UserCounter();
+            userCounter.setId(UUID.randomUUID().toString());
+            userCounter.setCounter(12);
+            userCounter.setAddTime(new Date());
+            Map<String,String> map = Maps.newHashMap();
+            map.put("a","100");
+            map.put("b","90");
+            userCounter.setSectionProportion(map);
+            userCounterDao.save(userCounter);
         }catch (Exception ex){
             log.error("计数器出错：",ex);
         }
@@ -92,8 +106,10 @@ public class RedisUtils {
                 RedisEnum.ONLINE_USER_COUNTER.getKey() + "*");
         List<String> result = redisTemplate.opsForValue().multiGet(keys);
         log.info("currentCount is {}",result.size());
+        Iterator<UserCounter> it = userCounterDao.findAll().iterator();
+        while (it.hasNext()){
+            log.info("it is {}",it.next());
+        }
         return result.size();
     }
-
-
 }

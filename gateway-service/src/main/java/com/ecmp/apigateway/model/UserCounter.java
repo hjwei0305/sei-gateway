@@ -18,7 +18,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-@Document(indexName = "UserCounter", type = "user", createIndex = false)
+@Document(indexName = "usercounter", type = "userCounter")
 public class UserCounter {
 
     @Id

@@ -1,13 +1,15 @@
 package com.ecmp.apigateway.config;
 
 import com.ecmp.apigateway.ZKService;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.sql.DataSource;
 import java.util.Map;
 
 
@@ -29,18 +31,16 @@ public class DataBaseConfig {
 
     @Bean
     public DataSource dataSource(){
-        DataSource dataSource = new DataSource();
         Map<String, String> config = zkService.getConfigMap(appId,"DATASOURCE");
         log.info("database config is {}",config);
-        dataSource.setUrl(config.get("url"));
-        dataSource.setUsername(config.get("username"));
-        dataSource.setPassword(config.get("password"));
-        dataSource.setDriverClassName(config.get("driverClassName"));
-        dataSource.setInitialSize(Integer.parseInt(config.get("initialSize")));
-        dataSource.setMinIdle(Integer.parseInt(config.get("minIdle")));
-        dataSource.setMaxActive(Integer.parseInt(config.get("maxActive")));
-        dataSource.setTestOnBorrow(true);
-        dataSource.setTestOnConnect(true);
-        return dataSource;
+
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl(config.get("url"));
+        hikariConfig.setUsername(config.get("username"));
+        hikariConfig.setPassword(config.get("password"));
+        hikariConfig.setDriverClassName(config.get("driverClassName"));
+        hikariConfig.setMaximumPoolSize(Integer.parseInt(config.get("maxActive")));
+        hikariConfig.setMinimumIdle(Integer.parseInt(config.get("initialSize")));
+        return new HikariDataSource(hikariConfig);
     }
 }

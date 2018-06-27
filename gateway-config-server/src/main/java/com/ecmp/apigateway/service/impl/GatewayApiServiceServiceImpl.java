@@ -85,8 +85,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             gatewayApiServices.forEach(gatewayApiService -> {
                 gatewayApiService.setDeleted(true);
                 gatewayApiService.setServiceAppEnabled(false);
+                gatewayApiServiceDao.save(gatewayApiService);
             });
-            gatewayApiServiceDao.save(gatewayApiServices);
         }
     }
 
@@ -107,8 +107,9 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
                         gatewayApiService.setServiceAppUrl(appUrl);
                     }
                 }
+                gatewayApiServiceDao.save(gatewayApiService);
             });
-            gatewayApiServiceDao.save(gatewayApiServices);
+
         }
     }
 

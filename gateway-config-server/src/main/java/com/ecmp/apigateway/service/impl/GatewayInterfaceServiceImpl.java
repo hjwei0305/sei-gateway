@@ -50,8 +50,10 @@ public class GatewayInterfaceServiceImpl implements IGatewayInterfaceService {
         if (ToolUtils.notEmpty(applicationCode)) {
             List<GatewayInterface> gatewayInterfaces = this.gatewayInterfaceDao.findByDeletedFalseAndApplicationCode(applicationCode);
             if (CollectionUtils.isNotEmpty(gatewayInterfaces)) {
-                gatewayInterfaces.forEach(gatewayInterface -> gatewayInterface.setDeleted(true));
-                this.gatewayInterfaceDao.save(gatewayInterfaces);
+                gatewayInterfaces.forEach(gatewayInterface -> {
+                    gatewayInterface.setDeleted(true);
+                    this.gatewayInterfaceDao.save(gatewayInterface);
+                });
             }
         }
     }

@@ -81,9 +81,9 @@ public class ConfigCenterContextApplication implements InitializingBean, Disposa
                     } catch (Exception e) {
                         logger.error("未获取到配置中心数据", e);
                     }
+                    gatewayApiServiceDao.save(gatewayApiService);
                 });
                 //更新路由配置并刷新
-                gatewayApiServiceDao.save(gatewayApiServices);
                 gatewayApiServiceService.refresh();
             }
         } catch (Exception e) {

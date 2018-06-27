@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.12.RELEASE'
+		springBootVersion = '2.0.2.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -11,20 +11,22 @@ buildscript {
 	}
 }
 
+apply plugin: 'java'
+apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 ext {
-	springCloudVersion = '1.4.4.RELEASE'
 	curator_version = '4.0.1'
 	util_version = '1.+'
 	http_client_version = '4.5.5'
 }
 
 dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-data-redis')
-	compile("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+	compile('org.springframework.boot:spring-boot-starter-data-elasticsearch')
 	compile("javax.servlet:javax.servlet-api:$servlet_version")
 	compile("mysql:mysql-connector-java:$mysql_version")
 	compile("com.oracle:ojdbc:$oracle_version")

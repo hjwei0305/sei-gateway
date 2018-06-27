@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.12.RELEASE'
+		springBootVersion = '2.0.2.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -15,17 +15,18 @@ buildscript {
 
 
 ext {
-	springCloudVersion = '1.4.4.RELEASE'
 	curator_version = '4.0.1'
 	util_version = '1.+'
 	http_client_version = '4.5.5'
 }
 
+apply plugin: 'java'
+apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-
 apply plugin: 'war'
 war{
+	enabled = true
 	//包名称
 	archiveName "${baseName}.${extension}"
 	//包存放路径
@@ -34,9 +35,7 @@ war{
 
 dependencies {
 	compile project (':gateway-service')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile("org.springframework.cloud:spring-cloud-starter-feign:${springCloudVersion}")
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-aop')
 	compile('org.springframework.boot:spring-boot-devtools')

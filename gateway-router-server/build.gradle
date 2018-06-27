@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.12.RELEASE'
+		springBootVersion = '2.0.2.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -11,20 +11,18 @@ buildscript {
 	}
 }
 
-
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-//apply plugin: 'org.springframework.springloaded'
-
-
 ext {
-	springCloudVersion = '1.4.4.RELEASE'
+	springCloudVersion = 'Finchley.RELEASE'
 	util_version = '1.+'
 }
 
-
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'war'
 war{
+	enabled = true
 	//包名称
 	archiveName "${baseName}.${extension}"
 	//包存放路径
@@ -33,10 +31,17 @@ war{
 
 dependencies {
 	compile project (':gateway-service')
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile("org.springframework.cloud:spring-cloud-starter-netflix-zuul:${springCloudVersion}")
+	compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
 	compile('org.springframework.boot:spring-boot-devtools')
 	compileOnly('org.projectlombok:lombok:1.16.16')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 

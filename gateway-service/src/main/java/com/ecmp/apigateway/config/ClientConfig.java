@@ -2,11 +2,12 @@ package com.ecmp.apigateway.config;
 
 import com.ecmp.apigateway.ZKService;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.elasticsearch.client.TransportClientFactoryBean;
 
 import java.util.Map;
@@ -20,6 +21,7 @@ import java.util.Map;
  */
 @Configuration
 @Slf4j
+@Order(12)
 public class ClientConfig {
 
     @Autowired
@@ -29,14 +31,16 @@ public class ClientConfig {
     private String appId;
 
     @Bean
-    public Client client() throws Exception {
+    public TransportClient client() throws Exception {
+
         TransportClientFactoryBean factoryBean = new TransportClientFactoryBean();
-        factoryBean.setClusterName("elasticsearch");
 
         //优先从系统环境变量中读取
         Map<String, String> config = zkService.getConfigMap(appId,"ELASTICSEARCH");
         log.info("elasticsearch config is {}",config);
+
         factoryBean.setClusterNodes(config.get("node"));
+        factoryBean.setClusterName(config.get("clusterName"));
         factoryBean.setClientTransportSniff(Boolean.FALSE);
         factoryBean.setClientIgnoreClusterName(Boolean.TRUE);
         factoryBean.setClientPingTimeout("10s");

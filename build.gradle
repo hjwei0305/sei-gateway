@@ -14,7 +14,7 @@ allprojects {
 	targetCompatibility = 1.8
 
 	repositories {
-		mavenLocal()
+		mavenCentral()
 		maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group' }
 	}
 

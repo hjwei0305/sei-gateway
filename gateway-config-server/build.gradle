@@ -33,6 +33,9 @@ war{
 	destinationDir = file("${rootProject.projectDir}/build/war")
 }
 
+bootJar { enabled = false }
+jar {enabled = true}
+
 dependencies {
 	compile project (':gateway-service')
 	compile('org.springframework.boot:spring-boot-starter-web')

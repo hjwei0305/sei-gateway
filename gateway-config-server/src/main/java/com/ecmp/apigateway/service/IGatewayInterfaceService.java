@@ -105,4 +105,12 @@ public interface IGatewayInterfaceService {
      * @return
      */
     List<GatewayInterface> findEnabledInterfaceByNoPage(String applicationCode);
+
+    /**
+     * 通过应用code查询全部接口
+     *
+     * @param applicationCode
+     * @return
+     */
+    List<GatewayInterface> findInterfaceByApplication(String applicationCode);
 }

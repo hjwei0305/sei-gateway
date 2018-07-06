@@ -14,12 +14,11 @@ import lombok.ToString;
 @Getter
 @Setter
 public class BaseResult<T> {
-
     public BaseResult(){
 
     }
 
-    public BaseResult(String code, String msg){
+    public BaseResult(String code,String msg){
         this.success = false;
         this.code = code;
         this.msg = msg;
@@ -44,12 +43,14 @@ public class BaseResult<T> {
 
     private T data;
 
-    public void setData(T t){
+    public void fillWithData(T t){
         this.success = true;
         this.data = t;
+        this.setMsg("成功");
+        this.setCode("SUCCESS");
     }
 
-    public void setException(Exception ex){
+    public void fillWithException(Exception ex){
         this.code = "FAILED";
         this.msg = ex.getMessage();
         this.success = false;

@@ -160,4 +160,10 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         }
         return null;
     }
+
+
+    @Override
+    public GatewayApiService findByAppId(String appId) {
+        return gatewayApiServiceDao.findByServiceAppId(appId);
+    }
 }

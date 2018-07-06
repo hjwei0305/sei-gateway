@@ -109,4 +109,9 @@ public class GatewayInterfaceServiceImpl implements IGatewayInterfaceService {
     public List<GatewayInterface> findEnabledInterfaceByNoPage(String applicationCode) {
         return this.gatewayInterfaceDao.findByDeletedFalseAndIsValidTrueAndApplicationCode(applicationCode);
     }
+
+    @Override
+    public List<GatewayInterface> findInterfaceByApplication(String applicationCode) {
+        return this.gatewayInterfaceDao.findByDeletedFalseAndApplicationCode(applicationCode);
+    }
 }

@@ -70,4 +70,12 @@ public interface IGatewayApiServiceService {
      * @return
      */
     Object refresh();
+
+    /**
+     * 通过appId获取应用服务
+     *
+     * @param appId
+     * @return
+     */
+    GatewayApiService findByAppId(String appId);
 }

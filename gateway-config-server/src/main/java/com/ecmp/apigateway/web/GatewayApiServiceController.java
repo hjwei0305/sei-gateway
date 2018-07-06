@@ -5,6 +5,7 @@ import com.ecmp.apigateway.model.common.PageModel;
 import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
+import com.ecmp.apigateway.service.InitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,10 @@ public class GatewayApiServiceController {
     @Autowired
     private IGatewayApiServiceService gatewayApiServiceService;
 
+
+    @Autowired
+    private InitService initService;
+
     /**
      * 显示应用服务页面
      * @return
@@ -42,6 +47,18 @@ public class GatewayApiServiceController {
     @RequestMapping("save")
     public Object save(GatewayApiService gatewayApiService) {
         gatewayApiServiceService.save(gatewayApiService);
+        return ResponseModel.SUCCESS();
+    }
+
+    /**
+     * 通过appId刷新路由
+     * @param appId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("refreshByAppId")
+    public Object refreshByAppId(String appId) {
+        initService.initServiceByAppId(appId);
         return ResponseModel.SUCCESS();
     }
 

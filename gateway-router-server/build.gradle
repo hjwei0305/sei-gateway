@@ -1,20 +1,5 @@
-buildscript {
-	ext {
-		springBootVersion = '2.0.2.RELEASE'
-	}
-	repositories {
-		mavenLocal()
-		maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group' }
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
-}
-
 ext {
-	springCloudVersion = 'Finchley.RELEASE'
-	util_version = '1.+'
+    springCloudVersion = 'Finchley.RELEASE'
 }
 
 apply plugin: 'java'
@@ -22,30 +7,32 @@ apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'war'
-war{
-	enabled = true
-	//包名称
-	archiveName "${baseName}.${extension}"
-	//包存放路径
-	destinationDir = file("${rootProject.projectDir}/build/war")
+
+war {
+    enabled = true
+    //包名称
+    archiveName "${baseName}.${extension}"
+    //包存放路径
+    destinationDir = file("${rootProject.projectDir}/build/war")
 }
 
 bootJar { enabled = false }
-jar {enabled = true}
+
+jar { enabled = true }
 
 dependencies {
-	compile project (':gateway-service')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
-	compile('org.springframework.boot:spring-boot-devtools')
-	compileOnly('org.projectlombok:lombok:1.16.16')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile project(':gateway-service')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
+    compile('org.springframework.boot:spring-boot-devtools')
+    compileOnly('org.projectlombok:lombok:1.16.16')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 

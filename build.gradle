@@ -1,34 +1,39 @@
 allprojects {
-	group GROUP
-	version VERSION
+	buildscript {
+		repositories {
+			mavenLocal()
+
+			maven { url REPOSITORY }
+
+			mavenCentral()
+		}
+
+		dependencies {
+			classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		}
+	}
 
 	apply plugin: 'java'
 	apply plugin: 'idea'
 	apply plugin: 'maven'
+	apply plugin: 'eclipse'
+	//使用signing plugin做数字签名
+	//apply plugin: 'signing'
 
+	// java编译的时候缺省状态下会因为中文字符而失败
+	[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
-//    apply plugin: 'checkstyle'
-
+	group = GROUP
+	version = VERSION
 	// JVM 版本号要求
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+	sourceCompatibility = COMPATIBILITY
+	targetCompatibility = COMPATIBILITY
 
 	repositories {
 		mavenLocal()
-		maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group' }
+
+		maven { url REPOSITORY }
+
 		mavenCentral()
 	}
-
-/*    task checkstyle(type: Checkstyle) {
-        //单模块
-//        configFile = file("${project.projectDir}/config/checkstyle/checkstyle.xml")
-        //多模块
-        configFile = file("../config/checkstyle/checkstyle.xml")
-        // Where my checkstyle config is...
-//        configProperties.checkstyleSuppressionsPath = file("${project.projectDirr}/config/quality/suppressions.xml").absolutePath // Where is my suppressions file for checkstyle is...
-        source = fileTree('src/main/java')
-        ignoreFailures = true
-        classpath = files()
-    }*/
-
 }

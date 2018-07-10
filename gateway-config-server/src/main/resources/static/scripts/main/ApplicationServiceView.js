@@ -34,7 +34,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             tbar: this.initTbar(),
             gridCfg: {
                 url:_ctxPath + "/gateway_api_service/findAllByPage",
-                loadonce: true,
+                loadonce: false,
                 multiselect: true,
                 colModel: [
                     {

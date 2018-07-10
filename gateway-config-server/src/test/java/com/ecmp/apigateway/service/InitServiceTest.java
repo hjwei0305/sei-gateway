@@ -23,7 +23,7 @@ public class InitServiceTest {
 
     @Test
     public void initInterface() throws Exception {
-        initService.InitService("B84B4EFB-4465-69AA-6EF0-3D18DD2C2B6D");
+        initService.initServiceByAppId("B84B4EFB-4465-69AA-6EF0-3D18DD2C2B6D");
     }
 
     @Test

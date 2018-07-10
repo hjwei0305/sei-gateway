@@ -3,6 +3,7 @@ package com.ecmp.apigateway.zuul.filter;
 import com.ecmp.apigateway.ZKService;
 import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.util.JsonUtils;
+import com.ecmp.util.JwtTokenUtil;
 import com.ecmp.util.RSAUtils;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.Key;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * usage:认证过滤器
@@ -33,20 +36,22 @@ public class CertificateFilter extends ZuulFilter {
     private static final Logger log = LoggerFactory.getLogger(CertificateFilter.class);
 
     private static final String TOKEN_PREFIX = "Bearer";
-    private static final String HEADER_STRING = "ecmp-token";
+    private static final String HEADER_STRING = "Authorization";
     private static final String APP_ID = "appId";
 
     @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+    @Autowired
     private ZKService zkService;
 
-    @Value("${certification.center.url}")
-    private String certificationCenterUrl;
+//    @Value("${certification.center.url}")
+//    private String certificationCenterUrl;
 
-    @Value("${certification.center.path}")
-    private String certificationCenterPath;
+//    @Value("${certification.center.path}")
+//    private String certificationCenterPath;
 
-    @Value("${default.public.key}")
-    private String defaultPublicKey;
+//    @Value("${default.public.key}")
+//    private String defaultPublicKey;
 
     @Override
     public String filterType() {
@@ -85,17 +90,19 @@ public class CertificateFilter extends ZuulFilter {
             return null;
         }
         String jwt = authorization.replace(TOKEN_PREFIX,"");
-        String appId = request.getHeader(APP_ID);
-        String result = getPublicKey(appId);
-        String publicKey = defaultPublicKey;
-//        if(result != null) {
-//            Map<String, Object> resultMap = JsonUtils.fromJson(result, Map.class);
-//            publicKey = String.valueOf(resultMap.get("publicKey"));
-//        }
-        String valJson = parseJWT(jwt,publicKey);
+
         try {
-            ctx.addZuulRequestHeader("userInfo",valJson);
-            log.info("get userInfo is {}",valJson);
+            Date date = jwtTokenUtil.getExpirationDateFromToken(jwt);
+            if (System.currentTimeMillis() > date.getTime()) {
+                ctx.setSendZuulResponse(false);
+                ctx.setResponseStatusCode(503);
+                ctx.setResponseBody(JsonUtils.toJson(ResponseModel.NOT_FOUND("gateway.certification.error")));
+                ctx.set("isSuccess", false);
+                log.info("token过期");
+                return null;
+            }
+//            ctx.addZuulRequestHeader("userInfo",valJson);
+//            log.info("get userInfo is {}",valJson);
             log.info("转发网址：{}",request.getRequestURL().toString());
         } catch (Exception e) {
             ctx.setSendZuulResponse(false);
@@ -105,61 +112,5 @@ public class CertificateFilter extends ZuulFilter {
             return null;
         }
         return null;
-    }
-
-
-    /**
-     * 通过appid 向认证中心获取该应用的公钥
-     *
-     * @param appId
-     * @return
-     */
-    private String getPublicKey(String appId) {
-        //优先从系统环境变量中读取
-        //优先从系统环境变量中读取
-        HttpGet get=null;
-        String apiGatewayAppId = System.getenv("ECMP_APP_ID");
-        if (StringUtils.isNotBlank(apiGatewayAppId)) {
-            String apiGatewayHost =zkService.getZookeeperData(apiGatewayAppId,"AUTH_CENTER","oauth2.base.url");
-            if (StringUtils.isNotBlank(apiGatewayHost)) {
-                get = new HttpGet(apiGatewayHost + certificationCenterPath + "?appId=" + appId);
-            }
-        }
-        if(null == get) {
-            get  =new HttpGet(certificationCenterUrl+certificationCenterPath+"?appId="+appId);
-        }
-
-        try(CloseableHttpClient httpClient = HttpClients.createDefault();
-            CloseableHttpResponse response =httpClient.execute(get)){
-            return org.apache.http.util.EntityUtils.toString(response.getEntity());
-        } catch (IOException e) {
-            log.error("get public key by appId error",e);
-        }
-        return null;
-    }
-
-    public String parseJWT(String jwt,String publicKey){
-        try {
-            Key key = RSAUtils.getPublicKey(publicKey);
-
-
-            JwtParser parser = Jwts.parser().setSigningKey(key);
-
-            if(!parser.isSigned(jwt)){
-                throw new JwtException("token must be signed");
-            }
-
-            Claims claims = parser.parseClaimsJws(jwt).getBody();
-
-            log.info("claims",claims.getExpiration());
-
-            return claims.getSubject();
-        }catch (ExpiredJwtException ex){
-            log.error("token is expiration {}",ex);
-            throw new JwtException("token is expiration");
-        }catch (Exception ex){
-            log.error("parser token exception {}",ex);
-            throw new JwtException(ex.getMessage());
-        }
     }
 }

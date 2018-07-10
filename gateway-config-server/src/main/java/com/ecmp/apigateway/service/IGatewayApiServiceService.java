@@ -57,4 +57,25 @@ public interface IGatewayApiServiceService {
      * @return
      */
     GatewayApiService findById(String id);
+
+    /**
+     * 获取配置中心应用服务
+     * @return
+     */
+    Object findAllApiApp();
+
+    /**
+     * 刷新路由
+     *
+     * @return
+     */
+    Object refresh();
+
+    /**
+     * 通过appId获取应用服务
+     *
+     * @param appId
+     * @return
+     */
+    GatewayApiService findByAppId(String appId);
 }

@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class RefreshService {
     @Autowired
-    ApplicationEventPublisher publisher;
+    private ApplicationEventPublisher publisher;
     @Autowired
-    RouteLocator routeLocator;
+    private RouteLocator routeLocator;
 
     public void refreshRoute() {
         RoutesRefreshedEvent routesRefreshedEvent = new RoutesRefreshedEvent(routeLocator);

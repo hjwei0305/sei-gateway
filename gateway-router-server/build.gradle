@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.12.RELEASE'
+		springBootVersion = '2.0.2.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -11,37 +11,40 @@ buildscript {
 	}
 }
 
+ext {
+	springCloudVersion = 'Finchley.RELEASE'
+	util_version = '1.+'
+}
 
 apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
+apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-//apply plugin: 'org.springframework.springloaded'
-
-group = 'com.ecmp'
-version = '0.0.1-SNAPSHOT'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-
-ext {
-	springCloudVersion = '1.4.4.RELEASE'
+apply plugin: 'war'
+war{
+	enabled = true
+	//包名称
+	archiveName "${baseName}.${extension}"
+	//包存放路径
+	destinationDir = file("${rootProject.projectDir}/build/war")
 }
-repositories {
-	mavenLocal()
-	maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group/' }
-}
+
+bootJar { enabled = false }
+jar {enabled = true}
+
 dependencies {
+	compile project (':gateway-service')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile("org.springframework.cloud:spring-cloud-starter-netflix-zuul:${springCloudVersion}")
-	//compile("org.springframework.cloud:spring-cloud-starter-feign:${springCloudVersion}")
-	//compile('org.springframework.boot:spring-boot-starter-thymeleaf')
-	//compile('org.springframework.boot:spring-boot-starter-aop')
+	compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
 	compile('org.springframework.boot:spring-boot-devtools')
-	runtime('mysql:mysql-connector-java')
+	compileOnly('org.projectlombok:lombok:1.16.16')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 

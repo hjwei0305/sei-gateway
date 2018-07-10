@@ -1,13 +1,11 @@
 package com.ecmp.apigateway.web;
 
-import com.ecmp.apigateway.model.GatewayApiRouter;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.PageModel;
 import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.apigateway.model.common.SearchParam;
-import com.ecmp.apigateway.service.IGatewayApiAppClient;
-import com.ecmp.apigateway.service.IGatewayApiRouterService;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
+import com.ecmp.apigateway.service.InitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -15,22 +13,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
-
 /**
  * @author: hejun
  * @date: 2018/4/24
  * @remark: 应用服务-控制层跳转
+ * @update:liusonglin 把路由刷新放到控制层(数据库事物提交后)
  */
 @Controller
 @RequestMapping(value = "/gateway_api_service")
 public class GatewayApiServiceController {
     @Autowired
     private IGatewayApiServiceService gatewayApiServiceService;
+
+
     @Autowired
-    private IGatewayApiRouterService gatewayApiRouterService;
-    @Autowired
-    private IGatewayApiAppClient gatewayApiAppClient;
+    private InitService initService;
 
     /**
      * 显示应用服务页面
@@ -54,6 +51,18 @@ public class GatewayApiServiceController {
     }
 
     /**
+     * 通过appId刷新路由
+     * @param appId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("refreshByAppId")
+    public Object refreshByAppId(String appId) {
+        initService.initServiceByAppId(appId);
+        return ResponseModel.SUCCESS();
+    }
+
+    /**
      * 编辑应用服务
      * @param gatewayApiService 应用服务-实体参数
      * @return
@@ -62,6 +71,7 @@ public class GatewayApiServiceController {
     @RequestMapping("edit")
     public Object edit(GatewayApiService gatewayApiService) {
         gatewayApiServiceService.edit(gatewayApiService);
+        gatewayApiServiceService.refresh();
         return ResponseModel.SUCCESS();
     }
 
@@ -74,6 +84,7 @@ public class GatewayApiServiceController {
     @RequestMapping("removeById")
     public Object removeById(String id) {
         gatewayApiServiceService.removeById(id);
+        gatewayApiServiceService.refresh();
         return ResponseModel.SUCCESS();
     }
 
@@ -90,8 +101,7 @@ public class GatewayApiServiceController {
             Page<GatewayApiService> gatewayApiServicePage = gatewayApiServiceService.findAllByPage(searchParam);
             return new PageModel<>(gatewayApiServicePage);
         } else {
-            List<GatewayApiService> gatewayApiServices = gatewayApiServiceService.findAll();
-            return gatewayApiServices;
+            return gatewayApiServiceService.findAll();
         }
     }
 
@@ -108,27 +118,14 @@ public class GatewayApiServiceController {
     }
 
     /**
-     * 获取应用服务网关路由
-     * @param gatewayApiRouter 路由配置-实体参数
+     * 获取所有应用服务
      * @return
      */
     @ResponseBody
-    @RequestMapping("router/getting")
-    public Object getting(GatewayApiRouter gatewayApiRouter) {
-        GatewayApiRouter apiRouterOnly = gatewayApiRouterService.getting(gatewayApiRouter);
-        return ResponseModel.SUCCESS(apiRouterOnly);
-    }
-
-    /**
-     * 设置应用服务网关路由
-     * @param gatewayApiRouter 路由配置-实体参数
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("router/setting")
-    public Object setting(GatewayApiRouter gatewayApiRouter) {
-        gatewayApiRouterService.setting(gatewayApiRouter);
-        return ResponseModel.SUCCESS();
+    @RequestMapping("config/findAllApiApp")
+    public Object findAllApiApp() {
+        Object apiApplications = gatewayApiServiceService.findAllApiApp();
+        return ResponseModel.SUCCESS(apiApplications);
     }
 
     /**
@@ -140,6 +137,7 @@ public class GatewayApiServiceController {
     @RequestMapping("router/startById")
     public Object startById(String id) {
         gatewayApiServiceService.enableById(id, true);
+        gatewayApiServiceService.refresh();
         return ResponseModel.SUCCESS();
     }
 
@@ -152,29 +150,7 @@ public class GatewayApiServiceController {
     @RequestMapping("router/stopById")
     public Object stopById(String id) {
         gatewayApiServiceService.enableById(id, false);
+        gatewayApiServiceService.refresh();
         return ResponseModel.SUCCESS();
-    }
-
-    /**
-     * 获取配置中心应用服务
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findAllApiApp")
-    public Object findAllApiApp() {
-        Object apiApplications = gatewayApiAppClient.findAllApiApp();
-        return ResponseModel.SUCCESS(apiApplications);
-    }
-
-    /**
-     * 根据应用ID获取应用服务信息
-     * @param appId 配置中心AppId
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("findAppByAppId")
-    public Object findAppByAppId(String appId) {
-        Object apiApplication = gatewayApiAppClient.findAppByAppId(appId);
-        return ResponseModel.SUCCESS(apiApplication);
     }
 }

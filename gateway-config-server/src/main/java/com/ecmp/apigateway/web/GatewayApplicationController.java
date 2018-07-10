@@ -79,6 +79,7 @@ public class GatewayApplicationController {
      * @param gatewayApplication
      * @return
      */
+    @ResponseBody
     @RequestMapping("/modify_gateway_application")
     public Object modifyGatewayApplication(GatewayApplication gatewayApplication) {
         this.gatewayApplicationService.modifyGatewayApplication(gatewayApplication);
@@ -116,7 +117,7 @@ public class GatewayApplicationController {
     @ResponseBody
     public Object findGatewayApplication(Model model, String id, String applicationCode) {
         GatewayApplication gatewayApplication = this.gatewayApplicationService.findGatewayApplicationByIdOrCode(id, applicationCode);
-     /*   model.addAttribute(StaticVariable.STATUS, HttpStatus.OK.value());
+        /*model.addAttribute(StaticVariable.STATUS, HttpStatus.OK.value());
         model.addAttribute(StaticVariable.MESSAGE, StaticVariable.SUCCESS_MESSAGE);
         model.addAttribute(StaticVariable.DATA, gatewayApplication);*/
         return ResponseModel.SUCCESS(gatewayApplication);

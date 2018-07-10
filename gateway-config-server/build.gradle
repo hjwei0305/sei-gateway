@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.12.RELEASE'
+		springBootVersion = '2.0.2.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -12,41 +12,40 @@ buildscript {
 }
 
 
-apply plugin: 'war'
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-//apply plugin: 'org.springframework.springloaded'
-
-group = 'com.ecmp'
-version = '0.0.1-SNAPSHOT'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 
 ext {
-	springCloudVersion = '1.4.4.RELEASE'
 	curator_version = '4.0.1'
 	util_version = '1.+'
+	http_client_version = '4.5.5'
 }
-repositories {
-	mavenLocal()
-	maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group/' }
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'war'
+war{
+	enabled = true
+	//包名称
+	archiveName "${baseName}.${extension}"
+	//包存放路径
+	destinationDir = file("${rootProject.projectDir}/build/war")
 }
+
+bootJar { enabled = false }
+jar {enabled = true}
+
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile project (':gateway-service')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	//compile("org.springframework.cloud:spring-cloud-starter-netflix-zuul:${springCloudVersion}")
-	compile("org.springframework.cloud:spring-cloud-starter-feign:${springCloudVersion}")
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-aop')
 	compile('org.springframework.boot:spring-boot-devtools')
-	compile("org.apache.curator:curator-recipes:$curator_version") { exclude group: 'log4j' }
+	compile("mysql:mysql-connector-java:$mysql_version")
+	compile("com.oracle:ojdbc:$oracle_version")
 	compile("com.ecmp:ecmp-util:$util_version")
-	runtime('mysql:mysql-connector-java')
+	compile("org.apache.curator:curator-recipes:$curator_version") { exclude group: 'log4j' }
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

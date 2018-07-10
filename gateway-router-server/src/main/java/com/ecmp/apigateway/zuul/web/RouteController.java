@@ -7,8 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Map;
-
 /**
  * @author: hejun
  * @date: 2018/4/24
@@ -17,22 +15,23 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/gateway_route_service")
 public class RouteController {
+
     @Autowired
-    RefreshService refreshService;
+    private RefreshService refreshService;
+
     @Autowired
-    ZuulHandlerMapping zuulHandlerMapping;
+    private ZuulHandlerMapping zuulHandlerMapping;
 
     @ResponseBody
-    @RequestMapping("router/refresh")
+    @RequestMapping("/router/refresh")
     public Object refresh() {
         refreshService.refreshRoute();
         return "success";
     }
 
     @ResponseBody
-    @RequestMapping("router/findAll")
+    @RequestMapping("/router/findAll")
     public Object findAll() {
-        Map<String, Object> handlerMap = zuulHandlerMapping.getHandlerMap();
-        return handlerMap;
+        return zuulHandlerMapping.getHandlerMap();
     }
 }

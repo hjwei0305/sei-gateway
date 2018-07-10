@@ -1,13 +1,15 @@
 package com.ecmp.apigateway.zuul;
 
+import com.ecmp.apigateway.dao.GatewayApiServiceDao;
+import com.ecmp.apigateway.model.GatewayApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.RefreshableRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.SimpleRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties.ZuulRoute;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,28 +20,18 @@ import java.util.Map;
  * @date: 2018/4/24
  * @remark: 路由定位-定位器
  */
+@Component
 public class RouteLocator extends SimpleRouteLocator implements RefreshableRouteLocator {
-    public final static Logger logger = LoggerFactory.getLogger(RouteLocator.class);
+    private static final  Logger logger = LoggerFactory.getLogger(RouteLocator.class);
 
-    private JdbcTemplate jdbcTemplate;
+    private static final String PATH_SERPERATE = "/";
 
-    private ZuulProperties properties;
+    @Autowired
+    private GatewayApiServiceDao gatewayApiServiceDao;
 
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public RouteLocator(ZuulProperties properties) {
+        super(null, properties);
     }
-
-    public RouteLocator(String servletPath, ZuulProperties properties) {
-        super(servletPath, properties);
-        this.properties = properties;
-        logger.info("servletPath:{}", servletPath);
-    }
-
-    //父类已经提供了这个方法，这里写出来只是为了说明这一个方法很重要！！！
-    /*@Override
-    protected void doRefresh() {
-        super.doRefresh();
-    }*/
 
     @Override
     public void refresh() {
@@ -48,7 +40,7 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
 
     @Override
     protected Map<String, ZuulRoute> locateRoutes() {
-        LinkedHashMap<String, ZuulRoute> routesMap = new LinkedHashMap<String, ZuulRoute>();
+        LinkedHashMap<String, ZuulRoute> routesMap = new LinkedHashMap<>();
         //从application.properties中加载路由信息
         routesMap.putAll(super.locateRoutes());
         //从db中加载路由信息
@@ -58,104 +50,31 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
         for (Map.Entry<String, ZuulRoute> entry : routesMap.entrySet()) {
             String path = entry.getKey();
             //Prepend with slash if not already present.
-            if (!path.startsWith("/")) {
-                path = "/" + path;
+            if (!path.startsWith(PATH_SERPERATE)) {
+                path = PATH_SERPERATE + path;
             }
-            //如果没有在application.properties不需要此实现
-            /*if (StringUtils.hasText(this.properties.getPrefix())) {
-                path = this.properties.getPrefix() + path;
-                if (!path.startsWith("/")) {
-                    path = "/" + path;
-                }
-            }*/
             values.put(path, entry.getValue());
         }
+        logger.info("values is {}",values);
         return values;
     }
 
     private Map<String, ZuulRoute> locateRoutesFromDB() {
         Map<String, ZuulRoute> routes = new LinkedHashMap<>();
-        String sql = "select * from gateway_api_router where deleted = false and enabled = true ";
-        List<ZuulRouteVO> results = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ZuulRouteVO.class));
-        for (ZuulRouteVO result : results) {
-            if (org.apache.commons.lang3.StringUtils.isBlank(result.getPath()) || org.apache.commons.lang3.StringUtils.isBlank(result.getUrl())) {
+        List<GatewayApiService> results = gatewayApiServiceDao.findByDeletedFalseAndServiceAppEnabledTrue();
+        for (GatewayApiService result : results) {
+            if (org.apache.commons.lang3.StringUtils.isBlank(result.getServicePath()) ||
+                    org.apache.commons.lang3.StringUtils.isBlank(result.getServiceAppUrl())) {
                 continue;
             }
             ZuulRoute zuulRoute = new ZuulRoute();
-            try {
-                org.springframework.beans.BeanUtils.copyProperties(result, zuulRoute);
-            } catch (Exception e) {
-                logger.error("Load Zuul Route info from DB with Error：", e);
-                throw e;
-            }
+            zuulRoute.setId(result.getId());
+            zuulRoute.setPath(result.getServicePath());
+            zuulRoute.setRetryable(result.isRetryAble());
+            zuulRoute.setUrl(result.getServiceAppUrl());
+            zuulRoute.setStripPrefix(result.isStripPrefix());
             routes.put(zuulRoute.getPath(), zuulRoute);
         }
         return routes;
-    }
-
-    public static class ZuulRouteVO {
-        private String id;
-        private String path;
-        private String serviceId;
-        private String url;
-        private boolean stripPrefix = true;
-        private Boolean retryable;
-        private Boolean enabled;
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        public void setPath(String path) {
-            this.path = path;
-        }
-
-        public String getServiceId() {
-            return serviceId;
-        }
-
-        public void setServiceId(String serviceId) {
-            this.serviceId = serviceId;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public boolean isStripPrefix() {
-            return stripPrefix;
-        }
-
-        public void setStripPrefix(boolean stripPrefix) {
-            this.stripPrefix = stripPrefix;
-        }
-
-        public Boolean getRetryable() {
-            return retryable;
-        }
-
-        public void setRetryable(Boolean retryable) {
-            this.retryable = retryable;
-        }
-
-        public Boolean getEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(Boolean enabled) {
-            this.enabled = enabled;
-        }
     }
 }

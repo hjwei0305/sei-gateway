@@ -16,6 +16,7 @@ allprojects {
 	repositories {
 		mavenLocal()
 		maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group' }
+		mavenCentral()
 	}
 
 /*    task checkstyle(type: Checkstyle) {

@@ -4,8 +4,9 @@ buildscript {
 		fastjson_version = '1.2.46'
 	}
 	repositories {
-		mavenCentral()
+		mavenLocal()
 		maven { url 'http://rddgit.changhong.com:8081/nexus/content/groups/ECMP_Group' }
+		mavenCentral()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")

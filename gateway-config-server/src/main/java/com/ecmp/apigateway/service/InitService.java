@@ -12,6 +12,7 @@ import com.ecmp.apigateway.model.swagger.ApplicationWithDoc;
 import com.ecmp.apigateway.model.swagger.BaseRequest;
 import com.ecmp.apigateway.model.swagger.SwaggerBase;
 import com.ecmp.apigateway.utils.HttpUtils;
+import com.ecmp.apigateway.utils.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,9 +129,12 @@ public class InitService {
             gatewayApplication.setCreatedTime(new Date());
             gatewayApplication.setUpdatedTime(new Date());
 
-            gatewayApplicationService.addGatewayApplication(gatewayApplication);
+            //设置网关code
+            gatewayApplication.setApplicationCode(RandomUtil.getUniqueCode());
 
             SwaggerBase swaggerBase = initInterfaceByApiDoc(reuslt.getApiDocsUrl(), gatewayApplication.getApplicationCode());
+
+            gatewayApplicationService.addGatewayApplication(gatewayApplication);
 
             if(swaggerBase == null){
                 throw new MessageRuntimeException("配置中心获取都文档地址不可用，请检查");

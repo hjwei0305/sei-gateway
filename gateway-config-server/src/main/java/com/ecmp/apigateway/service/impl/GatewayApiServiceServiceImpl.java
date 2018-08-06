@@ -11,6 +11,7 @@ import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.ToolUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -138,7 +139,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     }
 
     @Override
-    public Object refresh() {
+    public StatusLine refresh() {
         //优先从系统环境变量中读取
         String gatewayHost;
         String appId = System.getenv("ECMP_APP_ID");
@@ -154,7 +155,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         logger.info("the refresh url is {}",url);
         try(CloseableHttpClient httpClient = HttpClients.createDefault();
             CloseableHttpResponse response =httpClient.execute(get)){
-            return org.apache.http.util.EntityUtils.toString(response.getEntity());
+            return response.getStatusLine();
         } catch (IOException e) {
             logger.error("refresh error",e);
         }

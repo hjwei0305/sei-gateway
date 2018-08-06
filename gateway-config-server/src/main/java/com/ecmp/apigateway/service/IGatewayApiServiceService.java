@@ -2,6 +2,7 @@ package com.ecmp.apigateway.service;
 
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.SearchParam;
+import org.apache.http.StatusLine;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -69,7 +70,7 @@ public interface IGatewayApiServiceService {
      *
      * @return
      */
-    Object refresh();
+    StatusLine refresh();
 
     /**
      * 通过appId获取应用服务

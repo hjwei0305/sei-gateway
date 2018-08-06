@@ -33,8 +33,6 @@ public class GatewayApplicationServiceImpl implements IGatewayApplicationService
 
     @Override
     public void addGatewayApplication(GatewayApplication gatewayApplication) {
-        //设置网关code
-        gatewayApplication.setApplicationCode(RandomUtil.getUniqueCode());
         this.gatewayApplicationDao.save(gatewayApplication);
     }
 

@@ -1,11 +1,13 @@
 package com.ecmp.apigateway.web;
 
+import com.ecmp.apigateway.exception.message.MessageRuntimeException;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.PageModel;
 import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.service.InitService;
+import org.apache.http.StatusLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -136,9 +138,12 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/startById")
     public Object startById(String id) {
-        gatewayApiServiceService.enableById(id, true);
-        gatewayApiServiceService.refresh();
-        return ResponseModel.SUCCESS();
+        StatusLine statusLine = gatewayApiServiceService.refresh();
+        if(statusLine != null && statusLine.getStatusCode() == 200){
+            gatewayApiServiceService.enableById(id, true);
+            return ResponseModel.SUCCESS();
+        }
+        throw new RuntimeException("the router refresh code is "+statusLine.getStatusCode());
     }
 
     /**
@@ -149,8 +154,11 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/stopById")
     public Object stopById(String id) {
-        gatewayApiServiceService.enableById(id, false);
-        gatewayApiServiceService.refresh();
-        return ResponseModel.SUCCESS();
+        StatusLine statusLine = gatewayApiServiceService.refresh();
+        if(statusLine != null && statusLine.getStatusCode() == 200){
+            gatewayApiServiceService.enableById(id, false);
+            return ResponseModel.SUCCESS();
+        }
+        throw new RuntimeException("the router refresh code is "+statusLine.getStatusCode());
     }
 }

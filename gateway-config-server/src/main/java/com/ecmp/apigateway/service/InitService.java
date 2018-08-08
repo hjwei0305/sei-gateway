@@ -91,7 +91,7 @@ public class InitService {
                         gatewayInterface.setInterfaceProtocol(InterfaceProtocolEnum.HTTP);
                         gatewayInterface.setInterfaceURI(key);
                         gatewayInterface.setInterfaceRemark(baseRequest.getSummary());
-                        gatewayInterface.setValid(false);
+                        gatewayInterface.setValid(true);
                         gatewayInterface.setCreatedTime(new Date());
                         gatewayInterface.setUpdatedTime(new Date());
 
@@ -108,57 +108,60 @@ public class InitService {
 
     @Transactional
     public void initServiceByAppId(String appId){
+        try{
+            GatewayApiService gatewayApiService = gatewayApiServiceService.findByAppId(appId);
 
-        GatewayApiService gatewayApiService = gatewayApiServiceService.findByAppId(appId);
+            Map<String, String> params = new HashMap<>();
+            params.put("appId", appId);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("appId", appId);
+            String configCenterUrl=zkService.getZookeeperData(appId,CONFIG_CENTER_API,CONFIG_CENTER_API);
 
-        String configCenterUrl=zkService.getZookeeperData(appId,CONFIG_CENTER_API,CONFIG_CENTER_API);
+            ApplicationWithDoc reuslt = HttpUtils.getFun(configCenterUrl+"/applicationService/findByAppId",
+                    params, new TypeReference<ApplicationWithDoc>() {
+                    });
 
-        ApplicationWithDoc reuslt = HttpUtils.getFun(configCenterUrl+"/applicationService/findByAppId",
-                params, new TypeReference<ApplicationWithDoc>() {
-        });
+            if(gatewayApiService == null) {
 
-        if(gatewayApiService == null) {
+                GatewayApplication gatewayApplication = new GatewayApplication();
+                gatewayApplication.setApplicationName(reuslt.getRemark());
+                gatewayApplication.setApplicationRemark(reuslt.getRemark());
 
-            GatewayApplication gatewayApplication = new GatewayApplication();
-            gatewayApplication.setApplicationName(reuslt.getRemark());
-            gatewayApplication.setApplicationRemark(reuslt.getRemark());
+                gatewayApplication.setCreatedTime(new Date());
+                gatewayApplication.setUpdatedTime(new Date());
 
-            gatewayApplication.setCreatedTime(new Date());
-            gatewayApplication.setUpdatedTime(new Date());
+                //设置网关code
+                gatewayApplication.setApplicationCode(RandomUtil.getUniqueCode());
 
-            //设置网关code
-            gatewayApplication.setApplicationCode(RandomUtil.getUniqueCode());
+                SwaggerBase swaggerBase = initInterfaceByApiDoc(reuslt.getApiDocsUrl(), gatewayApplication.getApplicationCode());
 
-            SwaggerBase swaggerBase = initInterfaceByApiDoc(reuslt.getApiDocsUrl(), gatewayApplication.getApplicationCode());
+                gatewayApplicationService.addGatewayApplication(gatewayApplication);
 
-            gatewayApplicationService.addGatewayApplication(gatewayApplication);
+                if(swaggerBase == null){
+                    throw new RuntimeException("配置中心获取都文档地址不可用，请检查");
+                }
+                gatewayApiService = new GatewayApiService();
+                gatewayApiService.setId(UUID.randomUUID().toString());
+                gatewayApiService.setApplicationCode(gatewayApplication.getApplicationCode());
+                gatewayApiService.setRetryAble(false);
+                gatewayApiService.setServiceAppCode(reuslt.getApplicationModule().getCode());
+                gatewayApiService.setServiceAppId(reuslt.getAppId());
+                gatewayApiService.setServiceAppEnabled(true);
+                gatewayApiService.setServiceAppUrl(swaggerBase.getBasePath());
+                gatewayApiService.setServicePath(swaggerBase.getBasePath() + "/**");
+                gatewayApiService.setServiceAppRemark(reuslt.getRemark());
+                gatewayApiService.setServiceAppName(reuslt.getApplicationModule().getName());
+                gatewayApiService.setServiceAppVersion("1.0.0");
+                gatewayApiService.setStripPrefix(true);
+                gatewayApiService.setCreatedTime(new Date());
+                gatewayApiService.setUpdatedTime(new Date());
+                gatewayApiService.setDeleted(false);
 
-            if(swaggerBase == null){
-                throw new MessageRuntimeException("配置中心获取都文档地址不可用，请检查");
+                gatewayApiServiceService.save(gatewayApiService);
+            }else {
+                initInterfaceByApiDoc(reuslt.getApiDocsUrl(), gatewayApiService.getApplicationCode());
             }
-            gatewayApiService = new GatewayApiService();
-            gatewayApiService.setId(UUID.randomUUID().toString());
-            gatewayApiService.setApplicationCode(gatewayApplication.getApplicationCode());
-            gatewayApiService.setRetryAble(false);
-            gatewayApiService.setServiceAppCode(reuslt.getApplicationModule().getCode());
-            gatewayApiService.setServiceAppId(reuslt.getAppId());
-            gatewayApiService.setServiceAppEnabled(true);
-            gatewayApiService.setServiceAppUrl(swaggerBase.getBasePath());
-            gatewayApiService.setServicePath(swaggerBase.getBasePath() + "/**");
-            gatewayApiService.setServiceAppRemark(reuslt.getRemark());
-            gatewayApiService.setServiceAppName(reuslt.getApplicationModule().getName());
-            gatewayApiService.setServiceAppVersion("1.0.0");
-            gatewayApiService.setStripPrefix(true);
-            gatewayApiService.setCreatedTime(new Date());
-            gatewayApiService.setUpdatedTime(new Date());
-            gatewayApiService.setDeleted(false);
-
-            gatewayApiServiceService.save(gatewayApiService);
-        }else {
-            initInterfaceByApiDoc(reuslt.getApiDocsUrl(), gatewayApiService.getApplicationCode());
+        }catch (Exception ex){
+            throw new RuntimeException(ex.getMessage());
         }
     }
 }

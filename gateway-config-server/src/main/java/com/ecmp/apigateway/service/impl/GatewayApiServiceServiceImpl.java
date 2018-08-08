@@ -53,20 +53,29 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void save(GatewayApiService gatewayApiService) {
-        if (ToolUtils.isEmpty(gatewayApiService.getServiceAppId()) || ToolUtils.isEmpty(gatewayApiService.getApplicationCode())) {
-            throw new RequestParamNullException();
+        if (ToolUtils.isEmpty(gatewayApiService.getServiceAppId()) && ToolUtils.isEmpty(gatewayApiService.getServiceAppUrl())) {
+            throw new RuntimeException("应用服务ID和转发地址不能全为空");
         } else {
-            String appUrl = zkService.getZookeeperData(gatewayApiService.getServiceAppId(),
-                    gatewayApiService.getServiceAppCode());
-            gatewayApiService.setServiceAppUrl(appUrl);
-            gatewayApiService.setServicePath(ToolUtils.key2Path(ToolUtils.getRouteKey(appUrl)));
-            gatewayApiServiceDao.save(gatewayApiService);
+            if(StringUtils.isNotBlank(gatewayApiService.getServiceAppId())) {
+                String appUrl = zkService.getZookeeperData(gatewayApiService.getServiceAppId(),
+                        gatewayApiService.getServiceAppCode());
+                gatewayApiService.setServiceAppUrl(appUrl);
+                gatewayApiService.setServicePath(ToolUtils.key2Path(ToolUtils.getRouteKey(appUrl)));
+                gatewayApiServiceDao.save(gatewayApiService);
+            }
+            if(StringUtils.isBlank(gatewayApiService.getServiceAppId())
+                    &&StringUtils.isNotBlank(gatewayApiService.getServiceAppUrl())){
+                gatewayApiServiceDao.save(gatewayApiService);
+            }
         }
     }
 
     @Override
     public void edit(GatewayApiService gatewayApiService) {
-        if (ToolUtils.isEmpty(gatewayApiService.getId()) || ToolUtils.isEmpty(gatewayApiService.getServiceAppId()) || ToolUtils.isEmpty(gatewayApiService.getApplicationCode())) {
+        if ((ToolUtils.isEmpty(gatewayApiService.getId())
+                || ((ToolUtils.isEmpty(gatewayApiService.getServiceAppId())
+                || ToolUtils.isEmpty(gatewayApiService.getApplicationCode()))
+                && ToolUtils.isEmpty(gatewayApiService.getServiceAppUrl())))) {
             throw new RequestParamNullException();
         } else {
             GatewayApiService apiServiceOnly = gatewayApiServiceDao.findByDeletedFalseAndId(gatewayApiService.getId());
@@ -99,7 +108,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
         } else {
             gatewayApiServices.forEach(gatewayApiService -> {
                 gatewayApiService.setServiceAppEnabled(enable);
-                if (enable) { //*应用服务启用路由时才获取
+                if(StringUtils.isNotBlank(gatewayApiService.getServiceAppId()) && enable) {
                     //*通过应用服务AppId和应用服务Code获取
                     String appUrl = zkService.getZookeeperData(gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode());
                     if (ToolUtils.isEmpty(appUrl)) {

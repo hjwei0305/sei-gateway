@@ -1,6 +1,5 @@
 package com.ecmp.apigateway.web;
 
-import com.ecmp.apigateway.exception.message.MessageRuntimeException;
 import com.ecmp.apigateway.model.GatewayApiService;
 import com.ecmp.apigateway.model.common.PageModel;
 import com.ecmp.apigateway.model.common.ResponseModel;
@@ -61,6 +60,7 @@ public class GatewayApiServiceController {
     @RequestMapping("refreshByAppId")
     public Object refreshByAppId(String appId) {
         initService.initServiceByAppId(appId);
+        gatewayApiServiceService.refresh();
         return ResponseModel.SUCCESS();
     }
 
@@ -138,10 +138,12 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/startById")
     public Object startById(String id) {
+        gatewayApiServiceService.enableById(id, true);
         StatusLine statusLine = gatewayApiServiceService.refresh();
         if(statusLine != null && statusLine.getStatusCode() == 200){
-            gatewayApiServiceService.enableById(id, true);
             return ResponseModel.SUCCESS();
+        }else {
+            gatewayApiServiceService.enableById(id, false);
         }
         throw new RuntimeException("the router refresh code is "+statusLine.getStatusCode());
     }
@@ -154,10 +156,12 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/stopById")
     public Object stopById(String id) {
+        gatewayApiServiceService.enableById(id, false);
         StatusLine statusLine = gatewayApiServiceService.refresh();
         if(statusLine != null && statusLine.getStatusCode() == 200){
-            gatewayApiServiceService.enableById(id, false);
             return ResponseModel.SUCCESS();
+        }else {
+            gatewayApiServiceService.enableById(id, true);
         }
         throw new RuntimeException("the router refresh code is "+statusLine.getStatusCode());
     }

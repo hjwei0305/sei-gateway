@@ -197,6 +197,15 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             }
         },{
             xtype: "Button",
+            //addText:新增
+            title: '导入',
+            selected: true,
+            handler: function () {
+                g.isEdit = false;
+                g.importFun();
+            }
+        },{
+            xtype: "Button",
             title: g.lang.startText,
             iconCss: "ecmp-flow-start",
             selected: true,
@@ -475,6 +484,70 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             }
         });
     },
+    importFun:function () {
+        var g = this;
+        g.importWin = EUI.Window({
+            //  applicationModuleText: "应用模块",
+            title: '导入',
+            iconCss: 'ecmp-common-setting',
+            height: 120,
+            padding: 15,
+            width: 380,
+            items: [{
+                xtype: "FormPanel",
+                id: "importFun",
+                padding: 0,
+                defaultConfig: {
+                    labelWidth: 90,
+                    width: 270
+                },
+                items: [{
+                    xtype: "TextField",
+                    title: '应用服务Id',
+                    name: "appId",
+                }]
+            }],
+            buttons: [{
+                //cancelText:取消
+                title: g.lang.cancelText,
+                handler: function () {
+                    g.importWin.remove();
+                }
+            }, {
+                // saveText:保存
+                title: g.lang.saveText,
+                selected: true,
+                handler: function () {
+                    g.importInterFace();
+                }
+            }]
+        });
+        g.formImport = EUI.getCmp("importFun");
+    },
+    importInterFace: function() {
+        var g = this;
+        var data = g.formImport.getFormValue();
+        console.log(data)
+        var myMask = EUI.LoadMask({msg: g.lang.saveMaskMessageText});
+        EUI.Store({
+            url: _ctxPath + '/gateway_api_service/refreshByAppId',
+            params: data,
+            success: function (status) {
+                myMask.hide();
+                g.importWin.remove();
+                //  g.gridCmp.refreshGrid();
+                g.gridCmp.setPostParams({},true);
+                EUI.ProcessStatus({
+                    success: true,
+                    msg: status.message
+                });
+            },
+            failure: function (status) {
+                myMask.hide();
+                g.message(status.message);
+            }
+        });
+    },
     addAndEdit: function () {
         var g = this;
         g.editWin = EUI.Window({
@@ -507,6 +580,14 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
                         xtype: "TextField",
                         title: g.lang.serviceAppIdText,
                         name: "serviceAppId",
+                        allowBlank: true,
+                        readonly:g.isEdit
+                    },
+                    {
+                        xtype: "TextField",
+                        title: "转发地址",
+                        name: "serviceAppUrl",
+                        allowBlank: true,
                         readonly:g.isEdit
                     },
                     {

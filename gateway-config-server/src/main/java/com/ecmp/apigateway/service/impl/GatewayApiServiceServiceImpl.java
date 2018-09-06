@@ -49,12 +49,6 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     @Autowired
     private RefreshService refreshService;
 
-    @Value("${gateway.route.service.url}")
-    private String gateWayUrl;
-
-    @Value("${gateway.route.service.path}")
-    private String gateWayPath;
-
     @Override
     public void save(GatewayApiService gatewayApiService) {
         if (ToolUtils.isEmpty(gatewayApiService.getServiceAppId()) && ToolUtils.isEmpty(gatewayApiService.getServiceAppUrl())) {

@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ServletComponentScan
 @EnableScheduling
 public class GatewayConfigServerApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(GatewayConfigServerApplication.class, args);
     }

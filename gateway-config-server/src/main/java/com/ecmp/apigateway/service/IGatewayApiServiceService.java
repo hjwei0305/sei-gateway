@@ -70,7 +70,7 @@ public interface IGatewayApiServiceService {
      *
      * @return
      */
-    StatusLine refresh();
+    void refresh();
 
     /**
      * 通过appId获取应用服务

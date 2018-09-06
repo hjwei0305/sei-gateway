@@ -138,14 +138,14 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/startById")
     public Object startById(String id) {
-        gatewayApiServiceService.enableById(id, true);
-        StatusLine statusLine = gatewayApiServiceService.refresh();
-        if(statusLine != null && statusLine.getStatusCode() == 200){
+        try {
+            gatewayApiServiceService.enableById(id, true);
+            gatewayApiServiceService.refresh();
             return ResponseModel.SUCCESS();
-        }else {
+        }catch (Exception ex){
             gatewayApiServiceService.enableById(id, false);
+            throw new RuntimeException("the router refresh error is "+ex.getMessage());
         }
-        throw new RuntimeException("the router refresh code is "+statusLine.getStatusCode());
     }
 
     /**
@@ -156,13 +156,13 @@ public class GatewayApiServiceController {
     @ResponseBody
     @RequestMapping("router/stopById")
     public Object stopById(String id) {
-        gatewayApiServiceService.enableById(id, false);
-        StatusLine statusLine = gatewayApiServiceService.refresh();
-        if(statusLine != null && statusLine.getStatusCode() == 200){
+        try {
+            gatewayApiServiceService.enableById(id, false);
+            gatewayApiServiceService.refresh();
             return ResponseModel.SUCCESS();
-        }else {
+        } catch (Exception ex) {
             gatewayApiServiceService.enableById(id, true);
+            throw new RuntimeException("the router refresh error is " + ex.getMessage());
         }
-        throw new RuntimeException("the router refresh code is "+statusLine.getStatusCode());
     }
 }

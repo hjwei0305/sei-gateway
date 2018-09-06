@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @remark: 路由配置-控制层跳转
  */
 @Controller
-@RequestMapping(value = "/gateway_route_service")
 public class RouteController {
 
     @Autowired

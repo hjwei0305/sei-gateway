@@ -10,6 +10,7 @@ import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.ToolUtils;
+import com.ecmp.apigateway.zuul.event.RefreshService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -44,6 +45,9 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Autowired
     private ZKService zkService;
+
+    @Autowired
+    private RefreshService refreshService;
 
     @Value("${gateway.route.service.url}")
     private String gateWayUrl;
@@ -148,27 +152,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
     }
 
     @Override
-    public StatusLine refresh() {
-        //优先从系统环境变量中读取
-        String gatewayHost;
-        String appId = System.getenv("ECMP_APP_ID");
-        if (StringUtils.isNotBlank(appId)) {
-            String apiGatewayHost =zkService.getZookeeperData(appId,"API_GATEWAY_HOST");
-            gatewayHost = apiGatewayHost;
-        } else {
-            gatewayHost=gateWayUrl;
-        }
-
-        String url = gatewayHost+gateWayPath;
-        HttpGet get =new HttpGet(url);
-        logger.info("the refresh url is {}",url);
-        try(CloseableHttpClient httpClient = HttpClients.createDefault();
-            CloseableHttpResponse response =httpClient.execute(get)){
-            return response.getStatusLine();
-        } catch (IOException e) {
-            logger.error("refresh error",e);
-        }
-        return null;
+    public void refresh() {
+        refreshService.refreshRoute();
     }
 
 

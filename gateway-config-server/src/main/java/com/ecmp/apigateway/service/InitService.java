@@ -102,7 +102,6 @@ public class InitService {
                 log.info("insert size is {}",count.get());
             }
         }
-
         return swaggerBase;
     }
 

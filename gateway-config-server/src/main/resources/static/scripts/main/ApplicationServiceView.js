@@ -199,6 +199,7 @@ EUI.ApplicationServiceView = EUI.extend(EUI.CustomUI, {
             xtype: "Button",
             //addText:新增
             title: '导入',
+            iconCss: "ecmp-common-add",
             selected: true,
             handler: function () {
                 g.isEdit = false;

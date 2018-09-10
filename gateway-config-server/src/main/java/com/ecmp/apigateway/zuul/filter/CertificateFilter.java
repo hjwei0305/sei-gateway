@@ -68,7 +68,7 @@ public class CertificateFilter extends ZuulFilter {
         if(StringUtils.isBlank(authorization)){
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(401);
-            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.ERROR("权限验证信息Authorization为空")));
+            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.ERROR("gateway.certification.empty")));
             ctx.set("isSuccess", false);
             return null;
         }
@@ -80,7 +80,7 @@ public class CertificateFilter extends ZuulFilter {
         }catch (Exception ex){
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(403);
-            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.ERROR("权限验证出错，请检查")));
+            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.ERROR("gateway.certification.error")));
             ctx.set("isSuccess", false);
             return null;
         }

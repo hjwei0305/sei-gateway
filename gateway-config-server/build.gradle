@@ -29,8 +29,8 @@ apply plugin: 'war'
 war{
 	enabled = true
 	//包名称
-	archiveName "${baseName}.${extension}"
-	//archiveName "api-gateway.${extension}"
+	//archiveName "${baseName}.${extension}"
+	archiveName "api-gateway.${extension}"
 	//包存放路径
 	destinationDir = file("${rootProject.projectDir}/build/war")
 }

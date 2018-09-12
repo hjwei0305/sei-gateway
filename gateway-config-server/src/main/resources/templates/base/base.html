@@ -7,15 +7,15 @@
     <!--&lt;!&ndash; content的取值为webkit,ie-comp,ie-stand之一，区分大小写，分别代表用webkit内核，IE兼容内核，IE标准内核 &ndash;&gt;-->
     <meta name="renderer" content="webkit" />
     <link rel="stylesheet" type="text/css"
-          th:href="@{{url}/EUI/common/fonticon/css/ecmp-all-min.css(url=${application.staticResourceUrl})}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{{url}/EUI/blue/jqgrid/css/jquery-ui.min.css(url=${application.staticResourceUrl})}" />
-    <link rel="stylesheet" type="text/css" th:href="@{{url}/EUI/blue/jqgrid/css/ui.jqgrid.min.css(url=${application.staticResourceUrl})}" />
-    <link rel="stylesheet" type="text/css" th:href="@{{url}/EUI/blue/eui.unmin.css(url=${application.staticResourceUrl})}" />
+          th:href="@{{url}/eui/common/fonticon/css/ecmp-all-min.css(url=${application.staticResourceUrl})}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{{url}/eui/blue/jqgrid/css/jquery-ui.min.css(url=${application.staticResourceUrl})}" />
+    <link rel="stylesheet" type="text/css" th:href="@{{url}/eui/blue/jqgrid/css/ui.jqgrid.min.css(url=${application.staticResourceUrl})}" />
+    <link rel="stylesheet" type="text/css" th:href="@{{url}/eui/blue/eui.unmin.css(url=${application.staticResourceUrl})}" />
 
-    <script type="text/javascript" th:src="@{{url}/EUI/common/jquery-1.8.min.js(url=${application.staticResourceUrl})}"></script>
-    <script type="text/javascript" th:src="@{{url}/EUI/blue/eui.unmin.js(url=${application.staticResourceUrl})}"></script>
-    <script type="text/javascript" th:src="@{{url}/EUI/blue/eui_zh-cn.js(url=${application.staticResourceUrl})}"></script>
-    <script type="text/javascript" th:src="@{{url}/EUI/blue/jqgrid/jquery.jqGrid.min.js(url=${application.staticResourceUrl})}"></script>
+    <script type="text/javascript" th:src="@{{url}/eui/common/jquery-1.8.min.js(url=${application.staticResourceUrl})}"></script>
+    <script type="text/javascript" th:src="@{{url}/eui/blue/eui.unmin.js(url=${application.staticResourceUrl})}"></script>
+    <script type="text/javascript" th:src="@{{url}/eui/blue/eui_zh-cn.js(url=${application.staticResourceUrl})}"></script>
+    <script type="text/javascript" th:src="@{{url}/eui/blue/jqgrid/jquery.jqGrid.min.js(url=${application.staticResourceUrl})}"></script>
 
     <script th:inline="JavaScript">
         var _ctxPath = [[${#httpServletRequest.scheme}]] + '://' + [[${#httpServletRequest.serverName}]] + ':' + [[${#httpServletRequest.serverPort}]] + [[${#httpServletRequest.contextPath}]];

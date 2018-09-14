@@ -47,7 +47,13 @@ public class CertificateFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        return true;
+        RequestContext ctx = RequestContext.getCurrentContext();
+        String uri = ctx.getRequest().getRequestURI();
+        if(!uri.contains("login")){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /***

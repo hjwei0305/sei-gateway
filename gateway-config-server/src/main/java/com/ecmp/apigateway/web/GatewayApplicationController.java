@@ -7,6 +7,7 @@ import com.ecmp.apigateway.model.common.ResponseModel;
 import com.ecmp.apigateway.model.common.SearchParam;
 import com.ecmp.apigateway.model.common.StaticVariable;
 import com.ecmp.apigateway.service.IGatewayApplicationService;
+import com.ecmp.apigateway.utils.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,8 @@ public class GatewayApplicationController {
     @RequestMapping("/add_gateway_application")
     @ResponseBody
     public Object addGatewayApplication(GatewayApplication gatewayApplication) {
+        //设置网关code
+        gatewayApplication.setApplicationCode(RandomUtil.getUniqueCode());
         this.gatewayApplicationService.addGatewayApplication(gatewayApplication);
         return ResponseModel.SUCCESS();
     }

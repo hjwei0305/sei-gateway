@@ -11,9 +11,7 @@ import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties.ZuulRoute;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author: hejun
@@ -31,6 +29,12 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
 
     public RouteLocator(ZuulProperties properties) {
         super(null, properties);
+    }
+
+    Set<String> sensitiveHeaders = new HashSet<>();
+
+    {
+        sensitiveHeaders.add("Access-Control-Allow-Origin");
     }
 
     @Override
@@ -73,6 +77,7 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
             zuulRoute.setRetryable(result.isRetryAble());
             zuulRoute.setUrl(result.getServiceAppUrl());
             zuulRoute.setStripPrefix(result.isStripPrefix());
+            zuulRoute.setSensitiveHeaders(sensitiveHeaders);
             routes.put(zuulRoute.getPath(), zuulRoute);
         }
         return routes;

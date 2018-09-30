@@ -41,7 +41,7 @@ public class GatewayApplicationServiceImpl implements IGatewayApplicationService
         if (ToolUtils.isEmpty(gatewayApplication.getId()) && ToolUtils.isEmpty(gatewayApplication.getApplicationCode())) {
             throw new RequestParamNullException();
         }
-        GatewayApplication application = this.gatewayApplicationDao.findByIdOrAndApplicationCode(gatewayApplication.getId(), gatewayApplication.getApplicationCode());
+        GatewayApplication application = this.gatewayApplicationDao.findByIdOrApplicationCode(gatewayApplication.getId(), gatewayApplication.getApplicationCode());
         if (null == application) throw new ObjectNotFoundException();
         EntityUtils.resolveAllFieldsSet(gatewayApplication, application);
         this.gatewayApplicationDao.save(gatewayApplication);
@@ -49,7 +49,7 @@ public class GatewayApplicationServiceImpl implements IGatewayApplicationService
 
     @Override
     public void removeGatewayApplication(String id, String applicationCode) {
-        GatewayApplication application = this.gatewayApplicationDao.findByIdOrAndApplicationCode(id, applicationCode);
+        GatewayApplication application = this.gatewayApplicationDao.findByIdOrApplicationCode(id, applicationCode);
         if (null == application) throw new ObjectNotFoundException();
         application.setDeleted(true);
         this.gatewayApplicationDao.save(application);
@@ -77,7 +77,7 @@ public class GatewayApplicationServiceImpl implements IGatewayApplicationService
 
     @Override
     public GatewayApplication findGatewayApplicationByIdOrCode(String id, String applicationCode) {
-        return this.gatewayApplicationDao.findByIdOrAndApplicationCode(id, applicationCode);
+        return this.gatewayApplicationDao.findByIdOrApplicationCode(id, applicationCode);
     }
 
     @Override

@@ -38,16 +38,21 @@ public class InterfaceAccessFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        RequestContext ctx = RequestContext.getCurrentContext();
-        String uri = ctx.getRequest().getRequestURI();
-        uri = uri.replace(uri.substring(0,uri.indexOf("/",2)),"");
-        GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri.substring(0,uri.indexOf("/",2)+1)
-                ,uri.substring(uri.indexOf("/",2)));
-        log.info("获取interfaces 成功，interfaces is {},uri is {}",interfaces,uri);
-        if(interfaces == null){
-            return true;
+        try {
+            RequestContext ctx = RequestContext.getCurrentContext();
+            String uri = ctx.getRequest().getRequestURI();
+            uri = uri.replace(uri.substring(0, uri.indexOf("/", 2)), "");
+            GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri.substring(0, uri.indexOf("/", 2) + 1)
+                    , uri.substring(uri.indexOf("/", 2)));
+            log.info("获取interfaces 成功，interfaces is {},uri is {}", interfaces, uri);
+            if (interfaces == null) {
+                return true;
+            }
+            return !interfaces.isValid();
+        }catch (Exception e){
+            log.error("InterfaceAccessFilter shouldFilter exception",e);
+            return false;
         }
-        return !interfaces.isValid();
     }
 
     @Override

@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  * </p>
  * User:liusonglin; Date:2018/5/18;ProjectName:api-gateway;
  */
-@Component
+//@Component
 public class CertificateFilter extends ZuulFilter {
     private static final Logger log = LoggerFactory.getLogger(CertificateFilter.class);
 

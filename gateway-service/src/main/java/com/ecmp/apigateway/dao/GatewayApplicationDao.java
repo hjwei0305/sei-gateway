@@ -55,7 +55,7 @@ public interface GatewayApplicationDao extends JpaRepository<GatewayApplication,
      * @param applicationCode 应用code
      * @return
      */
-    GatewayApplication findByIdOrAndApplicationCode(@Param("id") String id, @Param("applicationCode") String applicationCode);
+    GatewayApplication findByIdOrApplicationCode(@Param("id") String id, @Param("applicationCode") String applicationCode);
 
 
 }

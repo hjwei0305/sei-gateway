@@ -12,20 +12,13 @@ import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.ToolUtils;
 import com.ecmp.apigateway.zuul.event.RefreshService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -59,9 +52,13 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
                         gatewayApiService.getServiceAppCode());
                 logger.info("AppId:{}, AppCode:{}, AppUrl:{}",
                         gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode(), appUrl);
-                gatewayApiService.setServiceAppUrl(appUrl);
-                gatewayApiService.setServicePath(ToolUtils.key2Path(ToolUtils.getRouteKey(appUrl)));
-                gatewayApiServiceDao.save(gatewayApiService);
+                if (StringUtils.isNotBlank(appUrl)) {
+                    gatewayApiService.setServiceAppUrl(appUrl);
+                    gatewayApiService.setServicePath(ToolUtils.key2Path(ToolUtils.getRouteKey(appUrl)));
+                    gatewayApiServiceDao.save(gatewayApiService);
+                } else {
+                    throw new RuntimeException("应用服务全局参数" + gatewayApiService.getServiceAppCode() + "不能为空");
+                }
             }
             if(StringUtils.isBlank(gatewayApiService.getServiceAppId())
                     &&StringUtils.isNotBlank(gatewayApiService.getServiceAppUrl())){

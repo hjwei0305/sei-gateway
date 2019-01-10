@@ -160,7 +160,7 @@ public class InitService {
                 initInterfaceByApiDoc(reuslt.getApiDocsUrl(), gatewayApiService.getApplicationCode());
             }
         }catch (Exception ex){
-            throw new RuntimeException(ex.getMessage());
+            throw new RuntimeException("根据AppId初始化服务异常", ex);
         }
     }
 }

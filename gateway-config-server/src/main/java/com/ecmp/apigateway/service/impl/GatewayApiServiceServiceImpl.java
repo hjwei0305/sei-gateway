@@ -57,6 +57,8 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
             if(StringUtils.isNotBlank(gatewayApiService.getServiceAppId())) {
                 String appUrl = zkService.getZookeeperData(gatewayApiService.getServiceAppId(),
                         gatewayApiService.getServiceAppCode());
+                logger.info("AppId:{}, AppCode:{}, AppUrl:{}",
+                        gatewayApiService.getServiceAppId(), gatewayApiService.getServiceAppCode(), appUrl);
                 gatewayApiService.setServiceAppUrl(appUrl);
                 gatewayApiService.setServicePath(ToolUtils.key2Path(ToolUtils.getRouteKey(appUrl)));
                 gatewayApiServiceDao.save(gatewayApiService);

@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Table(name = "gateway_interface")
 public class GatewayInterface extends Domain {
     //接口名称
-    @Column(name = "interface_name", nullable = false, length = 50)
+    @Column(name = "interface_name", nullable = false, length = 100)
     private String interfaceName;
     //接口说明
     @Column(name = "interface_remark", length = 200)

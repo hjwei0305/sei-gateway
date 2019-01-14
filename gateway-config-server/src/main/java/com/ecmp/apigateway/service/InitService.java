@@ -51,8 +51,12 @@ public class InitService {
         if(StringUtils.isBlank(applicationCode)){
             throw new MessageRuntimeException("应用代码applicationCode不能为空");
         }
-        String url = apiDoc.replaceAll("(api-docs.*)", "swagger.json");
-
+        String url;
+        if (StringUtils.contains(apiDoc, "api-docs")) {
+            url = apiDoc.replaceAll("(api-docs.*)", "swagger.json");
+        } else {
+            url = apiDoc.replace("swagger-ui.html", "v2/api-docs");
+        }
         SwaggerBase swaggerBase = HttpUtils.getFun(url, null, new TypeReference<SwaggerBase>() {});
         final AtomicInteger count = new AtomicInteger(0);
         if(swaggerBase != null){

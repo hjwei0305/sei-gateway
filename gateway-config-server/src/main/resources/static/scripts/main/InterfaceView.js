@@ -132,6 +132,9 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
                 //is valid 是否可用
                 {name: 'valid', index: 'valid', hidden: true},
                 {name: 'validTemp', index: 'validTemp', sortable: false, width: 100,label: g.lang.isValid,formatter:customFmatter},
+                //is validateToken 是否可用
+                {name: 'validateToken', index: 'validateToken', hidden: true},
+                {name: 'validateTokenTemp', index: 'validateTokenTemp', sortable: false, width: 100,label: g.lang.validateToken,formatter:formatter},
                 //interfaceURIText: "接口uri地址"
                 {name: 'interfaceURI', index: 'interfaceURI', sortable: true, width: 300, label: g.lang.interfaceURIText, formatter: 'link',formatoptions:{target:"_blank"}},
                 //interfaceRemarkText: "接口说明"
@@ -200,7 +203,7 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
         g.editWin = EUI.Window({
             title: g.isEdit ? String.format(g.lang.modifyWindowText, g.lang.interfaceText, g.curApplication.applicationName) : String.format(g.lang.addWindowText, g.lang.interfaceText,g.curApplication.applicationName),
             iconCss: g.isEdit ? "ecmp-eui-edit" : "ecmp-eui-add",
-            height: 280,
+            height: 320,
             padding: 15,
             width: 450,
             items: [{
@@ -350,5 +353,9 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
 function customFmatter(cellvalue, options, rowObject){
 
     return rowObject.valid?'是':'否'
+}
+function formatter(cellvalue, options, rowObject){
+
+    return rowObject.validateToken?'是':'否'
 }
 ;

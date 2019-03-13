@@ -252,6 +252,19 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
                         name: "true"
                     }]
                 },{
+                    xtype: "RadioBoxGroup",
+                    title: g.lang.validateToken,
+                    name: "validateToken",
+                    itemspace: 2,
+                    items: [{
+                        title: "否",
+                        name: "false"
+                    }, {
+                        title: "是",
+                        name: "true",
+                        checked: true
+                    }]
+                },{
                     xtype: "TextArea",
                     title: g.lang.interfaceURIText,
                     name: "interfaceURI",

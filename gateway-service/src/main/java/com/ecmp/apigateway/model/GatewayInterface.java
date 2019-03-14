@@ -39,6 +39,11 @@ public class GatewayInterface extends Domain {
      */
     @Column(name = "is_valid", nullable = false)
     private boolean isValid;
+    /**
+     * 验证token
+     */
+    @Column(name = "validate_token", nullable = false)
+    private Boolean validateToken = Boolean.TRUE;
 
     public String getInterfaceName() {
         return interfaceName;
@@ -86,6 +91,14 @@ public class GatewayInterface extends Domain {
 
     public void setValid(boolean valid) {
         isValid = valid;
+    }
+
+    public Boolean getValidateToken() {
+        return validateToken;
+    }
+
+    public void setValidateToken(Boolean validateToken) {
+        this.validateToken = validateToken;
     }
 
     public GatewayApiService getGatewayApiService() {

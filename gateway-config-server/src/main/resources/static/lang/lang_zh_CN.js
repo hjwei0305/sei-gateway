@@ -21,6 +21,7 @@ var defaultLangs = {
     codeText: "代码",
     nameText: "名称",
     isValid: "是否可用",
+    validateToken: "安全验证",
     remarkText: "说明",
 };
 if (EUI.InterfaceView) {

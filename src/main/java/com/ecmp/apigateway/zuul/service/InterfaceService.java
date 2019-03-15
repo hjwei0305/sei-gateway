@@ -29,7 +29,7 @@ public class InterfaceService {
 
 
     public GatewayInterface getInterfaceByUri(String uri) {
-        String path = uri.substring(0, uri.indexOf("/", 2));
+//        String path = uri.substring(0, uri.indexOf("/", 2));
         GatewayInterface gatewayInterface = (GatewayInterface) redisTemplate.opsForValue().get(key(uri));
 
         return gatewayInterface;

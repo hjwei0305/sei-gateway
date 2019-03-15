@@ -72,7 +72,7 @@ public class CertificateFilter extends ZuulFilter {
         //默认的浏览器权限请求头 如:Authorization:Bearer token
         HttpServletRequest request = ctx.getRequest();
         String authorization = request.getHeader(HEADER_STRING);
-        log.info("Access Token is", authorization);
+        log.info("Access Token is {}", authorization);
         if (StringUtils.isBlank(authorization)) {
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(401);
@@ -83,7 +83,7 @@ public class CertificateFilter extends ZuulFilter {
         }
         try {
             SessionUser sessionUser = ContextUtil.getSessionUser(authorization);
-            log.info("SessionUser is", sessionUser);
+            log.info("SessionUser is {}", sessionUser);
             if (sessionUser.isAnonymous()) {
                 ctx.setSendZuulResponse(false);
                 ctx.setResponseStatusCode(401);

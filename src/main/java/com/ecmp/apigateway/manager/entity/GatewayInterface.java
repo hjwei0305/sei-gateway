@@ -39,6 +39,11 @@ public class GatewayInterface extends BaseEntity {
      */
     @Column(name = "is_valid", nullable = false)
     private boolean isValid;
+    /**
+     * 会话token验证
+     */
+    @Column(name = "validate_token", nullable = false)
+    private Boolean validateToken = Boolean.TRUE;
 
     //版本号
     @Column(name = "version", nullable = false)
@@ -94,6 +99,14 @@ public class GatewayInterface extends BaseEntity {
 
     public void setValid(boolean valid) {
         isValid = valid;
+    }
+
+    public Boolean getValidateToken() {
+        return validateToken;
+    }
+
+    public void setValidateToken(Boolean validateToken) {
+        this.validateToken = validateToken;
     }
 
     public GatewayApiService getGatewayApiService() {

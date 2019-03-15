@@ -1,13 +1,11 @@
 package com.ecmp.apigateway;
 
-import com.ecmp.util.JwtTokenUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -25,13 +23,5 @@ public class WebApplication extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(WebApplication.class);
-    }
-
-    @Bean
-    public JwtTokenUtil jwtTokenUtil() {
-        JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
-        //TODO 设置超时时间
-        jwtTokenUtil.setJwtExpiration(3600 * 10);
-        return jwtTokenUtil;
     }
 }

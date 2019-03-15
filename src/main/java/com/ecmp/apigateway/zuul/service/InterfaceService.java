@@ -1,7 +1,7 @@
 package com.ecmp.apigateway.zuul.service;
 
-import com.ecmp.apigateway.dao.GatewayInterfaceDao;
-import com.ecmp.apigateway.entity.GatewayInterface;
+import com.ecmp.apigateway.manager.dao.GatewayInterfaceDao;
+import com.ecmp.apigateway.manager.entity.GatewayInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

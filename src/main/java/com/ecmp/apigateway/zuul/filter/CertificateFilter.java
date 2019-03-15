@@ -1,7 +1,7 @@
 package com.ecmp.apigateway.zuul.filter;
 
 import com.ecmp.apigateway.config.ZKService;
-import com.ecmp.apigateway.entity.common.ResponseModel;
+import com.ecmp.apigateway.manager.entity.common.ResponseModel;
 import com.ecmp.util.JsonUtils;
 import com.ecmp.util.JwtTokenUtil;
 import com.netflix.zuul.ZuulFilter;

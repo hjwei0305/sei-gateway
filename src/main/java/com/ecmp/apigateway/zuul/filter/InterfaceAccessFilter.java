@@ -1,7 +1,7 @@
 package com.ecmp.apigateway.zuul.filter;
 
-import com.ecmp.apigateway.entity.GatewayInterface;
-import com.ecmp.apigateway.entity.common.ResponseModel;
+import com.ecmp.apigateway.manager.entity.GatewayInterface;
+import com.ecmp.apigateway.manager.entity.common.ResponseModel;
 import com.ecmp.apigateway.zuul.service.InterfaceService;
 import com.ecmp.util.JsonUtils;
 import com.netflix.zuul.ZuulFilter;

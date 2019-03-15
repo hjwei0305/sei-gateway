@@ -1,7 +1,7 @@
 package com.ecmp.apigateway.zuul;
 
-import com.ecmp.apigateway.dao.GatewayApiServiceDao;
-import com.ecmp.apigateway.entity.GatewayApiService;
+import com.ecmp.apigateway.manager.dao.GatewayApiServiceDao;
+import com.ecmp.apigateway.manager.entity.GatewayApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

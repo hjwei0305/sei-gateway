@@ -113,10 +113,20 @@ public class CertificateFilter extends ZuulFilter {
             if (sessionUser.isAnonymous()) {
                 ctx.setSendZuulResponse(false);
                 ctx.setResponseStatusCode(401);
-                log.error("Authorization 为空");
+                log.error("非法的token");
                 ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
                 ctx.set("isSuccess", false);
                 return null;
+            } else {
+                String token1 = (String) redisTemplate.opsForValue().get(REDIS_KEY_JWT + sessionUser.getSessionId());
+                if (StringUtils.isBlank(token1) || !StringUtils.equals(token, token1)) {
+                    ctx.setSendZuulResponse(false);
+                    ctx.setResponseStatusCode(401);
+                    log.error("非法的token");
+                    ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
+                    ctx.set("isSuccess", false);
+                    return null;
+                }
             }
         } catch (Exception ex) {
             ctx.setSendZuulResponse(false);

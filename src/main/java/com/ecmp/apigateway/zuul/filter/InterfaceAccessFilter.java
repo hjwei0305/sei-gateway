@@ -40,8 +40,11 @@ public class InterfaceAccessFilter extends ZuulFilter {
     public boolean shouldFilter() {
         try {
             RequestContext ctx = RequestContext.getCurrentContext();
-            String uri = ctx.getRequest().getRequestURI();
-            uri = uri.replace(uri.substring(0, uri.indexOf("/", 2)), "");
+//            String uri = ctx.getRequest().getRequestURI();
+            String uri = ctx.getRequest().getServletPath();
+//            System.out.println(ctx.getRequest().getContextPath());
+//            System.out.println(ctx.getRequest().getServletPath());
+//            uri = uri.replace(uri.substring(0, uri.indexOf("/", 2)), "");
             GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri.substring(0, uri.indexOf("/", 2) + 1)
                     , uri.substring(uri.indexOf("/", 2)));
             log.info("获取interfaces 成功，interfaces is {},uri is {}", interfaces, uri);

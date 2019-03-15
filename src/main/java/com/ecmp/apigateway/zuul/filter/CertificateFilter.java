@@ -1,5 +1,6 @@
 package com.ecmp.apigateway.zuul.filter;
 
+import com.ecmp.apigateway.config.ZKService;
 import com.ecmp.apigateway.manager.entity.GatewayInterface;
 import com.ecmp.apigateway.manager.entity.common.ResponseModel;
 import com.ecmp.apigateway.zuul.service.InterfaceService;
@@ -11,8 +12,10 @@ import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -26,11 +29,14 @@ import javax.servlet.http.HttpServletRequest;
 public class CertificateFilter extends ZuulFilter {
 
     private static final String TOKEN_PREFIX = "Bearer";
-    private static final String HEADER_STRING = "Authorization";
+    private static final String HEADER_TOKEN = "Authorization";
+    private static final String HEADER_SID = "_s";
+
+    private static final String REDIS_KEY_JWT = "jwt:";
 //    private static final String APP_ID = "appId";
 
-    //    @Autowired
-//    private ZKService zkService;
+    @Autowired
+    private RedisTemplate redisTemplate;
     @Autowired
     private InterfaceService interfaceService;
 
@@ -71,9 +77,29 @@ public class CertificateFilter extends ZuulFilter {
         }
         //默认的浏览器权限请求头 如:Authorization:Bearer token
         HttpServletRequest request = ctx.getRequest();
-        String authorization = request.getHeader(HEADER_STRING);
-        log.info("Access Token is {}", authorization);
-        if (StringUtils.isBlank(authorization)) {
+        String token = request.getHeader(HEADER_TOKEN);
+        if (StringUtils.isBlank(token)) {
+            String sid = request.getHeader(HEADER_SID);
+            if (StringUtils.isBlank(sid)) {
+                sid = request.getParameter(HEADER_SID);
+                if (StringUtils.isBlank(sid)) {
+                    Cookie[] cookies = request.getCookies();
+                    if (cookies != null && cookies.length > 0) {
+                        for (Cookie cookie : cookies) {
+                            if (StringUtils.equals(HEADER_SID, cookie.getName())) {
+                                sid = cookie.getValue();
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (StringUtils.isNotBlank(sid)) {
+                token = (String) redisTemplate.opsForValue().get(REDIS_KEY_JWT + sid);
+            }
+        }
+        log.info("Access Token is {}", token);
+        if (StringUtils.isBlank(token)) {
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(401);
             log.error("Authorization 为空");
@@ -82,7 +108,7 @@ public class CertificateFilter extends ZuulFilter {
             return null;
         }
         try {
-            SessionUser sessionUser = ContextUtil.getSessionUser(authorization);
+            SessionUser sessionUser = ContextUtil.getSessionUser(token);
             log.info("SessionUser is {}", sessionUser);
             if (sessionUser.isAnonymous()) {
                 ctx.setSendZuulResponse(false);
@@ -94,7 +120,7 @@ public class CertificateFilter extends ZuulFilter {
             }
         } catch (Exception ex) {
             ctx.setSendZuulResponse(false);
-            ctx.setResponseStatusCode(403);
+            ctx.setResponseStatusCode(401);
             log.error("jwt解析失败");
             ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
             ctx.set("isSuccess", false);

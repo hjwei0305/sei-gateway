@@ -91,14 +91,19 @@ public interface GatewayInterfaceDao extends BaseEntityDao<GatewayInterface> {
      */
     List<GatewayInterface> findByDeletedFalseAndIsValidTrueAndApplicationCode(String applicationCode);
 
+//    /**
+//     * 通过uri获取接口
+//     *
+//     * @param uri
+//     * @return
+//     */
+//    @Query("select gi from GatewayInterface gi \n" +
+//            "left join gi.gatewayApiService gs where (:uri = gi.interfaceURI)" +
+//            "and :path = REPLACE(gs.servicePath,'**','')")
+//    GatewayInterface getInterfaceByUri(@Param("path") String path, @Param("uri") String uri);
+
     /**
-     * 通过uri获取接口
-     *
-     * @param uri
-     * @return
+     * 获取所有可用接口
      */
-    @Query("select gi from GatewayInterface gi \n" +
-            "left join gi.gatewayApiService gs where (:uri = gi.interfaceURI)" +
-            "and :path = REPLACE(gs.servicePath,'**','')")
-    GatewayInterface getInterfaceByUri(@Param("path") String path, @Param("uri") String uri);
+    List<GatewayInterface> findByDeletedFalseAndIsValidTrue();
 }

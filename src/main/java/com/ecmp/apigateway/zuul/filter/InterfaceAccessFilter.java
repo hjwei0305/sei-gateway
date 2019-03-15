@@ -33,20 +33,15 @@ public class InterfaceAccessFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 0;
+        return 3;
     }
 
     @Override
     public boolean shouldFilter() {
         try {
             RequestContext ctx = RequestContext.getCurrentContext();
-//            String uri = ctx.getRequest().getRequestURI();
-            String uri = ctx.getRequest().getServletPath();
-//            System.out.println(ctx.getRequest().getContextPath());
-//            System.out.println(ctx.getRequest().getServletPath());
-//            uri = uri.replace(uri.substring(0, uri.indexOf("/", 2)), "");
-            GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri.substring(0, uri.indexOf("/", 2) + 1)
-                    , uri.substring(uri.indexOf("/", 2)));
+            String uri = ctx.getRequest().getRequestURI();
+            GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri);
             log.info("获取interfaces 成功，interfaces is {},uri is {}", interfaces, uri);
             if (interfaces == null) {
                 return true;

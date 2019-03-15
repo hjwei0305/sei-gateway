@@ -2,6 +2,8 @@ package com.ecmp.apigateway.zuul;
 
 import com.ecmp.apigateway.manager.dao.GatewayApiServiceDao;
 import com.ecmp.apigateway.manager.entity.GatewayApiService;
+import com.ecmp.apigateway.zuul.service.InterfaceService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,25 +22,23 @@ import java.util.*;
  */
 @Component
 public class RouteLocator extends SimpleRouteLocator implements RefreshableRouteLocator {
-    private static final  Logger logger = LoggerFactory.getLogger(RouteLocator.class);
+    private static final Logger logger = LoggerFactory.getLogger(RouteLocator.class);
 
     private static final String PATH_SERPERATE = "/";
 
     @Autowired
     private GatewayApiServiceDao gatewayApiServiceDao;
+    @Autowired
+    private InterfaceService interfaceService;
 
     public RouteLocator(ZuulProperties properties) {
         super(null, properties);
     }
 
-    Set<String> sensitiveHeaders = new HashSet<>();
-
-    {
-        sensitiveHeaders.add("Access-Control-Allow-Origin");
-    }
-
     @Override
     public void refresh() {
+        interfaceService.loadRuntimeData(null);
+
         doRefresh();
     }
 
@@ -49,36 +49,35 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
         routesMap.putAll(super.locateRoutes());
         //从db中加载路由信息
         routesMap.putAll(locateRoutesFromDB());
-        //优化一下配置
-        LinkedHashMap<String, ZuulRoute> values = new LinkedHashMap<>();
-        for (Map.Entry<String, ZuulRoute> entry : routesMap.entrySet()) {
-            String path = entry.getKey();
-            //Prepend with slash if not already present.
-            if (!path.startsWith(PATH_SERPERATE)) {
-                path = PATH_SERPERATE + path;
-            }
-            values.put(path, entry.getValue());
-        }
-        logger.info("values is {}",values);
-        return values;
+        logger.info("values is {}", routesMap);
+        return routesMap;
     }
 
     private Map<String, ZuulRoute> locateRoutesFromDB() {
+        Set<String> sensitiveHeaders = new HashSet<>();
+        sensitiveHeaders.add("Access-Control-Allow-Origin");
+
         Map<String, ZuulRoute> routes = new LinkedHashMap<>();
         List<GatewayApiService> results = gatewayApiServiceDao.findByDeletedFalseAndServiceAppEnabledTrue();
-        for (GatewayApiService result : results) {
-            if (org.apache.commons.lang3.StringUtils.isBlank(result.getServicePath()) ||
-                    org.apache.commons.lang3.StringUtils.isBlank(result.getServiceAppUrl())) {
-                continue;
-            }
-            ZuulRoute zuulRoute = new ZuulRoute();
-            zuulRoute.setId(result.getId());
-            zuulRoute.setPath(result.getServicePath());
-            zuulRoute.setRetryable(result.isRetryAble());
-            zuulRoute.setUrl(result.getServiceAppUrl());
-            zuulRoute.setStripPrefix(result.isStripPrefix());
-            zuulRoute.setSensitiveHeaders(sensitiveHeaders);
-            routes.put(zuulRoute.getPath(), zuulRoute);
+        if (results != null && results.size() > 0) {
+            results.forEach(result -> {
+                if (StringUtils.isNotBlank(result.getServicePath())
+                        && StringUtils.isNotBlank(result.getServiceAppUrl())) {
+                    String path = result.getServicePath();
+                    if (!path.startsWith(PATH_SERPERATE)) {
+                        path = PATH_SERPERATE + path;
+                    }
+
+                    ZuulRoute zuulRoute = new ZuulRoute();
+                    zuulRoute.setId(result.getId());
+                    zuulRoute.setPath(path);
+                    zuulRoute.setRetryable(result.isRetryAble());
+                    zuulRoute.setUrl(result.getServiceAppUrl());
+                    zuulRoute.setStripPrefix(result.isStripPrefix());
+                    zuulRoute.setSensitiveHeaders(sensitiveHeaders);
+                    routes.put(path, zuulRoute);
+                }
+            });
         }
         return routes;
     }

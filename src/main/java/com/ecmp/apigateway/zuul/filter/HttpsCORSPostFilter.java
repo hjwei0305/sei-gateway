@@ -22,7 +22,7 @@ public class HttpsCORSPostFilter extends ZuulFilter {
     @Override
     public int filterOrder() {
         //// 优先级为0，数字越大，优先级越低
-        return 2;
+        return 1;
     }
     @Override
     public boolean shouldFilter() {

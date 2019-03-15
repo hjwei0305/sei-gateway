@@ -1,7 +1,7 @@
 package com.ecmp.apigateway.zuul.filter;
 
-import com.ecmp.apigateway.entity.GatewayInterface;
-import com.ecmp.apigateway.entity.common.ResponseModel;
+import com.ecmp.apigateway.manager.entity.GatewayInterface;
+import com.ecmp.apigateway.manager.entity.common.ResponseModel;
 import com.ecmp.apigateway.zuul.service.InterfaceService;
 import com.ecmp.util.JsonUtils;
 import com.netflix.zuul.ZuulFilter;
@@ -33,7 +33,7 @@ public class InterfaceAccessFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 0;
+        return 3;
     }
 
     @Override
@@ -41,9 +41,7 @@ public class InterfaceAccessFilter extends ZuulFilter {
         try {
             RequestContext ctx = RequestContext.getCurrentContext();
             String uri = ctx.getRequest().getRequestURI();
-            uri = uri.replace(uri.substring(0, uri.indexOf("/", 2)), "");
-            GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri.substring(0, uri.indexOf("/", 2) + 1)
-                    , uri.substring(uri.indexOf("/", 2)));
+            GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri);
             log.info("获取interfaces 成功，interfaces is {},uri is {}", interfaces, uri);
             if (interfaces == null) {
                 return true;

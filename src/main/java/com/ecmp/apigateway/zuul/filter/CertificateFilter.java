@@ -118,8 +118,8 @@ public class CertificateFilter extends ZuulFilter {
                 ctx.set("isSuccess", false);
                 return null;
             } else {
-                String token1 = (String) redisTemplate.opsForValue().get(REDIS_KEY_JWT + sessionUser.getSessionId());
-                if (StringUtils.isBlank(token1) || !StringUtils.equals(token, token1)) {
+                Object token1 = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sessionUser.getSessionId());
+                if (token1 == null || !StringUtils.equals(token, token1.toString())) {
                     ctx.setSendZuulResponse(false);
                     ctx.setResponseStatusCode(401);
                     log.error("非法的token");
@@ -131,7 +131,7 @@ public class CertificateFilter extends ZuulFilter {
         } catch (Exception ex) {
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(401);
-            log.error("jwt解析失败");
+            log.error("jwt解析失败", ex);
             ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
             ctx.set("isSuccess", false);
             return null;

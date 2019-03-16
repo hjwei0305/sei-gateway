@@ -77,6 +77,7 @@ public class CertificateFilter extends ZuulFilter {
         }
         //默认的浏览器权限请求头 如:Authorization:Bearer token
         HttpServletRequest request = ctx.getRequest();
+        String uri = request.getServletPath();
         String token = request.getHeader(HEADER_TOKEN);
         if (StringUtils.isBlank(token)) {
             String sid = request.getHeader(HEADER_SID);
@@ -98,22 +99,22 @@ public class CertificateFilter extends ZuulFilter {
                 token = (String) redisTemplate.opsForValue().get(REDIS_KEY_JWT + sid);
             }
         }
-        log.info("Access Token is {}", token);
+        log.info("Access Token is {}  uri {}", token, uri);
         if (StringUtils.isBlank(token)) {
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(401);
-            log.error("Authorization 为空");
+            log.error("Authorization 为空  uri {}", uri);
             ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
             ctx.set("isSuccess", false);
             return null;
         }
         try {
             SessionUser sessionUser = ContextUtil.getSessionUser(token);
-            log.info("SessionUser is {}", sessionUser);
+            log.info("SessionUser is {}  uri {}", sessionUser, uri);
             if (sessionUser.isAnonymous()) {
                 ctx.setSendZuulResponse(false);
                 ctx.setResponseStatusCode(401);
-                log.error("非法的token");
+                log.error("非法的token   uri {}", uri);
                 ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
                 ctx.set("isSuccess", false);
                 return null;
@@ -122,7 +123,7 @@ public class CertificateFilter extends ZuulFilter {
                 if (StringUtils.isBlank(token1) || !StringUtils.equals(token, token1)) {
                     ctx.setSendZuulResponse(false);
                     ctx.setResponseStatusCode(401);
-                    log.error("非法的token");
+                    log.error("会话过期  uri {}", uri);
                     ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
                     ctx.set("isSuccess", false);
                     return null;
@@ -131,7 +132,7 @@ public class CertificateFilter extends ZuulFilter {
         } catch (Exception ex) {
             ctx.setSendZuulResponse(false);
             ctx.setResponseStatusCode(401);
-            log.error("jwt解析失败");
+            log.error("jwt解析失败  URI  {}", uri);
             ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
             ctx.set("isSuccess", false);
             return null;

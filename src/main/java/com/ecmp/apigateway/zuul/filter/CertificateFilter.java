@@ -118,7 +118,7 @@ public class CertificateFilter extends ZuulFilter {
                 ctx.set("isSuccess", false);
                 return null;
             } else {
-                /*String token1 = (String) redisTemplate.opsForValue().get(REDIS_KEY_JWT + sessionUser.getSessionId());
+                String token1 = (String) redisTemplate.opsForValue().get(REDIS_KEY_JWT + sessionUser.getSessionId());
                 if (StringUtils.isBlank(token1) || !StringUtils.equals(token, token1)) {
                     ctx.setSendZuulResponse(false);
                     ctx.setResponseStatusCode(401);
@@ -126,7 +126,7 @@ public class CertificateFilter extends ZuulFilter {
                     ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
                     ctx.set("isSuccess", false);
                     return null;
-                }*/
+                }
             }
         } catch (Exception ex) {
             ctx.setSendZuulResponse(false);

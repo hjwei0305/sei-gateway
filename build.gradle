@@ -38,10 +38,13 @@ dependencies {
     compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
 
     compile("com.alibaba:fastjson:$fastjson_version")
-    compile("org.projectlombok:lombok:1.16.14")
 
     compile("mysql:mysql-connector-java:$mysql_version")
     compile("com.oracle:ojdbc:$oracle_version")
+
+    //    compile("org.projectlombok:lombok:1.16.14")
+    compileOnly  "org.projectlombok:lombok:1.18.4"
+    annotationProcessor  "org.projectlombok:lombok:1.18.4"
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

@@ -1,6 +1,5 @@
 package com.ecmp.apigateway.zuul.filter;
 
-import com.ecmp.apigateway.config.ZKService;
 import com.ecmp.apigateway.manager.entity.GatewayInterface;
 import com.ecmp.apigateway.manager.entity.common.ResponseModel;
 import com.ecmp.apigateway.zuul.service.InterfaceService;
@@ -12,7 +11,7 @@ import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
@@ -36,7 +35,7 @@ public class CertificateFilter extends ZuulFilter {
 //    private static final String APP_ID = "appId";
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private StringRedisTemplate redisTemplate;
     @Autowired
     private InterfaceService interfaceService;
 
@@ -96,7 +95,7 @@ public class CertificateFilter extends ZuulFilter {
             }
 
             if (StringUtils.isNotBlank(sid)) {
-                token = (String) redisTemplate.opsForValue().get(REDIS_KEY_JWT + sid);
+                token = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sid);
             }
         }
         log.info("Access Token is {}  uri {}", token, uri);
@@ -119,7 +118,7 @@ public class CertificateFilter extends ZuulFilter {
                 ctx.set("isSuccess", false);
                 return null;
             } else {
-                String token1 = (String) redisTemplate.opsForValue().get(REDIS_KEY_JWT + sessionUser.getSessionId());
+                String token1 = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sessionUser.getSessionId());
                 if (StringUtils.isBlank(token1) || !StringUtils.equals(token, token1)) {
                     ctx.setSendZuulResponse(false);
                     ctx.setResponseStatusCode(401);

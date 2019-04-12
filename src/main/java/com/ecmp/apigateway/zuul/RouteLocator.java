@@ -67,7 +67,6 @@ public class RouteLocator extends SimpleRouteLocator implements RefreshableRoute
                     if (!path.startsWith(PATH_SERPERATE)) {
                         path = PATH_SERPERATE + path;
                     }
-
                     ZuulRoute zuulRoute = new ZuulRoute();
                     zuulRoute.setId(result.getId());
                     zuulRoute.setPath(path);

@@ -28,7 +28,7 @@
 //
 //    @Override
 //    public String filterType() {
-//        return "pre";
+//        return FilterConstants.PRE_TYPE;
 //    }
 //
 //    @Override

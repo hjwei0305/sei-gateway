@@ -11,6 +11,7 @@ import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +42,7 @@ public class CertificateFilter extends ZuulFilter {
 
     @Override
     public String filterType() {
-        return "pre";
+        return FilterConstants.PRE_TYPE;
     }
 
     @Override
@@ -53,13 +54,12 @@ public class CertificateFilter extends ZuulFilter {
     public boolean shouldFilter() {
         RequestContext ctx = RequestContext.getCurrentContext();
         String uri = ctx.getRequest().getServletPath();
+        System.out.println(ctx.getRequest().getContextPath());
 
-        GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri);
-        log.info("获取interfaces 成功，interfaces is {},uri is {}", interfaces, uri);
-        if (interfaces == null) {
-            return false;
-        }
-        return interfaces.getValidateToken();
+        Boolean checkToken = interfaceService.checkToken(uri);
+        log.info("uri: {}, 是否需要Token检查: {}", uri, checkToken);
+
+        return checkToken;
     }
 
     /***

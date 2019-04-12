@@ -18,7 +18,8 @@ import org.springframework.stereotype.Component;
  * </p>
  * User:liusonglin; Date:2018/5/18;ProjectName:api-gateway;
  */
-@Component
+//@Component 已弃用，无什么意义
+@Deprecated
 public class InterfaceAccessFilter extends ZuulFilter {
 
     private static final Logger log = LoggerFactory.getLogger(InterfaceAccessFilter.class);

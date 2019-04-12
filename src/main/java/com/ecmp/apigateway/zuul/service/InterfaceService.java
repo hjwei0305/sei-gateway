@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -28,13 +29,14 @@ public class InterfaceService {
     private RedisTemplate redisTemplate;
 
 
-    public GatewayInterface getInterfaceByUri(String uri) {
+    public Boolean checkToken(String uri) {
 //        String path = uri.substring(0, uri.indexOf("/", 2));
-        GatewayInterface gatewayInterface = (GatewayInterface) redisTemplate.opsForValue().get(key(uri));
-
-        return gatewayInterface;
+        return Objects.isNull(redisTemplate.opsForValue().get(key(uri)));
     }
 
+    /**
+     * 加载不需要做认证检查的接口到redis中
+     */
     public void loadRuntimeData(String appCode) {
         List<GatewayInterface> interfaceList;
         if (StringUtils.isNotBlank(appCode)) {
@@ -53,12 +55,14 @@ public class InterfaceService {
             String uri = gi.getInterfaceURI();
             if (StringUtils.isNotBlank(path) && StringUtils.isNotBlank(uri)) {
                 path = path.replaceAll("[/|*]", "");
-                redisTemplate.opsForValue().set(key("/" + path + uri), gi);
+                if (!gi.getValidateToken()) {
+                    redisTemplate.opsForValue().set(key("/" + path + uri), 1);
+                }
             }
         });
     }
 
     private String key(String uri) {
-        return "Gateway" + uri.replaceAll("/", ":");
+        return "Gateway:NoToken" + uri.replaceAll("/", ":");
     }
 }

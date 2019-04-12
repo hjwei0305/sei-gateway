@@ -42,12 +42,12 @@ public class InterfaceAccessFilter extends ZuulFilter {
         try {
             RequestContext ctx = RequestContext.getCurrentContext();
             String uri = ctx.getRequest().getServletPath();
-            GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri);
+//            GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri);
             log.info("获取interfaces 成功，interfaces is {},uri is {}", interfaces, uri);
-            if (interfaces == null) {
+//            if (interfaces == null) {
                 return true;
-            }
-            return !interfaces.isValid();
+//            }
+//            return !interfaces.isValid();
         }catch (Exception e){
             log.error("InterfaceAccessFilter shouldFilter exception",e);
             return false;

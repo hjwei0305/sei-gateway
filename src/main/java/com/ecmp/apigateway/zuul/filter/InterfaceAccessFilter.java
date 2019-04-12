@@ -43,7 +43,7 @@ public class InterfaceAccessFilter extends ZuulFilter {
             RequestContext ctx = RequestContext.getCurrentContext();
             String uri = ctx.getRequest().getServletPath();
 //            GatewayInterface interfaces = interfaceService.getInterfaceByUri(uri);
-            log.info("获取interfaces 成功，interfaces is {},uri is {}", interfaces, uri);
+//            log.info("获取interfaces 成功，interfaces is {},uri is {}", interfaces, uri);
 //            if (interfaces == null) {
                 return true;
 //            }

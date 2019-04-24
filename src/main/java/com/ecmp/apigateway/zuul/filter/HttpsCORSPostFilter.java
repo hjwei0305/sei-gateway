@@ -37,10 +37,12 @@ public class HttpsCORSPostFilter extends ZuulFilter {
 
     @Override
     public Object run() {
-        log.debug("*****************PostFilter run start*****************");
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletResponse response = ctx.getResponse();
         HttpServletRequest request = ctx.getRequest();
+        String uri = request.getServletPath();
+        log.debug("*****************PostFilter run start*****************");
+
         response.setHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials","true");
         response.setHeader("Access-Control-Expose-Headers","X-forwared-port, X-forwarded-host");
@@ -48,7 +50,7 @@ public class HttpsCORSPostFilter extends ZuulFilter {
         //允许继续路由
         ctx.setSendZuulResponse(true);
         ctx.setResponseStatusCode(200);
-        log.debug("*****************PostFilter run end*****************");
+        log.debug("*****************PostFilter run end***************** url: {}", uri);
         return null;
     }
 }

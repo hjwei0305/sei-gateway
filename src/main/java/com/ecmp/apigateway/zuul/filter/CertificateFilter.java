@@ -14,9 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 
 /**
  * usage:认证过滤器
@@ -78,32 +81,32 @@ public class CertificateFilter extends ZuulFilter {
         HttpServletRequest request = ctx.getRequest();
         String uri = request.getServletPath();
         String token = request.getHeader(HEADER_TOKEN);
-        if (StringUtils.isBlank(token)) {
-            String sid = request.getHeader(HEADER_SID);
-            if (StringUtils.isBlank(sid)) {
-                sid = request.getParameter(HEADER_SID);
-                if (StringUtils.isBlank(sid)) {
-                    Cookie[] cookies = request.getCookies();
-                    if (cookies != null && cookies.length > 0) {
-                        for (Cookie cookie : cookies) {
-                            if (StringUtils.equals(HEADER_SID, cookie.getName())) {
-                                sid = cookie.getValue();
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (StringUtils.isNotBlank(sid)) {
-                token = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sid);
-            }
-        }
+//        if (StringUtils.isBlank(token)) {
+//            String sid = request.getHeader(HEADER_SID);
+//            if (StringUtils.isBlank(sid)) {
+//                sid = request.getParameter(HEADER_SID);
+//                if (StringUtils.isBlank(sid)) {
+//                    Cookie[] cookies = request.getCookies();
+//                    if (cookies != null && cookies.length > 0) {
+//                        for (Cookie cookie : cookies) {
+//                            if (StringUtils.equals(HEADER_SID, cookie.getName())) {
+//                                sid = cookie.getValue();
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            if (StringUtils.isNotBlank(sid)) {
+//                token = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sid);
+//            }
+//        }
         log.info("Access Token is {}  uri {}", token, uri);
         if (StringUtils.isBlank(token)) {
             ctx.setSendZuulResponse(false);
-            ctx.setResponseStatusCode(401);
+            ctx.setResponseStatusCode(ResponseModel.STATUS_ACCESS_UNAUTHORIZED);
             log.error("Authorization 为空  uri {}", uri);
-            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
+            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.UNAUTHORIZED("Authorization 为空")));
             ctx.set("isSuccess", false);
             return null;
         }
@@ -112,27 +115,27 @@ public class CertificateFilter extends ZuulFilter {
             log.info("SessionUser is {}  uri {}", sessionUser, uri);
             if (sessionUser.isAnonymous()) {
                 ctx.setSendZuulResponse(false);
-                ctx.setResponseStatusCode(401);
+                ctx.setResponseStatusCode(ResponseModel.STATUS_ACCESS_UNAUTHORIZED);
                 log.error("非法的token   uri {}", uri);
-                ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
+                ctx.setResponseBody(JsonUtils.toJson(ResponseModel.UNAUTHORIZED("非法的token")));
                 ctx.set("isSuccess", false);
                 return null;
             } else {
                 String token1 = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sessionUser.getSessionId());
                 if (StringUtils.isBlank(token1) || !StringUtils.equals(token, token1)) {
                     ctx.setSendZuulResponse(false);
-                    ctx.setResponseStatusCode(401);
+                    ctx.setResponseStatusCode(ResponseModel.STATUS_ACCESS_UNAUTHORIZED);
                     log.error("会话过期  uri {}", uri);
-                    ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
+                    ctx.setResponseBody(JsonUtils.toJson(ResponseModel.UNAUTHORIZED("会话过期")));
                     ctx.set("isSuccess", false);
                     return null;
                 }
             }
         } catch (Exception ex) {
             ctx.setSendZuulResponse(false);
-            ctx.setResponseStatusCode(401);
+            ctx.setResponseStatusCode(ResponseModel.STATUS_ACCESS_UNAUTHORIZED);
             log.error("jwt解析失败  URI  {}", uri);
-            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.SESSION_INVALID()));
+            ctx.setResponseBody(JsonUtils.toJson(ResponseModel.UNAUTHORIZED(ex.getMessage())));
             ctx.set("isSuccess", false);
             return null;
         }

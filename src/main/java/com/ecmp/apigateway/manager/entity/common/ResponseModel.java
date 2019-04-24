@@ -14,10 +14,11 @@ import java.util.function.Consumer;
  */
 public class ResponseModel<T> implements Serializable {
 
-    private static final int STATUS_SUCCESS = 200;
-    private static final int STATUS_ERROR = 500;
-    private static final int STATUS_NOT_FOUND = 404;
-    private static final int STATUS_ACCESS_FORBIDDEN = 403;
+    public static final int STATUS_SUCCESS = 200;
+    public static final int STATUS_ERROR = 500;
+    public static final int STATUS_NOT_FOUND = 404;
+    public static final int STATUS_ACCESS_UNAUTHORIZED = 401;
+    public static final int STATUS_ACCESS_FORBIDDEN = 403;
 
 
     private Date timestamp = Date.from(Instant.now());
@@ -85,8 +86,8 @@ public class ResponseModel<T> implements Serializable {
         return ERROR(STATUS_ACCESS_FORBIDDEN, "error.access.forbidden", null);
     }
 
-    public static <T> ResponseModel<T> SESSION_INVALID() {
-        return ERROR(STATUS_ACCESS_FORBIDDEN, "error.access.session.invalid", null);
+    public static <T> ResponseModel<T> UNAUTHORIZED(T data) {
+        return ERROR(STATUS_ACCESS_UNAUTHORIZED, "error.access.session.invalid", data);
     }
 
 

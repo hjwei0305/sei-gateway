@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Base64;
 
 @Component
 @Slf4j
@@ -27,12 +28,13 @@ public class HttpsCORSPostFilter extends ZuulFilter {
         //// 优先级为0，数字越大，优先级越低
         return 1;
     }
+
     @Override
     public boolean shouldFilter() {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         //过滤各种POST请求
-        if(request.getMethod().equals(RequestMethod.OPTIONS.name())){
+        if (request.getMethod().equals(RequestMethod.OPTIONS.name())) {
             return false;
         }
         return true;
@@ -46,10 +48,10 @@ public class HttpsCORSPostFilter extends ZuulFilter {
         String uri = request.getServletPath();
         log.debug("*****************PostFilter run start*****************");
 
-        response.setHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Credentials","true");
-        response.setHeader("Access-Control-Expose-Headers","X-forwared-port, X-forwarded-host");
-        response.setHeader("Vary","Origin,Access-Control-Request-Method,Access-Control-Request-Headers");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Expose-Headers", "X-forwared-port, X-forwarded-host");
+        response.setHeader("Vary", "Origin,Access-Control-Request-Method,Access-Control-Request-Headers");
         //允许继续路由
         ctx.setSendZuulResponse(true);
         ctx.setResponseStatusCode(200);
@@ -57,11 +59,21 @@ public class HttpsCORSPostFilter extends ZuulFilter {
 
         SessionUser user = ContextUtil.getSessionUser();
         log.debug("url {}, 当前用户{}", uri, user);
-        Cookie cookie = new Cookie(ContextUtil.REQUEST_TOKEN_KEY, user.getSessionId());
-//        cookie.setDomain("/");
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+        writeCookieValue(user.getSessionId(), request, response);
 
         return null;
+    }
+
+    private void writeCookieValue(String value, HttpServletRequest request, HttpServletResponse response) {
+        byte[] encodedCookieBytes = Base64.getEncoder().encode(value.getBytes());
+        String baseVal = new String(encodedCookieBytes);
+
+        Cookie sessionCookie = new Cookie(ContextUtil.REQUEST_TOKEN_KEY, baseVal);
+        sessionCookie.setSecure(request.isSecure());
+        sessionCookie.setPath("/");
+        sessionCookie.setHttpOnly(true);
+
+
+        response.addCookie(sessionCookie);
     }
 }

@@ -59,8 +59,9 @@ public class HttpsCORSPostFilter extends ZuulFilter {
 
         SessionUser user = ContextUtil.getSessionUser();
         log.debug("url {}, 当前用户{}", uri, user);
-        writeCookieValue(user.getSessionId(), request, response);
-
+        if (!user.isAnonymous()) {
+            writeCookieValue(user.getSessionId(), request, response);
+        }
         return null;
     }
 

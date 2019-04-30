@@ -1,5 +1,7 @@
 package com.ecmp.apigateway.zuul.filter;
 
+import com.ecmp.context.ContextUtil;
+import com.ecmp.vo.SessionUser;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +9,7 @@ import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -50,7 +53,13 @@ public class HttpsCORSPostFilter extends ZuulFilter {
         //允许继续路由
         ctx.setSendZuulResponse(true);
         ctx.setResponseStatusCode(200);
-        log.debug("*****************PostFilter run end***************** url: {}", uri);
+        log.debug("*****************PostFilter run end*****************");
+
+        SessionUser user = ContextUtil.getSessionUser();
+        log.debug("url {}, 当前用户{}", uri, user);
+        Cookie cookie = new Cookie(ContextUtil.REQUEST_TOKEN_KEY, user.getSessionId());
+        response.addCookie(cookie);
+
         return null;
     }
 }

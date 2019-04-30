@@ -58,7 +58,7 @@ public class HttpsCORSPostFilter extends ZuulFilter {
         SessionUser user = ContextUtil.getSessionUser();
         log.debug("url {}, 当前用户{}", uri, user);
         Cookie cookie = new Cookie(ContextUtil.REQUEST_TOKEN_KEY, user.getSessionId());
-        cookie.setDomain("/");
+//        cookie.setDomain("/");
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
 

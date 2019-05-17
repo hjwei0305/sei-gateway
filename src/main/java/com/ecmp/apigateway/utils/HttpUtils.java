@@ -125,7 +125,8 @@ public class HttpUtils {
         sessionCookie.setSecure(request.isSecure());
         sessionCookie.setPath("/");
         sessionCookie.setHttpOnly(true);
-
+        //设置Cookie最大生存时间,以秒为单位,负数的话为浏览器进程,关闭浏览器Cookie消失
+        sessionCookie.setMaxAge(-1);
         response.addCookie(sessionCookie);
     }
 

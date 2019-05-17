@@ -121,6 +121,7 @@ public class AuthenticationFilter extends ZuulFilter {
                 }
             }
 
+            log.info("Access sid is {}  uri {}", sid, uri);
             if (StringUtils.isNotBlank(sid)) {
                 token = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sid);
             }

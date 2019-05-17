@@ -12,9 +12,12 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 扩展过滤器。用于将当前会话信息写入cookie
+ */
 @Component
 @Slf4j
-public class HttpsCORSPostFilter extends ZuulFilter {
+public class CustomPostFilter extends ZuulFilter {
 
     @Override
     public String filterType() {

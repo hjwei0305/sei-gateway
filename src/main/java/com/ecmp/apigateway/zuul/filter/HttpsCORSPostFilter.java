@@ -10,10 +10,8 @@ import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Base64;
 
 @Component
 @Slf4j
@@ -47,15 +45,14 @@ public class HttpsCORSPostFilter extends ZuulFilter {
         HttpServletResponse response = ctx.getResponse();
         HttpServletRequest request = ctx.getRequest();
         String uri = request.getServletPath();
-        log.debug("*****************PostFilter run start*****************");
+//        log.debug("*****************PostFilter run start*****************");
 
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Expose-Headers", "X-forwared-port, X-forwarded-host");
-        response.setHeader("Vary", "Origin,Access-Control-Request-Method,Access-Control-Request-Headers");
+//        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+//        response.setHeader("Access-Control-Allow-Credentials", "true");
+//        response.setHeader("Access-Control-Expose-Headers", "X-forwared-port, X-forwarded-host");
+//        response.setHeader("Vary", "Origin,Access-Control-Request-Method,Access-Control-Request-Headers");
         //允许继续路由
-        ctx.setSendZuulResponse(true);
-//        ctx.setResponseStatusCode(200);
+//        ctx.setSendZuulResponse(true);
         log.debug("*****************PostFilter run end*****************");
 
         SessionUser user = ContextUtil.getSessionUser();

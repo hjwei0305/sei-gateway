@@ -15,9 +15,9 @@ import org.springframework.web.filter.CorsFilter;
  * </p>
  * User:liusonglin; Date:2018/9/20;ProjectName:api-gateway;
  */
-//@Component
-//@Configuration
-@Deprecated
+@Component
+@Configuration
+//@Deprecated
 public class CorsConfig {
     @Bean
     public FilterRegistrationBean corsFilter() {

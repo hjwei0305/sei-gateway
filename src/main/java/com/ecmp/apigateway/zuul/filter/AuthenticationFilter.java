@@ -1,6 +1,5 @@
 package com.ecmp.apigateway.zuul.filter;
 
-import com.ecmp.apigateway.manager.entity.GatewayInterface;
 import com.ecmp.apigateway.manager.entity.common.ResponseModel;
 import com.ecmp.apigateway.zuul.service.InterfaceService;
 import com.ecmp.context.ContextUtil;
@@ -14,61 +13,83 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StreamUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.io.InputStream;
-import java.nio.charset.Charset;
+
+import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.FORWARD_TO_KEY;
 
 /**
- * usage:认证过滤器
- * <p>
- * </p>
- * User:liusonglin; Date:2018/5/18;ProjectName:api-gateway;
+ * 实现功能：
+ * 身份认证过滤器
+ *
+ * @author 马超(Vision.Mac)
+ * @version 1.0.00  2019-05-17 14:59
  */
-@Component
 @Slf4j
-public class CertificateFilter extends ZuulFilter {
-
+@Component
+public class AuthenticationFilter extends ZuulFilter {
     private static final String TOKEN_PREFIX = "Bearer";
     private static final String HEADER_TOKEN = "Authorization";
     private static final String HEADER_SID = "_s";
 
     private static final String REDIS_KEY_JWT = "jwt:";
-//    private static final String APP_ID = "appId";
 
     @Autowired
     private StringRedisTemplate redisTemplate;
     @Autowired
     private InterfaceService interfaceService;
 
+    /**
+     * to classify a filter by type. Standard types in Zuul are "pre" for pre-routing filtering,
+     * "route" for routing to an origin, "post" for post-routing filters, "error" for error handling.
+     * We also support a "static" type for static responses see  StaticResponseFilter.
+     * Any filterType made be created or added and run by calling FilterProcessor.runFilters(type)
+     *
+     * @return A String representing that type
+     */
     @Override
     public String filterType() {
         return FilterConstants.PRE_TYPE;
     }
 
+    /**
+     * filterOrder() must also be defined for a filter. Filters may have the same  filterOrder if precedence is not
+     * important for a filter. filterOrders do not need to be sequential.
+     *
+     * @return the int order of a filter
+     */
     @Override
     public int filterOrder() {
         return 2;
     }
 
+    /**
+     * a "true" return from this method means that the run() method should be invoked
+     *
+     * @return true if the run() method should be invoked. false will not invoke the run() method
+     */
     @Override
     public boolean shouldFilter() {
         RequestContext ctx = RequestContext.getCurrentContext();
         String uri = ctx.getRequest().getServletPath();
-        System.out.println(ctx.getRequest().getContextPath());
 
-        Boolean checkToken = interfaceService.checkToken(uri);
-        log.info("uri: {}, 是否需要Token检查: {}", uri, checkToken);
+        if (StringUtils.containsIgnoreCase(uri, "sso")) {
+            // @see org.springframework.cloud.netflix.zuul.filters.route.SendForwardFilter
+//            ctx.put(FORWARD_TO_KEY, "http://127.0.0.1:8081/sso/login");
 
-        return checkToken;
+            return false;
+        } else {
+
+            Boolean checkToken = interfaceService.checkToken(uri);
+            log.info("uri: {}, 是否需要Token检查: {}", uri, checkToken);
+
+            return checkToken;
+        }
     }
 
-    /***
+    /**
      * 拦截所有请求，并进行jwt认证，jwt默认反正Authorization里面
-     *
-     * @return
      */
     @Override
     public Object run() {
@@ -81,26 +102,27 @@ public class CertificateFilter extends ZuulFilter {
         HttpServletRequest request = ctx.getRequest();
         String uri = request.getServletPath();
         String token = request.getHeader(HEADER_TOKEN);
-//        if (StringUtils.isBlank(token)) {
-//            String sid = request.getHeader(HEADER_SID);
-//            if (StringUtils.isBlank(sid)) {
-//                sid = request.getParameter(HEADER_SID);
-//                if (StringUtils.isBlank(sid)) {
-//                    Cookie[] cookies = request.getCookies();
-//                    if (cookies != null && cookies.length > 0) {
-//                        for (Cookie cookie : cookies) {
-//                            if (StringUtils.equals(HEADER_SID, cookie.getName())) {
-//                                sid = cookie.getValue();
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//            if (StringUtils.isNotBlank(sid)) {
-//                token = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sid);
-//            }
-//        }
+        if (StringUtils.isBlank(token)) {
+            String sid = request.getHeader(HEADER_SID);
+            if (StringUtils.isBlank(sid)) {
+                sid = request.getParameter(HEADER_SID);
+                if (StringUtils.isBlank(sid)) {
+                    Cookie[] cookies = request.getCookies();
+                    if (cookies != null && cookies.length > 0) {
+                        for (Cookie cookie : cookies) {
+                            if (StringUtils.equals(HEADER_SID, cookie.getName())) {
+                                sid = cookie.getValue();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (StringUtils.isNotBlank(sid)) {
+                token = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sid);
+            }
+        }
         log.info("Access Token is {}  uri {}", token, uri);
         if (StringUtils.isBlank(token)) {
             ctx.setSendZuulResponse(false);

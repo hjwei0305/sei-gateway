@@ -234,10 +234,12 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
                         name: "HTTP",
                         checked: true
                     }, {
+                        readonly:true,
                         title: "RPC协议",
                         name: "RPC"
                     }, {
                         labelWidth: 103,
+                        readonly:true,
                         title: "webservice协议",
                         name: "WEBSERVICE"
                     }]
@@ -349,7 +351,8 @@ EUI.InterfaceView = EUI.extend(EUI.CustomUI, {
             msg: msg
         });
     }
-})
+});
+
 function customFmatter(cellvalue, options, rowObject){
 
     return rowObject.valid?'是':'否'
@@ -358,4 +361,3 @@ function formatter(cellvalue, options, rowObject){
 
     return rowObject.validateToken?'是':'否'
 }
-;

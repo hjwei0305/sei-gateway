@@ -17,8 +17,8 @@ import org.springframework.web.filter.CorsFilter;
  */
 @Component
 @Configuration
-//@Deprecated
 public class CorsConfig {
+
     @Bean
     public FilterRegistrationBean corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -31,13 +31,5 @@ public class CorsConfig {
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return bean;
-
-//        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        final CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        corsConfiguration.addAllowedHeader("*");
-//        corsConfiguration.addAllowedOrigin("*");
-//        corsConfiguration.addAllowedMethod("*");
-//        source.registerCorsConfiguration("/**", corsConfiguration);
-//        return new CorsFilter(source);
     }
 }

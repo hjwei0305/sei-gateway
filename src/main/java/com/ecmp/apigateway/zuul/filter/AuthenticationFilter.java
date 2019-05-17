@@ -102,7 +102,9 @@ public class AuthenticationFilter extends ZuulFilter {
         HttpServletRequest request = ctx.getRequest();
         String uri = request.getServletPath();
         String token = request.getHeader(HEADER_TOKEN);
+        boolean isToken = true;
         if (StringUtils.isBlank(token)) {
+            isToken = false;
             String sid = request.getHeader(HEADER_SID);
             if (StringUtils.isBlank(sid)) {
                 sid = request.getParameter(HEADER_SID);
@@ -151,6 +153,11 @@ public class AuthenticationFilter extends ZuulFilter {
                     ctx.setResponseBody(JsonUtils.toJson(ResponseModel.UNAUTHORIZED("会话过期")));
                     ctx.set("isSuccess", false);
                     return null;
+                } else {
+                    //header中设置token
+                    if (!isToken) {
+                        ctx.addZuulRequestHeader(HEADER_TOKEN, token);
+                    }
                 }
             }
         } catch (Exception ex) {

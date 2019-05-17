@@ -54,7 +54,7 @@ public class HttpsCORSPostFilter extends ZuulFilter {
         response.setHeader("Vary", "Origin,Access-Control-Request-Method,Access-Control-Request-Headers");
         //允许继续路由
         ctx.setSendZuulResponse(true);
-        ctx.setResponseStatusCode(200);
+//        ctx.setResponseStatusCode(200);
         log.debug("*****************PostFilter run end*****************");
 
         SessionUser user = ContextUtil.getSessionUser();
@@ -73,7 +73,6 @@ public class HttpsCORSPostFilter extends ZuulFilter {
         sessionCookie.setSecure(request.isSecure());
         sessionCookie.setPath("/");
         sessionCookie.setHttpOnly(true);
-
 
         response.addCookie(sessionCookie);
     }

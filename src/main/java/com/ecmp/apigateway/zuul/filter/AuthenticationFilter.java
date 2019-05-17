@@ -1,6 +1,7 @@
 package com.ecmp.apigateway.zuul.filter;
 
 import com.ecmp.apigateway.manager.entity.common.ResponseModel;
+import com.ecmp.apigateway.utils.HttpUtils;
 import com.ecmp.apigateway.zuul.service.InterfaceService;
 import com.ecmp.context.ContextUtil;
 import com.ecmp.util.JsonUtils;
@@ -30,8 +31,6 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 @Component
 public class AuthenticationFilter extends ZuulFilter {
     private static final String TOKEN_PREFIX = "Bearer";
-    private static final String HEADER_TOKEN = "Authorization";
-    private static final String HEADER_SID = "_s";
 
     private static final String REDIS_KEY_JWT = "jwt:";
 
@@ -101,23 +100,15 @@ public class AuthenticationFilter extends ZuulFilter {
         //默认的浏览器权限请求头 如:Authorization:Bearer token
         HttpServletRequest request = ctx.getRequest();
         String uri = request.getServletPath();
-        String token = request.getHeader(HEADER_TOKEN);
+        String token = request.getHeader(HttpUtils.HEADER_TOKEN);
         boolean isToken = true;
         if (StringUtils.isBlank(token)) {
             isToken = false;
-            String sid = request.getHeader(HEADER_SID);
+            String sid = request.getHeader(HttpUtils.HEADER_SID);
             if (StringUtils.isBlank(sid)) {
-                sid = request.getParameter(HEADER_SID);
+                sid = request.getParameter(HttpUtils.HEADER_SID);
                 if (StringUtils.isBlank(sid)) {
-                    Cookie[] cookies = request.getCookies();
-                    if (cookies != null && cookies.length > 0) {
-                        for (Cookie cookie : cookies) {
-                            if (StringUtils.equals(HEADER_SID, cookie.getName())) {
-                                sid = cookie.getValue();
-                                break;
-                            }
-                        }
-                    }
+                    sid = HttpUtils.readCookieValue(request);
                 }
             }
 
@@ -157,7 +148,7 @@ public class AuthenticationFilter extends ZuulFilter {
                 } else {
                     //header中设置token
                     if (!isToken) {
-                        ctx.addZuulRequestHeader(HEADER_TOKEN, token);
+                        ctx.addZuulRequestHeader(HttpUtils.HEADER_TOKEN, token);
                     }
                 }
             }

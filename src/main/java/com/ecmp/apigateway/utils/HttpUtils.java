@@ -3,6 +3,7 @@ package com.ecmp.apigateway.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.TypeReference;
+import com.ecmp.context.ContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -15,10 +16,14 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -31,28 +36,31 @@ import java.util.Map;
 @Slf4j
 public class HttpUtils {
 
-    private HttpUtils(){
+    public static final String HEADER_TOKEN = "Authorization";
+    public static final String HEADER_SID = "_s";
+
+    private HttpUtils() {
     }
 
 
-    public static<T> T postFuc(String url, Map<String,String> params, TypeReference<T> typeReference){
+    public static <T> T postFuc(String url, Map<String, String> params, TypeReference<T> typeReference) {
         HttpPost post = new HttpPost(url);
         List<NameValuePair> nvps = new ArrayList<>();
-        for(Map.Entry<String, String> item:params.entrySet()){
+        for (Map.Entry<String, String> item : params.entrySet()) {
             nvps.add(new BasicNameValuePair(item.getKey(), item.getValue()));
         }
         CloseableHttpResponse response = null;
-        try (CloseableHttpClient client = HttpClients.createDefault()){
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
             post.setEntity(new UrlEncodedFormEntity(nvps));
             response = client.execute(post);
             String result = EntityUtils.toString(response.getEntity());
-            return JSON.parseObject(result,typeReference);
+            return JSON.parseObject(result, typeReference);
         } catch (UnsupportedEncodingException e) {
-            log.error("post set entity error",e);
+            log.error("post set entity error", e);
         } catch (IOException e) {
-            log.error("post error",e);
-        }finally {
-            if(response != null){
+            log.error("post error", e);
+        } finally {
+            if (response != null) {
                 try {
                     response.close();
                 } catch (IOException e) {
@@ -63,43 +71,74 @@ public class HttpUtils {
         return null;
     }
 
-    public static <T>T getFun(String url, TypeReference<T> typeReference){
-        return getFun(url,null, typeReference);
+    public static <T> T getFun(String url, TypeReference<T> typeReference) {
+        return getFun(url, null, typeReference);
     }
 
-    public static <T>T getFun(String url, Map<String,String> params,TypeReference<T> typeReference){
-        log.info("get url is {}",url);
+    public static <T> T getFun(String url, Map<String, String> params, TypeReference<T> typeReference) {
+        log.info("get url is {}", url);
         URIBuilder builder = null;
         String result = null;
         CloseableHttpResponse response = null;
-        try (CloseableHttpClient client = HttpClients.createDefault()){
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
             builder = new URIBuilder(url);
-            if(params != null) {
+            if (params != null) {
                 for (Map.Entry<String, String> item : params.entrySet()) {
                     builder.setParameter(item.getKey(), item.getValue());
                 }
             }
             HttpGet get = new HttpGet(builder.build());
             response = client.execute(get);
-            if(response.getStatusLine().getStatusCode()==200){
+            if (response.getStatusLine().getStatusCode() == 200) {
                 result = EntityUtils.toString(response.getEntity());
                 return JSON.parseObject(result, typeReference);
             }
         } catch (URISyntaxException e) {
-            log.error("builder url error",e);
-        } catch (JSONException ex){
-            log.error("json 转换出错,{}",ex);
-            if(typeReference.getType().getTypeName().equals("String")){
-                return (T)result;
+            log.error("builder url error", e);
+        } catch (JSONException ex) {
+            log.error("json 转换出错,{}", ex);
+            if (typeReference.getType().getTypeName().equals("String")) {
+                return (T) result;
             }
         } catch (IOException e) {
-            log.error("json转换io出错",e);
-        }finally {
-            if(response != null){
+            log.error("json转换io出错", e);
+        } finally {
+            if (response != null) {
                 try {
                     response.close();
                 } catch (IOException e) {
                     log.error("关闭response出错");
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 写cookie，base64编码
+     */
+    public static void writeCookieValue(String value, HttpServletRequest request, HttpServletResponse response) {
+        byte[] encodedCookieBytes = Base64.getEncoder().encode(value.getBytes());
+        String baseVal = new String(encodedCookieBytes);
+
+        Cookie sessionCookie = new Cookie(ContextUtil.REQUEST_TOKEN_KEY, baseVal);
+        sessionCookie.setSecure(request.isSecure());
+        sessionCookie.setPath("/");
+        sessionCookie.setHttpOnly(true);
+
+        response.addCookie(sessionCookie);
+    }
+
+    /**
+     * 写cookie，base64编码
+     */
+    public static String readCookieValue(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null && cookies.length > 0) {
+            for (Cookie cookie : cookies) {
+                if (HEADER_SID.equals(cookie.getName())) {
+                    byte[] encodedCookieBytes = Base64.getDecoder().decode(cookie.getValue());
+                    return new String(encodedCookieBytes);
                 }
             }
         }

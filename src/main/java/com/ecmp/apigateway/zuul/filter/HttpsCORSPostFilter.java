@@ -1,5 +1,6 @@
 package com.ecmp.apigateway.zuul.filter;
 
+import com.ecmp.apigateway.utils.HttpUtils;
 import com.ecmp.context.ContextUtil;
 import com.ecmp.vo.SessionUser;
 import com.netflix.zuul.ZuulFilter;
@@ -60,20 +61,9 @@ public class HttpsCORSPostFilter extends ZuulFilter {
         SessionUser user = ContextUtil.getSessionUser();
         log.debug("url {}, 当前用户{}", uri, user);
         if (!user.isAnonymous()) {
-            writeCookieValue(user.getSessionId(), request, response);
+            HttpUtils.writeCookieValue(user.getSessionId(), request, response);
         }
         return null;
     }
 
-    private void writeCookieValue(String value, HttpServletRequest request, HttpServletResponse response) {
-        byte[] encodedCookieBytes = Base64.getEncoder().encode(value.getBytes());
-        String baseVal = new String(encodedCookieBytes);
-
-        Cookie sessionCookie = new Cookie(ContextUtil.REQUEST_TOKEN_KEY, baseVal);
-        sessionCookie.setSecure(request.isSecure());
-        sessionCookie.setPath("/");
-        sessionCookie.setHttpOnly(true);
-
-        response.addCookie(sessionCookie);
-    }
 }

@@ -138,7 +138,7 @@ public class InitService {
                     throw new RuntimeException("配置中心获取都文档地址不可用，请检查");
                 }
                 gatewayApiService = new GatewayApiService();
-                gatewayApiService.setId(UUID.randomUUID().toString());
+//                gatewayApiService.setId(UUID.randomUUID().toString());
                 gatewayApiService.setApplicationCode(gatewayApplication.getApplicationCode());
                 gatewayApiService.setRetryAble(false);
                 gatewayApiService.setServiceAppCode(reuslt.getApplicationModule().getCode());

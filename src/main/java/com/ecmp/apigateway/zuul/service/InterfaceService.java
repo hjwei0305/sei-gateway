@@ -1,6 +1,7 @@
 package com.ecmp.apigateway.zuul.service;
 
 import com.ecmp.apigateway.manager.dao.GatewayInterfaceDao;
+import com.ecmp.apigateway.manager.entity.GatewayApiService;
 import com.ecmp.apigateway.manager.entity.GatewayInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -51,12 +52,15 @@ public class InterfaceService {
         }
 
         interfaceList.forEach(gi -> {
-            String path = gi.getGatewayApiService().getServicePath();
-            String uri = gi.getInterfaceURI();
-            if (StringUtils.isNotBlank(path) && StringUtils.isNotBlank(uri)) {
-                path = path.replaceAll("[/|*]", "");
-                if (!gi.getValidateToken()) {
-                    redisTemplate.opsForValue().set(key("/" + path + uri), 1);
+            GatewayApiService apiService = gi.getGatewayApiService();
+            if (Objects.nonNull(apiService)) {
+                String path = apiService.getServicePath();
+                String uri = gi.getInterfaceURI();
+                if (StringUtils.isNotBlank(path) && StringUtils.isNotBlank(uri)) {
+                    path = path.replaceAll("[/|*]", "");
+                    if (!gi.getValidateToken()) {
+                        redisTemplate.opsForValue().set(key("/" + path + uri), 1);
+                    }
                 }
             }
         });

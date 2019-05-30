@@ -137,20 +137,21 @@ public class AuthenticationFilter extends ZuulFilter {
                 ctx.set("isSuccess", false);
                 return null;
             } else {
-                String token1 = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sessionUser.getSessionId());
-                if (StringUtils.isBlank(token1) || !StringUtils.equals(token, token1)) {
-                    ctx.setSendZuulResponse(false);
-                    ctx.setResponseStatusCode(ResponseModel.STATUS_ACCESS_UNAUTHORIZED);
-                    log.error("会话过期  uri {}", uri);
-                    ctx.setResponseBody(JsonUtils.toJson(ResponseModel.UNAUTHORIZED("会话过期")));
-                    ctx.set("isSuccess", false);
-                    return null;
-                } else {
+//                todo 因有部分是通过工具类生成的token，没有放到redis中，故暂时屏蔽该检查，待后续优化
+//                String token1 = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sessionUser.getSessionId());
+//                if (StringUtils.isBlank(token1) || !StringUtils.equals(token, token1)) {
+//                    ctx.setSendZuulResponse(false);
+//                    ctx.setResponseStatusCode(ResponseModel.STATUS_ACCESS_UNAUTHORIZED);
+//                    log.error("会话过期  uri {}", uri);
+//                    ctx.setResponseBody(JsonUtils.toJson(ResponseModel.UNAUTHORIZED("会话过期")));
+//                    ctx.set("isSuccess", false);
+//                    return null;
+//                } else {
                     //header中设置token
                     if (!isToken) {
                         ctx.addZuulRequestHeader(HttpUtils.HEADER_TOKEN, token);
                     }
-                }
+//                }
             }
         } catch (Exception ex) {
             ctx.setSendZuulResponse(false);

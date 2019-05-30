@@ -33,7 +33,7 @@ dependencies {
     compile("com.ecmp:service-ecmp-spring-boot-starter:$sei_version")
 
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
-    compile('org.springframework.boot:spring-boot-devtools')
+//    compile('org.springframework.boot:spring-boot-devtools')
 
     compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
 

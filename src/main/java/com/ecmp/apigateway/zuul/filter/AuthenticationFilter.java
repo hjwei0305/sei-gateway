@@ -30,7 +30,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 @Slf4j
 @Component
 public class AuthenticationFilter extends ZuulFilter {
-    private static final String TOKEN_PREFIX = "Bearer";
+    private static final String TOKEN_PREFIX = "Bearer ";
 
     private static final String REDIS_KEY_JWT = "jwt:";
 
@@ -125,6 +125,10 @@ public class AuthenticationFilter extends ZuulFilter {
             ctx.setResponseBody(JsonUtils.toJson(ResponseModel.UNAUTHORIZED("Authorization 为空")));
             ctx.set("isSuccess", false);
             return null;
+        }
+        if (token.startsWith(TOKEN_PREFIX)) {
+            // 截取token
+            token = token.substring(TOKEN_PREFIX.length());
         }
         try {
             SessionUser sessionUser = ContextUtil.getSessionUser(token);

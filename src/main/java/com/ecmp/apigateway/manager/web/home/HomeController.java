@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -21,16 +21,16 @@ import java.util.List;
 @Controller
 public class HomeController {
 
-    /**
-     * 监控服务是否健康
-     */
-    @ResponseBody
-    @RequestMapping("/monitor/health")
-    public BaseResult health(HttpServletRequest request) {
-        String msg = DateUtils.formatTime(new Date()) + " Request Uri: " + request.getRequestURL();
-        System.out.println(msg);
-        return new BaseResult("200", "OK");
-    }
+//    /**
+//     * 监控服务是否健康
+//     */
+//    @ResponseBody
+//    @RequestMapping("/monitor/health")
+//    public BaseResult health(HttpServletRequest request) {
+//        String msg = DateUtils.formatTime(new Date()) + " Request Uri: " + request.getRequestURL();
+//        System.out.println(msg);
+//        return new BaseResult("200", "OK");
+//    }
 
     @RequestMapping("/index")
     public String index() {

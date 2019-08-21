@@ -6,7 +6,7 @@ import com.ecmp.apigateway.manager.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.manager.service.impl.GatewayApiServiceServiceImpl;
 import com.ecmp.apigateway.utils.ToolUtils;
 import com.ecmp.util.JsonUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.NodeCache;
 import org.slf4j.Logger;

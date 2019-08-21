@@ -1,8 +1,7 @@
 package com.ecmp.apigateway.zuul.web;
 
-import com.ecmp.apigateway.zuul.event.RefreshService;
+import com.ecmp.apigateway.apigateway.RefreshService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.netflix.zuul.web.ZuulHandlerMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,22 +14,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class RouteController {
 
-    @Autowired
-    private RefreshService refreshService;
+//    @Autowired
+//    private RefreshService refreshService;
+//
+//    @Autowired
+//    private ZuulHandlerMapping zuulHandlerMapping;
 
     @Autowired
-    private ZuulHandlerMapping zuulHandlerMapping;
+    private RefreshService refreshRoute;
 
     @ResponseBody
     @RequestMapping("/router/refresh")
     public Object refresh() {
-        refreshService.refreshRoute();
+        refreshRoute.refresh();
         return "success";
     }
 
-    @ResponseBody
-    @RequestMapping("/router/findAll")
-    public Object findAll() {
-        return zuulHandlerMapping.getHandlerMap();
-    }
+//    @ResponseBody
+//    @RequestMapping("/router/findAll")
+//    public Object findAll() {
+//        return zuulHandlerMapping.getHandlerMap();
+//    }
 }

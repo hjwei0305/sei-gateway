@@ -1,5 +1,6 @@
 package com.ecmp.apigateway.manager.service.impl;
 
+import com.ecmp.apigateway.apigateway.RefreshService;
 import com.ecmp.apigateway.config.ZKService;
 import com.ecmp.apigateway.manager.dao.GatewayApiServiceDao;
 import com.ecmp.apigateway.exception.InvokeConfigFailException;
@@ -10,8 +11,7 @@ import com.ecmp.apigateway.manager.entity.common.SearchParam;
 import com.ecmp.apigateway.manager.service.IGatewayApiServiceService;
 import com.ecmp.apigateway.utils.EntityUtils;
 import com.ecmp.apigateway.utils.ToolUtils;
-import com.ecmp.apigateway.zuul.event.RefreshService;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,7 +146,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void refresh() {
-        refreshService.refreshRoute();
+        refreshService.refresh();
     }
 
 

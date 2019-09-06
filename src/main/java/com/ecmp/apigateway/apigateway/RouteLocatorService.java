@@ -46,6 +46,7 @@ public class RouteLocatorService implements RouteDefinitionRepository {
                 }
             });
         }
+        System.out.println(routeDefinitions);
         return Flux.fromIterable(routeDefinitions);
     }
 

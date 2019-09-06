@@ -9,9 +9,8 @@ import com.ecmp.apigateway.manager.service.InitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 /**
  * @author: hejun
@@ -34,8 +33,8 @@ public class GatewayApiServiceController {
      * @return
      */
     @RequestMapping("/show")
-    public String show() {
-        return "main/ApplicationServiceView";
+    public Mono<String> show() {
+        return Mono.create(monoSink -> monoSink.success("main/ApplicationServiceView"));
     }
 
     /**
@@ -43,6 +42,7 @@ public class GatewayApiServiceController {
      * @param gatewayApiService 应用服务-实体参数
      * @return
      */
+
     @ResponseBody
     @RequestMapping("save")
     public Object save(GatewayApiService gatewayApiService) {
@@ -134,11 +134,10 @@ public class GatewayApiServiceController {
      * @param id 主键ID
      * @return
      */
-    @ResponseBody
-    @RequestMapping("router/startById")
+    @GetMapping("router/startById")
     public Object startById(String id) {
         try {
-            gatewayApiServiceService.enableById(id, true);
+//            gatewayApiServiceService.enableById(id, true);
             gatewayApiServiceService.refresh();
             return ResponseModel.SUCCESS();
         }catch (Exception ex){

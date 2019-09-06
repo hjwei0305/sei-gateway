@@ -16,9 +16,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
@@ -108,38 +105,6 @@ public class HttpUtils {
                     response.close();
                 } catch (IOException e) {
                     log.error("关闭response出错");
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 写cookie，base64编码
-     */
-    public static void writeCookieValue(String value, HttpServletRequest request, HttpServletResponse response) {
-        byte[] encodedCookieBytes = Base64.getEncoder().encode(value.getBytes());
-        String baseVal = new String(encodedCookieBytes);
-
-        Cookie sessionCookie = new Cookie(ContextUtil.REQUEST_TOKEN_KEY, baseVal);
-        sessionCookie.setSecure(request.isSecure());
-        sessionCookie.setPath("/");
-        sessionCookie.setHttpOnly(true);
-        //设置Cookie最大生存时间,以秒为单位,负数的话为浏览器进程,关闭浏览器Cookie消失
-        sessionCookie.setMaxAge(-1);
-        response.addCookie(sessionCookie);
-    }
-
-    /**
-     * 写cookie，base64编码
-     */
-    public static String readCookieValue(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length > 0) {
-            for (Cookie cookie : cookies) {
-                if (HEADER_SID.equals(cookie.getName())) {
-                    byte[] encodedCookieBytes = Base64.getDecoder().decode(cookie.getValue());
-                    return new String(encodedCookieBytes);
                 }
             }
         }

@@ -2,7 +2,7 @@
 //
 //import com.ecmp.apigateway.manager.entity.common.ResponseModel;
 //import com.ecmp.apigateway.utils.HttpUtils;
-//import com.ecmp.apigateway.zuul.service.InterfaceService;
+//import com.ecmp.apigateway.apigateway.service.InterfaceService;
 //import com.ecmp.context.ContextUtil;
 //import com.ecmp.util.JsonUtils;
 //import com.ecmp.vo.SessionUser;

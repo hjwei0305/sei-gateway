@@ -1,4 +1,4 @@
-package com.ecmp.apigateway.zuul.service;
+package com.ecmp.apigateway.apigateway.service;
 
 import com.ecmp.apigateway.manager.dao.GatewayInterfaceDao;
 import com.ecmp.apigateway.manager.entity.GatewayApiService;

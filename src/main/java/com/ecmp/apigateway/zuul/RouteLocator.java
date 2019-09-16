@@ -2,7 +2,7 @@
 //
 //import com.ecmp.apigateway.manager.dao.GatewayApiServiceDao;
 //import com.ecmp.apigateway.manager.entity.GatewayApiService;
-//import com.ecmp.apigateway.zuul.service.InterfaceService;
+//import com.ecmp.apigateway.apigateway.service.InterfaceService;
 //import org.apache.commons.lang3.StringUtils;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;

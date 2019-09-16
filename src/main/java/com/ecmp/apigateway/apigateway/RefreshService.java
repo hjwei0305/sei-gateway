@@ -17,7 +17,6 @@ public class RefreshService implements ApplicationEventPublisherAware {
         this.publisher = applicationEventPublisher;
     }
 
-
     public void refresh(){
         this.publisher.publishEvent(new RefreshRoutesEvent(this));
     }

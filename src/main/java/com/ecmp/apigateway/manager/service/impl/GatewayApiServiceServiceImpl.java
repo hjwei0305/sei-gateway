@@ -1,6 +1,7 @@
 package com.ecmp.apigateway.manager.service.impl;
 
 import com.ecmp.apigateway.apigateway.RefreshService;
+import com.ecmp.apigateway.apigateway.RouteLocatorService;
 import com.ecmp.apigateway.config.ZKService;
 import com.ecmp.apigateway.manager.dao.GatewayApiServiceDao;
 import com.ecmp.apigateway.exception.InvokeConfigFailException;
@@ -41,6 +42,9 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Autowired
     private RefreshService refreshService;
+
+    @Autowired
+    private RouteLocatorService routeLocatorService;
 
     @Override
     public void save(GatewayApiService gatewayApiService) {
@@ -146,6 +150,7 @@ public class GatewayApiServiceServiceImpl implements IGatewayApiServiceService {
 
     @Override
     public void refresh() {
+        routeLocatorService.getRouteDefinitions();
         refreshService.refresh();
     }
 

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 /**
- * @author: hejun
- * @date: 2018/4/24
- * @remark: 应用服务-控制层跳转
- * @update:liusonglin 把路由刷新放到控制层(数据库事物提交后)
+ * author: hejun
+ * date: 2018/4/24
+ * remark: 应用服务-控制层跳转
+ * update:liusonglin 把路由刷新放到控制层(数据库事物提交后)
  */
 @Controller
 @RequestMapping(value = "/gateway_api_service")
@@ -135,9 +135,10 @@ public class GatewayApiServiceController {
      * @return
      */
     @GetMapping("router/startById")
+    @ResponseBody
     public Object startById(String id) {
         try {
-//            gatewayApiServiceService.enableById(id, true);
+            gatewayApiServiceService.enableById(id, true);
             gatewayApiServiceService.refresh();
             return ResponseModel.SUCCESS();
         }catch (Exception ex){

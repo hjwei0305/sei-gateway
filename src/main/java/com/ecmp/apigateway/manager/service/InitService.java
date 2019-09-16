@@ -156,6 +156,8 @@ public class InitService {
             }else {
                 initInterfaceByApiDoc(reuslt.getApiDocsUrl(), gatewayApiService.getApplicationCode());
             }
+        }catch (NullPointerException ex){
+            throw new RuntimeException("服务未配置接口地址", ex);
         }catch (Exception ex){
             throw new RuntimeException("根据AppId初始化服务异常", ex);
         }

@@ -117,12 +117,9 @@
         }
     </style>
     <link rel="stylesheet" type="text/css"
-          data-th-href="@{/styles/css/HomeCss.css}" />
+          data-th-href="@{/static/styles/css/HomeCss.css}" />
     <script type="text/javascript"
-            data-th-src="@{/scripts/home/HomeView.js}"></script>
-    <script th:inline="JavaScript">
-        var remoteUser = [[${#httpServletRequest.remoteUser}]];
-    </script>
+            data-th-src="@{/static/scripts/home/HomeView.js}"></script>
     <script type="text/javascript">
         var homeView;
         EUI.onReady(function () {

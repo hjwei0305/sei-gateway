@@ -1,6 +1,7 @@
 package com.ecmp.apigateway.manager.entity;
 
 import com.ecmp.core.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
@@ -75,6 +76,7 @@ public class GatewayApiService extends BaseEntity {
     private String applicationCode;
 
     @OneToMany(mappedBy = "applicationCode",fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<GatewayInterface> gatewayInterfaceList;
     //版本号
     @Column(name = "version", nullable = false)

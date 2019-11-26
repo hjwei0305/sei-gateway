@@ -103,7 +103,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         if (StringUtils.containsIgnoreCase(uri, "sso")) {
             return false;
         } else {
-            Boolean checkToken = interfaceService.checkToken(uri);
+            Boolean checkToken = interfaceService.checkToken(uri.replaceAll("/api-gateway",""));
             log.info("uri: {}, 是否需要Token检查: {}", uri, checkToken);
             return checkToken;
         }

@@ -4,6 +4,7 @@ import com.ecmp.apigateway.manager.dao.GatewayApiServiceDao;
 import com.ecmp.apigateway.manager.entity.GatewayApiService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
@@ -35,11 +36,16 @@ public class RouteLocatorService implements RouteDefinitionRepository {
                     predicate.setName("Path");
 
                     Map<String, String> predicateParams = new HashMap<>(8);
-                    predicateParams.put("pattern", result.getServicePath());
+                    predicateParams.put("pattern", "/api-gateway"+result.getServicePath());
                     predicate.setArgs(predicateParams);
 
                     URI uri = URI.create(result.getServiceAppUrl());
                     routeDefinition.setPredicates(Collections.singletonList(predicate));
+
+                    FilterDefinition filter = new FilterDefinition();
+                    filter.addArg("_genkey_0","1");
+                    filter.setName("StripPrefix");
+                    routeDefinition.setFilters(Collections.singletonList(filter));
                     routeDefinition.setUri(uri);
                     routeDefinition.setId(result.getId());
                     routeDefinitions.add(routeDefinition);

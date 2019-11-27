@@ -28,7 +28,6 @@ public class ResponseModel<T> implements Serializable {
 
     private ResponseModel(int status, String messageCode, T data) {
         this.status = status;
-        this.message = ResourceBundleUtil.getString(messageCode);
         this.data = data;
     }
 

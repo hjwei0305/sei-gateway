@@ -3,7 +3,6 @@ package com.ecmp.apigateway.config;
 import com.ecmp.config.util.ZkClient;
 import com.ecmp.context.common.ConfigConstants;
 import org.apache.curator.framework.CuratorFramework;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +25,6 @@ public class ZKconfig {
     @Value("${ECMP_CONFIG_CENTER}")
     private String connects;
 
-    @Autowired
-    private Environment env;
-
     /**
      * 构建一个zk客户端<p>
      * connects zk连接地址 集群以逗号分隔，如10.4.68.45:2181,10.4.68.46:2182,10.4.68.47:2183
@@ -44,7 +40,7 @@ public class ZKconfig {
     }
 
     @Bean
-    public WebFilter contextPathWebFilter() {
+    public WebFilter contextPathWebFilter(Environment env) {
         String contextPath = env.getProperty("server.servlet.context-path","/api-gateway");
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();

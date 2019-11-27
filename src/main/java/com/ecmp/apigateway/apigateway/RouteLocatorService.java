@@ -8,8 +8,8 @@ import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -22,11 +22,15 @@ public class RouteLocatorService implements RouteDefinitionRepository {
     @Autowired
     private GatewayApiServiceDao gatewayApiServiceDao;
 
+    @Autowired
+    private Environment env;
+
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
         List<RouteDefinition> routeDefinitions = new ArrayList<>();
         List<GatewayApiService> results = gatewayApiServiceDao.findByDeletedFalseAndServiceAppEnabledTrue();
         if (!results.isEmpty()) {
+            String contextPath = env.getProperty("server.servlet.context-path","/api-gateway");
             results.forEach(result -> {
                 if (StringUtils.isNotBlank(result.getServicePath())
                         && StringUtils.isNotBlank(result.getServiceAppUrl())) {
@@ -36,7 +40,7 @@ public class RouteLocatorService implements RouteDefinitionRepository {
                     predicate.setName("Path");
 
                     Map<String, String> predicateParams = new HashMap<>(8);
-                    predicateParams.put("pattern", "/api-gateway"+result.getServicePath());
+                    predicateParams.put("pattern", contextPath+result.getServicePath());
                     predicate.setArgs(predicateParams);
 
                     URI uri = URI.create(result.getServiceAppUrl());

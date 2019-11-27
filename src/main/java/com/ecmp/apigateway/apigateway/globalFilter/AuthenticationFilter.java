@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     private StringRedisTemplate redisTemplate;
     @Autowired
     private InterfaceService interfaceService;
+    @Autowired
+    private Environment env;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -74,21 +77,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                     log.error("非法的token   uri {}", uri);
                     return buildResultHeader(response,"请求中的token是无效或非法的");
                 } else {
-//                todo 因有部分是通过工具类生成的token，没有放到redis中，故暂时屏蔽该检查，待后续优化
-//                String token1 = redisTemplate.opsForValue().get(REDIS_KEY_JWT + sessionUser.getSessionId());
-//                if (StringUtils.isBlank(token1) || !StringUtils.equals(token, token1)) {
-//                    ctx.setSendZuulResponse(false);
-//                    ctx.setResponseStatusCode(ResponseModel.STATUS_ACCESS_UNAUTHORIZED);
-//                    log.error("会话过期  uri {}", uri);
-//                    ctx.setResponseBody(JsonUtils.toJson(ResponseModel.UNAUTHORIZED("会话过期")));
-//                    ctx.set("isSuccess", false);
-//                    return null;
-//                } else {
-                    //header中设置token
                     if (!isToken) {
                         response.getHeaders().add(HttpUtils.HEADER_TOKEN, token);
                     }
-//                }
                 }
             } catch (Exception ex) {
                 log.error("jwt解析失败  URI  {}", uri);
@@ -103,7 +94,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         if (StringUtils.containsIgnoreCase(uri, "sso")) {
             return false;
         } else {
-            Boolean checkToken = interfaceService.checkToken(uri.replaceAll("/api-gateway",""));
+            String contextPath = env.getProperty("server.servlet.context-path","/api-gateway");
+            Boolean checkToken = interfaceService.checkToken(uri.replaceAll(contextPath,""));
             log.info("uri: {}, 是否需要Token检查: {}", uri, checkToken);
             return checkToken;
         }

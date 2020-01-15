@@ -12,6 +12,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -73,5 +74,12 @@ public class InterfaceService {
             gatewayInterfaceDao.deleteById(id);
             redisTemplate.delete(key(gi.get().getInterfaceURI()));
         }
+    }
+
+    public Boolean reloadCache() {
+        Set<String> gatewayKeys = redisTemplate.keys("Gateway:NoToken*");
+        redisTemplate.delete(gatewayKeys);
+        this.loadRuntimeData();
+        return true;
     }
 }

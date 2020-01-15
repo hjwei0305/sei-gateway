@@ -13,13 +13,9 @@ public class InterfaceInitToRedis implements InitializingBean {
 
     @Autowired
     private InterfaceService interfaceService;
-    @Autowired
-    private RedisTemplate<String,String> redisTemplate;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Set<String> gatewayKeys = redisTemplate.keys("Gateway:NoToken*");
-        redisTemplate.delete(gatewayKeys);
-        interfaceService.loadRuntimeData();
+        interfaceService.reloadCache();
     }
 }

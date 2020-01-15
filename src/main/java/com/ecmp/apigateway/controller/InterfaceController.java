@@ -33,4 +33,9 @@ public class InterfaceController {
         interfaceService.delete(id);
         return ResultData.success(true);
     }
+
+    @GetMapping("reloadCache")
+    public ResultData<Boolean> reloadCache(){
+        return ResultData.success(interfaceService.reloadCache());
+    }
 }

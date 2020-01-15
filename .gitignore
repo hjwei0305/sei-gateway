@@ -7,6 +7,11 @@ target/
 .project
 .settings
 .springBeans
+gradle/
+.gradle/
+bin/
+.sts4-cache/
+.vscode/
 
 ### IntelliJ IDEA ###
 .idea

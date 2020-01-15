@@ -2,8 +2,8 @@ package com.ecmp.apigateway.service;
 
 import com.ecmp.apigateway.dao.GatewayInterfaceDao;
 import com.ecmp.apigateway.entity.GatewayInterface;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -21,8 +21,8 @@ import java.util.Optional;
  * User:liusonglin; Date:2018/5/18;ProjectName:api-gateway;
  */
 @Component
-@Slf4j
 public class InterfaceService {
+    private static final Logger log = LoggerFactory.getLogger(InterfaceService.class);
 
     @Autowired
     private GatewayInterfaceDao gatewayInterfaceDao;

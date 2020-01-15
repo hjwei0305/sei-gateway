@@ -30,7 +30,7 @@ public class ResultData<T> implements Serializable {
     /**
      * 私有构造函数
      */
-    public ResultData() {
+    private ResultData() {
         this.successful = Boolean.FALSE;
         this.message = "";
         this.data = null;
@@ -39,7 +39,7 @@ public class ResultData<T> implements Serializable {
     /**
      * 私有构造函数
      */
-    public ResultData(Boolean successful, String message, T data) {
+    private ResultData(Boolean successful, String message, T data) {
         this.successful = successful;
         this.message = message;
         this.data = data;

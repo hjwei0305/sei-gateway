@@ -4,10 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.ecmp.apigateway.entity.ResultData;
 import com.ecmp.apigateway.intergration.AuthFromAccountCenter;
 import com.ecmp.apigateway.service.InterfaceService;
-import com.ecmp.apigateway.utils.HttpUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -23,8 +24,8 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 
 @Component
-@Slf4j
 public class AuthenticationFilter implements GlobalFilter, Ordered {
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     @Autowired
     private InterfaceService interfaceService;
@@ -33,12 +34,17 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @Autowired
     private AuthFromAccountCenter authFormAccountCenter;
 
+    @Value("${internal.header}")
+    public String internalHeader;
+    @Value("${session.header}")
+    public String sessionHeader;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
         String uri = request.getPath().toString();
-        String sid = request.getHeaders().getFirst(HttpUtils.HEADER_TOKEN);
+        String sid = request.getHeaders().getFirst(sessionHeader);
         ResultData<String> result;
         String internalToken = null;
         if(StringUtils.isBlank(sid)){
@@ -76,7 +82,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             return buildResultHeader(response,"获取认证信息出错，请联系管理员");
         }
         // 把内部token放入header
-        ServerHttpRequest internalRequest = request.mutate().header("internal",internalToken).build();
+        ServerHttpRequest internalRequest = request.mutate().header(internalHeader,internalToken).build();
         ServerWebExchange internalExchange = exchange.mutate().request(internalRequest).build();
         return chain.filter(internalExchange);
     }

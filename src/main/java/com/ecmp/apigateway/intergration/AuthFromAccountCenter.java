@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @FeignClient(value = "authFormAccountCenter", url = "${auth.host}", path = "${auth.path}", fallbackFactory = AuthFromAccountCenterFallBackFactory.class)
 public interface AuthFromAccountCenter {
 
-    @PostMapping(value = "/auth/getAnonymousToken",consumes = "application/json")
+    @GetMapping(value = "/auth/getAnonymousToken",consumes = "application/json")
     ResultData<String> getAnonymousToken();
 
 

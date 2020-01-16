@@ -57,13 +57,15 @@ public class InterfaceService {
     }
 
     public List<GatewayInterface> findByAppCode(String appCode) {
-        return gatewayInterfaceDao.findByDeletedFalseAndValidateTokenFalseAndDeletedFalseAndApplicationCode(appCode);
+        return gatewayInterfaceDao.findByDeletedFalseAndDeletedFalseAndApplicationCode(appCode);
     }
 
     public GatewayInterface save(GatewayInterface gi) {
         gi = gatewayInterfaceDao.save(gi);
         if(!gi.getValidateToken()){
             redisTemplate.opsForValue().set(key("/" + gi.getInterfaceURI()), "0");
+        }else {
+            redisTemplate.delete(key("/" + gi.getInterfaceURI()));
         }
         return gi;
     }
@@ -71,7 +73,8 @@ public class InterfaceService {
     public void delete(String id) {
         Optional<GatewayInterface> gi = gatewayInterfaceDao.findById(id);
         if(gi.isPresent()){
-            gatewayInterfaceDao.deleteById(id);
+            gi.get().setDeleted(true);
+            gatewayInterfaceDao.save(gi.get());
             redisTemplate.delete(key(gi.get().getInterfaceURI()));
         }
     }

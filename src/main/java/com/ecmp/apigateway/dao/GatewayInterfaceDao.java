@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface GatewayInterfaceDao extends JpaRepository<GatewayInterface,String> {
 
-    List<GatewayInterface> findByDeletedFalseAndValidateTokenFalseAndDeletedFalseAndApplicationCode(String appCode);
+    List<GatewayInterface> findByDeletedFalseAndDeletedFalseAndApplicationCode(String appCode);
 
 }

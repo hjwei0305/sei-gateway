@@ -1,14 +1,23 @@
 package com.ecmp.apigateway.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class ResultData<T> {
+/**
+ * <strong>实现功能:</strong>
+ * <p>通用服务处理结果</p>
+ *
+ * @author 王锦光 wangj
+ * @version 1.0.1 2019-12-19 15:42
+ */
+public class ResultData<T> implements Serializable {
+    private static final long serialVersionUID = 5247687420568803130L;
     private final static String DEFAULT_SUCCESSFUL_MSG = "处理成功！";
 
     /**
      * 是成功的
      */
-    private Boolean successful;
+    private Boolean success;
     /**
      * 返回信息
      */
@@ -22,7 +31,7 @@ public class ResultData<T> {
      * 私有构造函数
      */
     private ResultData() {
-        this.successful = Boolean.FALSE;
+        this.success = Boolean.FALSE;
         this.message = "";
         this.data = null;
     }
@@ -30,14 +39,14 @@ public class ResultData<T> {
     /**
      * 私有构造函数
      */
-    private ResultData(Boolean successful, String message, T data) {
-        this.successful = successful;
+    private ResultData(Boolean success, String message, T data) {
+        this.success = success;
         this.message = message;
         this.data = data;
     }
 
-    public Boolean getSuccessful() {
-        return successful;
+    public Boolean getSuccess() {
+        return success;
     }
 
     public String getMessage() {
@@ -53,11 +62,11 @@ public class ResultData<T> {
      *
      * @return 成功
      */
-    public boolean isSuccessful() {
-        if (Objects.isNull(successful)) {
+    public boolean successful() {
+        if (Objects.isNull(success)) {
             return false;
         }
-        return successful;
+        return success;
     }
 
     /**
@@ -65,11 +74,11 @@ public class ResultData<T> {
      *
      * @return 成功
      */
-    public boolean isFailed() {
-        if (Objects.isNull(successful)) {
+    public boolean failed() {
+        if (Objects.isNull(success)) {
             return true;
         }
-        return !successful;
+        return !success;
     }
 
     /**
@@ -104,5 +113,4 @@ public class ResultData<T> {
     public static <T> ResultData<T> fail(String message) {
         return new ResultData<>(Boolean.FALSE, message, null);
     }
-
 }

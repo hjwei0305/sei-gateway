@@ -53,7 +53,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                 return buildResultHeader(response,"未在请求中找到有效token");
             }else{
                 result = authFormAccountCenter.getAnonymousToken();
-                if(result.getSuccessful()){
+                if(result.successful()){
                     internalToken = result.getData();
                 }else {
                     return buildResultHeader(response,result.getMessage());
@@ -63,14 +63,14 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             // 有会话id,直接校验会话，如果校验成功,带上会话信息请求，
             // 如果校验失败,先判断接口是否需要认证，不需要认证接口直接请求内部token
             result = authFormAccountCenter.check(sid);
-            if(result.getSuccessful()){
+            if(result.successful()){
                 internalToken = result.getData();
             }else {
                 if(shouldFilter(uri)){
                     return buildResultHeader(response,result.getMessage());
                 }
                 result = authFormAccountCenter.getAnonymousToken();
-                if(result.getSuccessful()){
+                if(result.successful()){
                     internalToken = result.getData();
                 }else {
                     return buildResultHeader(response,result.getMessage());

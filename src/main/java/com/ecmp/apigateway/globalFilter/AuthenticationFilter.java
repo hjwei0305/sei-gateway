@@ -82,7 +82,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             return buildResultHeader(response,"获取认证信息出错，请联系管理员");
         }
         // 把内部token放入header
-        log.info("内部token: {}={}", internalHeader, internalToken)
+        log.info("内部token: {}={}", internalHeader, internalToken);
         ServerHttpRequest internalRequest = request.mutate().header(internalHeader,internalToken).build();
         ServerWebExchange internalExchange = exchange.mutate().request(internalRequest).build();
         return chain.filter(internalExchange);
@@ -101,7 +101,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     public Mono<Void> buildResultHeader(ServerHttpResponse response,String msg){
         JSONObject message = new JSONObject();
-        message.put("status", 500);
+        message.put("success", Boolean.FALSE);
         message.put("message", msg);
         byte[] bits = message.toJSONString().getBytes(StandardCharsets.UTF_8);
         DataBuffer buffer = response.bufferFactory().wrap(bits);

@@ -1,17 +1,8 @@
 package com.ecmp.apigateway.entity;
 
-import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * <strong>实现功能:</strong>
- * <p>通用服务处理结果</p>
- *
- * @author 王锦光 wangj
- * @version 1.0.1 2019-12-19 15:42
- */
-public class ResultData<T> implements Serializable {
-    private static final long serialVersionUID = 5247687420568803130L;
+public class ResultData<T> {
     private final static String DEFAULT_SUCCESSFUL_MSG = "处理成功！";
 
     /**
@@ -113,4 +104,5 @@ public class ResultData<T> implements Serializable {
     public static <T> ResultData<T> fail(String message) {
         return new ResultData<>(Boolean.FALSE, message, null);
     }
+
 }

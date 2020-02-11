@@ -1,12 +1,13 @@
 package com.changhong.sei.apigateway.controller;
 
 import com.changhong.sei.core.dto.ResultData;
+import org.apache.curator.framework.CuratorFramework;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.actuate.GatewayControllerEndpoint;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -19,6 +20,15 @@ public class RoutesController {
     @Autowired
     private GatewayControllerEndpoint gatewayControllerEndpoint;
 
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
+    @Autowired
+    private ZookeeperDiscoveryProperties zookeeperDiscoveryProperties;
+
+    @Autowired
+    private CuratorFramework curatorFramework;
+
     @GetMapping("getAllRoutes")
     public Mono<List<Map<String, Object>>> getAllRoutes(){
         return gatewayControllerEndpoint.routes();
@@ -28,4 +38,23 @@ public class RoutesController {
     public ResultData<?> refreshRoutes(){
         return ResultData.success(gatewayControllerEndpoint.refresh());
     }
+
+
+    @GetMapping("getInstance")
+    public ResultData<List<ServiceInstance>> getInstance(@RequestParam String serviceId){
+        List<ServiceInstance> data = discoveryClient.getInstances(serviceId);
+        return ResultData.success(data);
+    }
+
+    @GetMapping("deleteInstance")
+    public ResultData<?> deleteInstance(@RequestParam String serviceId,@RequestParam String instanceId){
+        String path = zookeeperDiscoveryProperties.getRoot()+"/"+serviceId+"/"+instanceId;
+        try {
+            curatorFramework.delete().forPath(path);
+        } catch (Exception e) {
+            return ResultData.fail(e.getMessage());
+        }
+        return ResultData.success(null);
+    }
+
 }

@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface GatewayInterfaceDao extends BaseEntityDao<GatewayInterface> {
 
-    List<GatewayInterface> findByDeletedFalseAndDeletedFalseAndApplicationCode(String appCode);
+    List<GatewayInterface> findByDeletedFalseAndApplicationCode(String appCode);
 
 }

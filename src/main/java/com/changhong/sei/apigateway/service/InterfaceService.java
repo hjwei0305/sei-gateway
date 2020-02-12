@@ -45,7 +45,7 @@ public class InterfaceService {
             return;
         }
         interfaceList.forEach(gi -> {
-            if(!gi.getValidateToken()){
+            if(!gi.getValidateToken() && !gi.isDeleted()){
                 String keyTemplate = gi.getInterfaceURI().startsWith("/")?gi.getInterfaceURI():"/"+ gi.getInterfaceURI();
                 redisTemplate.opsForValue().set(key(keyTemplate), "0");
             }
@@ -57,7 +57,7 @@ public class InterfaceService {
     }
 
     public List<GatewayInterface> findByAppCode(String appCode) {
-        return gatewayInterfaceDao.findByDeletedFalseAndDeletedFalseAndApplicationCode(appCode);
+        return gatewayInterfaceDao.findByDeletedFalseAndApplicationCode(appCode);
     }
 
     public GatewayInterface save(GatewayInterface gi) {

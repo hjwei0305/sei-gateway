@@ -48,15 +48,21 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         ResultData<String> result;
         String internalToken = null;
         if (StringUtils.isBlank(sid)) {
-            // 没有会话id,先判断接口是否需要认证，不需要认证接口直接请求内部token
-            if (shouldFilter(uri)) {
-                return buildResultHeader(response, "未在请求中找到有效token");
+            // TODO 兼容SEI3.0认证token
+            String token3_0 = request.getHeaders().getFirst("Authorization");
+            if (StringUtils.isNotBlank(token3_0)) {
+                internalToken = token3_0;
             } else {
-                result = authFormAccountCenter.getAnonymousToken();
-                if (result.successful()) {
-                    internalToken = result.getData();
+                // 没有会话id,先判断接口是否需要认证，不需要认证接口直接请求内部token
+                if (shouldFilter(uri)) {
+                    return buildResultHeader(response, "未在请求中找到有效token");
                 } else {
-                    return buildResultHeader(response, result.getMessage());
+                    result = authFormAccountCenter.getAnonymousToken();
+                    if (result.successful()) {
+                        internalToken = result.getData();
+                    } else {
+                        return buildResultHeader(response, result.getMessage());
+                    }
                 }
             }
         } else {

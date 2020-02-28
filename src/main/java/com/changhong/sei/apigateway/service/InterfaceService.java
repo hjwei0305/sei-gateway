@@ -46,14 +46,14 @@ public class InterfaceService {
         }
         interfaceList.forEach(gi -> {
             if(!gi.getValidateToken() && !gi.isDeleted()){
-                String keyTemplate = gi.getInterfaceURI().startsWith("/")?gi.getInterfaceURI():"/"+ gi.getInterfaceURI();
-                redisTemplate.opsForValue().set(key(keyTemplate), "0");
+                redisTemplate.opsForValue().set(key(gi.getInterfaceURI()), "0");
             }
         });
     }
 
     private String key(String uri) {
-        return "Gateway:NoToken" + uri.replaceAll("/", ":");
+        String keyTemplate = uri.startsWith("/")?uri:"/"+ uri;
+        return "Gateway:NoToken" + keyTemplate.replaceAll("/", ":");
     }
 
     public List<GatewayInterface> findByAppCode(String appCode) {
@@ -63,9 +63,9 @@ public class InterfaceService {
     public GatewayInterface save(GatewayInterface gi) {
         gi = gatewayInterfaceDao.save(gi);
         if(!gi.getValidateToken()){
-            redisTemplate.opsForValue().set(key("/" + gi.getInterfaceURI()), "0");
+            redisTemplate.opsForValue().set(key(gi.getInterfaceURI()), "0");
         }else {
-            redisTemplate.delete(key("/" + gi.getInterfaceURI()));
+            redisTemplate.delete(key(gi.getInterfaceURI()));
         }
         return gi;
     }
@@ -81,7 +81,10 @@ public class InterfaceService {
 
     public Boolean reloadCache() {
         Set<String> gatewayKeys = redisTemplate.keys("Gateway:NoToken*");
-        redisTemplate.delete(gatewayKeys);
+        if(!CollectionUtils.isEmpty(gatewayKeys)){
+            redisTemplate.delete(gatewayKeys);
+        }
+
         this.loadRuntimeData();
         return true;
     }

@@ -88,7 +88,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             return buildResultHeader(response, "获取认证信息出错，请联系管理员");
         }
         // 把内部token放入header
-        log.info("内部token: {} = {}", internalHeader, internalToken);
+        System.out.println("内部token: "+internalHeader+" = " + internalToken);
         ServerHttpRequest internalRequest = request.mutate().header(internalHeader, internalToken).build();
         ServerWebExchange internalExchange = exchange.mutate().request(internalRequest).build();
         return chain.filter(internalExchange);

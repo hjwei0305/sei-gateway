@@ -1,0 +1,19 @@
+# 应用全局配置
+sei:
+  application:
+    code: api-gateway
+    name: API网关
+    version: 6.0.1
+    # 是否是兼容模式
+    compatible: false
+  # 本地调试的当前用户配置
+  mock:
+    user:
+      account: admin
+      user-name: 管理员
+      tenant-code: 10044
+  swagger:
+    enable: false
+  http:
+    filter:
+      enable: false

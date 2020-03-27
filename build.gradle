@@ -2,6 +2,14 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: "com.google.cloud.tools.jib"
+
+// 扩展定义
+ext {
+    // 启动类
+    MainClass = 'com.changhong.sei.apigateway.WebApplication'
+}
+
 
 // JVM 版本号要求
 sourceCompatibility = 1.8
@@ -11,15 +19,18 @@ buildscript {
     repositories {
         mavenLocal()
         maven { url 'http://rddgit.changhong.com/nexus/repository/SEI_Group/' }
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:2.1.0")
     }
 }
 
 repositories {
     mavenLocal()
     maven { url 'http://rddgit.changhong.com/nexus/repository/SEI_Group/' }
+    maven { url "https://plugins.gradle.org/m2/" }
 }
 
 dependencies {
@@ -46,6 +57,7 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:2.1.0"
     }
 }
 
@@ -53,4 +65,38 @@ jar {
     manifest {
         attributes 'Main-Class': 'com.changhong.sei.apigateway.WebApplication'
     }
+}
+
+jib {
+    // 拉取的镜像的配置
+    from {
+        image = 'java:8-jdk-alpine'
+    }
+    // 要生成的镜像的配置
+    to {
+        image = "$docker_registry_url/$docker_registry_namespace/$rootProject.name"
+        tags = ["${project.version}".toString(), 'latest']
+
+        auth {
+            username = "${docker_registry_username}"
+            password = "${docker_registry_password}"
+        }
+    }
+    container {
+        // 容器创建时间用
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+        // jvmFlgs: JVM 容器的参数，和 Dockerfile 的 ENTRYPOINT作用相同
+        jvmFlags = [
+                '-Djava.security.egd=file:/dev/./urandom',
+                '-Dfile.encoding=utf-8',
+                '-Duser.timezone=GMT+08'
+        ]
+        // jvmFlags = ['-Xms512m', '-Xdebug', '-Xmy:flag=jib-rules']
+        // 启动类限定名
+        mainClass = MainClass
+        // 容器暴露的端口，和 Dockerfile 的EXPOSE作用相同
+        ports = ['8080']
+    }
+    // 如果私有镜像仓库没有启用https，设置allowInsecureRegistries参数为true
+    allowInsecureRegistries = true
 }

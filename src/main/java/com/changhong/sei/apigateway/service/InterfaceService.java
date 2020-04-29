@@ -2,6 +2,7 @@ package com.changhong.sei.apigateway.service;
 
 import com.changhong.sei.apigateway.dao.GatewayInterfaceDao;
 import com.changhong.sei.apigateway.entity.GatewayInterface;
+import com.changhong.sei.core.cache.CacheBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,11 @@ public class InterfaceService {
     @Autowired
     private GatewayInterfaceDao gatewayInterfaceDao;
     @Autowired
-    private RedisTemplate<String,String> redisTemplate;
+    private CacheBuilder cacheBuilder;
 
 
     public Boolean checkToken(String uri) {
-        return Objects.isNull(redisTemplate.opsForValue().get(key(uri)));
+        return Objects.isNull(cacheBuilder.get(key(uri)));
     }
 
     /**
@@ -46,7 +47,7 @@ public class InterfaceService {
         }
         interfaceList.forEach(gi -> {
             if(!gi.getValidateToken() && !gi.isDeleted()){
-                redisTemplate.opsForValue().set(key(gi.getInterfaceURI()), "0");
+                cacheBuilder.set(key(gi.getInterfaceURI()), "0");
             }
         });
     }
@@ -63,9 +64,9 @@ public class InterfaceService {
     public GatewayInterface save(GatewayInterface gi) {
         gi = gatewayInterfaceDao.save(gi);
         if(!gi.getValidateToken()){
-            redisTemplate.opsForValue().set(key(gi.getInterfaceURI()), "0");
+            cacheBuilder.set(key(gi.getInterfaceURI()), "0");
         }else {
-            redisTemplate.delete(key(gi.getInterfaceURI()));
+            cacheBuilder.remove(key(gi.getInterfaceURI()));
         }
         return gi;
     }
@@ -75,14 +76,14 @@ public class InterfaceService {
         if(gi.isPresent()){
             gi.get().setDeleted(true);
             gatewayInterfaceDao.save(gi.get());
-            redisTemplate.delete(key(gi.get().getInterfaceURI()));
+            cacheBuilder.remove(key(gi.get().getInterfaceURI()));
         }
     }
 
     public Boolean reloadCache() {
-        Set<String> gatewayKeys = redisTemplate.keys("Gateway:NoToken*");
+        Set<String> gatewayKeys = cacheBuilder.keys("Gateway:NoToken*");
         if(!CollectionUtils.isEmpty(gatewayKeys)){
-            redisTemplate.delete(gatewayKeys);
+            gatewayKeys.forEach(key -> cacheBuilder.remove(key));
         }
 
         this.loadRuntimeData();

@@ -16,6 +16,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -155,24 +156,23 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         byte[] encodedCookieBytes = Base64.getEncoder().encode(value.getBytes());
         String baseVal = new String(encodedCookieBytes);
 
-        String cookie = new CookieBuilder().setKey(sessionHeader)
-                .setValue(baseVal)
-                .setHttponly("true")
-                .setPath("/")
-                .setSecure(String.valueOf("https".equalsIgnoreCase(request.getURI().getScheme())))
-                //https://blog.csdn.net/weixin_44269886/article/details/102459425?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2
-                //.sameSite("Lax");
-                .build();
-        response.getHeaders().add("Set-Cookie", cookie);
+        //https://blog.csdn.net/weixin_44269886/article/details/102459425?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2
+        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(sessionHeader, baseVal)
+                //.path(request.getPath().contextPath().value() + "/")
+                .path("/")
+                .maxAge(-1)
+                .httpOnly(true)
+                // .sameSite("Lax")
+                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
+        response.addCookie(cookieBuilder.build());
 
-        cookie = new CookieBuilder().setKey("_s")
-                .setValue(baseVal)
-                .setHttponly("true")
-                .setPath("/")
-                .setSecure(String.valueOf("https".equalsIgnoreCase(request.getURI().getScheme())))
-                .build();
+        cookieBuilder = ResponseCookie.from("_s", baseVal)
+                .path("/")
+                .maxAge(-1)
+                .httpOnly(true)
+                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
+        response.addCookie(cookieBuilder.build());
 
-        response.getHeaders().add("Set-Cookie", cookie);
     }
 
     class CookieBuilder {

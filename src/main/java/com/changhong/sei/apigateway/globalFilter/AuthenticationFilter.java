@@ -162,7 +162,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                 .path("/")
                 .maxAge(-1)
                 .httpOnly(true)
-                // .sameSite("Lax")
+                .sameSite("None")
                 .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
         response.addCookie(cookieBuilder.build());
 
@@ -170,9 +170,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                 .path("/")
                 .maxAge(-1)
                 .httpOnly(true)
+                .sameSite("None")
                 .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
         response.addCookie(cookieBuilder.build());
-
     }
 
     class CookieBuilder {

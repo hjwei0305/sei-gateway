@@ -163,7 +163,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                 //https://blog.csdn.net/weixin_44269886/article/details/102459425?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2
                 //.sameSite("Lax");
                 .build();
-        response.getHeaders().set("Set-Cookie", cookie);
+        response.getHeaders().add("Set-Cookie", cookie);
 
         cookie = new CookieBuilder().setKey("_s")
                 .setValue(baseVal)
@@ -172,7 +172,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                 .setSecure(String.valueOf("https".equalsIgnoreCase(request.getURI().getScheme())))
                 .build();
 
-        response.getHeaders().set("Set-Cookie", cookie);
+        response.getHeaders().add("Set-Cookie", cookie);
     }
 
     class CookieBuilder {

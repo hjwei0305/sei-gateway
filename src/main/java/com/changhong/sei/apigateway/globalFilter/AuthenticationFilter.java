@@ -106,7 +106,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     }
 
     private boolean shouldFilter(String uri) {
-        if (StringUtils.containsIgnoreCase(uri, "sso") || StringUtils.containsIgnoreCase(uri, "/monitor/health")) {
+        if (StringUtils.containsIgnoreCase(uri, "/sso/") || StringUtils.containsIgnoreCase(uri, "/monitor/health")) {
             return false;
         } else {
             String contextPath = env.getProperty("server.servlet.context-path", "/api-gateway");

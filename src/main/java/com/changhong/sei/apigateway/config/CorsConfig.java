@@ -30,12 +30,12 @@ public class CorsConfig {
             if (CorsUtils.isCorsRequest(request)) {
                 ServerHttpResponse response = ctx.getResponse();
                 HttpHeaders headers = response.getHeaders();
-                headers.add("Access-Control-Allow-Origin", "*");
+//                headers.add("Access-Control-Allow-Origin", "*");
                 headers.add("Access-Control-Allow-Methods", "*");
                 headers.add("Access-Control-Max-Age", "18000L");
                 headers.add("Access-Control-Allow-Headers", "*");
                 headers.add("Access-Control-Expose-Headers", "*");
-                headers.add("Access-Control-Allow-Credentials", "true");
+//                headers.add("Access-Control-Allow-Credentials", "true");
                 if (request.getMethod() == HttpMethod.OPTIONS) {
                     response.setStatusCode(HttpStatus.OK);
                     return Mono.empty();

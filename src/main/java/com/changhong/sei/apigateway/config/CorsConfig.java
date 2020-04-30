@@ -23,27 +23,27 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class CorsConfig {
 
-//    @Bean
-//    public WebFilter corsFilter() {
-//        return (ServerWebExchange ctx, WebFilterChain chain) -> {
-//            ServerHttpRequest request = ctx.getRequest();
-//            if (CorsUtils.isCorsRequest(request)) {
-//                ServerHttpResponse response = ctx.getResponse();
-//                HttpHeaders headers = response.getHeaders();
-//                headers.add("Access-Control-Allow-Origin", "*");
-//                headers.add("Access-Control-Allow-Methods", "*");
-//                headers.add("Access-Control-Max-Age", "18000L");
-//                headers.add("Access-Control-Allow-Headers", "*");
-//                headers.add("Access-Control-Expose-Headers", "*");
-////                headers.add("Access-Control-Allow-Credentials", "true");
-//                if (request.getMethod() == HttpMethod.OPTIONS) {
-//                    response.setStatusCode(HttpStatus.OK);
-//                    return Mono.empty();
-//                }
-//            }
-//            return chain.filter(ctx);
-//        };
-//    }
+    @Bean
+    public WebFilter corsFilter() {
+        return (ServerWebExchange ctx, WebFilterChain chain) -> {
+            ServerHttpRequest request = ctx.getRequest();
+            if (CorsUtils.isCorsRequest(request)) {
+                ServerHttpResponse response = ctx.getResponse();
+                HttpHeaders headers = response.getHeaders();
+                headers.set("Access-Control-Max-Age", "18000L");
+                headers.set("Access-Control-Allow-Origin", "*");
+                headers.set("Access-Control-Allow-Methods", "*");
+                headers.set("Access-Control-Allow-Headers", "*");
+                headers.set("Access-Control-Expose-Headers", "*");
+                headers.set("Access-Control-Allow-Credentials", "true");
+                if (request.getMethod() == HttpMethod.OPTIONS) {
+                    response.setStatusCode(HttpStatus.OK);
+                    return Mono.empty();
+                }
+            }
+            return chain.filter(ctx);
+        };
+    }
 
     @Bean
     public WebFilter contextPathWebFilter(Environment env) {

@@ -133,46 +133,46 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     private String getSid(ServerHttpRequest request) {
         String sid = request.getHeaders().getFirst(sessionHeader);
-        if (StringUtils.isBlank(sid)) {
-            MultiValueMap<String, HttpCookie> cookies = request.getCookies();
-            if (!CollectionUtils.isEmpty(cookies)) {
-                HttpCookie httpCookie = cookies.getFirst(sessionHeader);
-                if (Objects.nonNull(httpCookie)) {
-                    byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
-                    sid = new String(encodedCookieBytes);
-                } else {
-                    httpCookie = cookies.getFirst("_s");
-                    if (Objects.nonNull(httpCookie)) {
-                        byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
-                        sid = new String(encodedCookieBytes);
-                    }
-                }
-            }
-        }
+//        if (StringUtils.isBlank(sid)) {
+//            MultiValueMap<String, HttpCookie> cookies = request.getCookies();
+//            if (!CollectionUtils.isEmpty(cookies)) {
+//                HttpCookie httpCookie = cookies.getFirst(sessionHeader);
+//                if (Objects.nonNull(httpCookie)) {
+//                    byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
+//                    sid = new String(encodedCookieBytes);
+//                } else {
+//                    httpCookie = cookies.getFirst("_s");
+//                    if (Objects.nonNull(httpCookie)) {
+//                        byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
+//                        sid = new String(encodedCookieBytes);
+//                    }
+//                }
+//            }
+//        }
         return sid;
     }
 
     private void cookieWrite(ServerHttpRequest request, ServerHttpResponse response, String value) {
-        byte[] encodedCookieBytes = Base64.getEncoder().encode(value.getBytes());
-        String baseVal = new String(encodedCookieBytes);
-
-        //https://blog.csdn.net/weixin_44269886/article/details/102459425?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2
-        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(sessionHeader, baseVal)
-                //.path(request.getPath().contextPath().value() + "/")
-                .path("/")
-                .maxAge(-1)
-                .httpOnly(true)
-                .sameSite("None")
-                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
-        response.addCookie(cookieBuilder.build());
-
-        cookieBuilder = ResponseCookie.from("_s", baseVal)
-                .path("/")
-                .maxAge(-1)
-                .httpOnly(true)
-                .sameSite("None")
-                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
-        response.addCookie(cookieBuilder.build());
+//        byte[] encodedCookieBytes = Base64.getEncoder().encode(value.getBytes());
+//        String baseVal = new String(encodedCookieBytes);
+//
+//        //https://blog.csdn.net/weixin_44269886/article/details/102459425?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2
+//        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(sessionHeader, baseVal)
+//                //.path(request.getPath().contextPath().value() + "/")
+//                .path("/")
+//                .maxAge(-1)
+//                .httpOnly(true)
+//                .sameSite("None")
+//                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
+//        response.addCookie(cookieBuilder.build());
+//
+//        cookieBuilder = ResponseCookie.from("_s", baseVal)
+//                .path("/")
+//                .maxAge(-1)
+//                .httpOnly(true)
+//                .sameSite("None")
+//                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
+//        response.addCookie(cookieBuilder.build());
     }
 
     class CookieBuilder {

@@ -44,20 +44,20 @@ public class CorsConfig {
 //        corsConfiguration.addAllowedMethod(HttpMethod.PATCH);
          corsConfiguration.addAllowedMethod("*");
 
-        corsConfiguration.addAllowedHeader("origin");
-        corsConfiguration.addAllowedHeader("content-type");
-        corsConfiguration.addAllowedHeader("accept");
-        corsConfiguration.addAllowedHeader("x-requested-with");
-        corsConfiguration.addAllowedHeader("Referer");
-        corsConfiguration.addAllowedHeader("x-sid");
-        corsConfiguration.addAllowedHeader("x-authorization");
-        corsConfiguration.addAllowedHeader("authorization");
-        corsConfiguration.addAllowedHeader("content-disposition");
-        corsConfiguration.addAllowedHeader(Constants.HEADER_TOKEN_KEY);
-        corsConfiguration.addAllowedHeader(Constants.TRACE_ID);
-        corsConfiguration.addAllowedHeader(Constants.TRACE_FROM_SERVER);
-        corsConfiguration.addAllowedHeader(Constants.TRACE_CURRENT_SERVER);
-        // corsConfiguration.addAllowedHeader("*");
+//        corsConfiguration.addAllowedHeader("origin");
+//        corsConfiguration.addAllowedHeader("content-type");
+//        corsConfiguration.addAllowedHeader("accept");
+//        corsConfiguration.addAllowedHeader("x-requested-with");
+//        corsConfiguration.addAllowedHeader("Referer");
+//        corsConfiguration.addAllowedHeader("x-sid");
+//        corsConfiguration.addAllowedHeader("x-authorization");
+//        corsConfiguration.addAllowedHeader("authorization");
+//        corsConfiguration.addAllowedHeader("content-disposition");
+//        corsConfiguration.addAllowedHeader(Constants.HEADER_TOKEN_KEY);
+//        corsConfiguration.addAllowedHeader(Constants.TRACE_ID);
+//        corsConfiguration.addAllowedHeader(Constants.TRACE_FROM_SERVER);
+//        corsConfiguration.addAllowedHeader(Constants.TRACE_CURRENT_SERVER);
+         corsConfiguration.addAllowedHeader("*");
 
         corsConfiguration.setMaxAge(7200L);
         corsConfiguration.setAllowCredentials(true);

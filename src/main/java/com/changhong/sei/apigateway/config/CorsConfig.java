@@ -11,10 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.DefaultCorsProcessor;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -28,32 +30,50 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class CorsConfig {
 
-    private static final String ALLOWED_HEADERS = "x-requested-with, authorization, x-authorization, x-sid, Content-Type, Authorization, credential, Content-Disposition";
-    private static final String ALLOWED_METHODS = "*";
-    private static final String ALLOWED_ORIGIN = "*";
-    private static final String ALLOWED_EXPOSE = "*";
-    private static final String MAX_AGE = "3600";
+//    private static final String ALLOWED_HEADERS = "x-requested-with, authorization, x-authorization, x-sid, Content-Type, Authorization, credential, Content-Disposition";
+//    private static final String ALLOWED_METHODS = "*";
+//    private static final String ALLOWED_ORIGIN = "*";
+//    private static final String ALLOWED_EXPOSE = "*";
+//    private static final String MAX_AGE = "7200L";
+//
+//    @Bean
+//    public WebFilter corsFilter() {
+//        return (ServerWebExchange ctx, WebFilterChain chain) -> {
+//            ServerHttpRequest request = ctx.getRequest();
+//            if (CorsUtils.isCorsRequest(request)) {
+//                ServerHttpResponse response = ctx.getResponse();
+//                HttpHeaders headers = response.getHeaders();
+//                headers.set("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
+//                headers.set("Access-Control-Allow-Methods", ALLOWED_METHODS);
+//                headers.set("Access-Control-Max-Age", MAX_AGE);
+//                headers.set("Access-Control-Allow-Headers", ALLOWED_HEADERS);
+//                headers.set("Access-Control-Expose-Headers", ALLOWED_EXPOSE);
+//                headers.set("Access-Control-Allow-Credentials", "true");
+//                if (request.getMethod() == HttpMethod.OPTIONS) {
+//                    response.setStatusCode(HttpStatus.OK);
+//                    return Mono.empty();
+//                }
+//            }
+//            return chain.filter(ctx);
+//        };
+//    }
 
     @Bean
-    public WebFilter corsFilter() {
-        return (ServerWebExchange ctx, WebFilterChain chain) -> {
-            ServerHttpRequest request = ctx.getRequest();
-            if (CorsUtils.isCorsRequest(request)) {
-                ServerHttpResponse response = ctx.getResponse();
-                HttpHeaders headers = response.getHeaders();
-                headers.set("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
-                headers.set("Access-Control-Allow-Methods", ALLOWED_METHODS);
-                headers.set("Access-Control-Max-Age", MAX_AGE);
-                headers.set("Access-Control-Allow-Headers", ALLOWED_HEADERS);
-                headers.set("Access-Control-Expose-Headers", ALLOWED_EXPOSE);
-                headers.set("Access-Control-Allow-Credentials", "true");
-                if (request.getMethod() == HttpMethod.OPTIONS) {
-                    response.setStatusCode(HttpStatus.OK);
-                    return Mono.empty();
-                }
-            }
-            return chain.filter(ctx);
-        };
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+        // 允许cookies跨域
+        config.setAllowCredentials(true);
+        // #允许向该服务器提交请求的URI，*表示全部允许，在SpringMVC中，如果设成*，会自动转成当前请求头中的Origin
+        config.addAllowedOrigin("*");
+        // #允许访问的头信息,*表示全部
+        config.addAllowedHeader("*");
+        // 预检请求的缓存时间（秒），即在这个时间段里，对于相同的跨域请求不会再预检了
+        config.setMaxAge(7200L);
+        // 允许提交请求的方法，*表示全部允许
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter((CorsConfigurationSource) source);
     }
 
     //https://blog.csdn.net/zimou5581/article/details/90043178?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1

@@ -130,7 +130,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return NettyWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER + 10;
+        return 0;
     }
 
     private String getSid(ServerHttpRequest request) {

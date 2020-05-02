@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.filter.NettyWriteResponseFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
@@ -117,18 +119,18 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     }
 
     public Mono<Void> buildResultHeader(ServerHttpResponse response, String msg) {
-        ResultData resultData = ResultData.fail(msg);
+        ResultData<String> resultData = ResultData.fail(msg);
         byte[] bits = JsonUtils.toJson(resultData).getBytes(StandardCharsets.UTF_8);
         DataBuffer buffer = response.bufferFactory().wrap(bits);
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         //指定编码，否则在浏览器中会中文乱码
-        response.getHeaders().set("Content-Type", "text/plain;charset=UTF-8");
+        response.getHeaders().set("Content-Type", "application/json;charset=UTF-8");
         return response.writeWith(Mono.just(buffer));
     }
 
     @Override
     public int getOrder() {
-        return 0;
+        return NettyWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER - 10;
     }
 
     private String getSid(ServerHttpRequest request) {

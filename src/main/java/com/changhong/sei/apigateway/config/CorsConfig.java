@@ -5,15 +5,21 @@ import com.changhong.sei.core.constant.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.DefaultCorsProcessor;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
 import org.springframework.web.util.pattern.PathPatternParser;
+import reactor.core.publisher.Mono;
 
 /**
  * usage:
@@ -22,33 +28,33 @@ import org.springframework.web.util.pattern.PathPatternParser;
 @Configuration
 public class CorsConfig {
 
-//    private static final String ALLOWED_HEADERS = "x-requested-with, authorization, x-authorization, x-sid, Content-Type, Authorization, credential, Content-Disposition";
-//    private static final String ALLOWED_METHODS = "*";
-//    private static final String ALLOWED_ORIGIN = "*";
-//    private static final String ALLOWED_EXPOSE = "*";
-//    private static final String MAX_AGE = "3600";
-//
-//    @Bean
-//    public WebFilter corsFilter() {
-//        return (ServerWebExchange ctx, WebFilterChain chain) -> {
-//            ServerHttpRequest request = ctx.getRequest();
-//            if (CorsUtils.isCorsRequest(request)) {
-//                ServerHttpResponse response = ctx.getResponse();
-//                HttpHeaders headers = response.getHeaders();
-//                headers.set("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
-//                headers.set("Access-Control-Allow-Methods", ALLOWED_METHODS);
-//                headers.set("Access-Control-Max-Age", MAX_AGE);
-//                headers.set("Access-Control-Allow-Headers", ALLOWED_HEADERS);
-//                headers.set("Access-Control-Expose-Headers", ALLOWED_EXPOSE);
-//                headers.set("Access-Control-Allow-Credentials", "true");
-//                if (request.getMethod() == HttpMethod.OPTIONS) {
-//                    response.setStatusCode(HttpStatus.OK);
-//                    return Mono.empty();
-//                }
-//            }
-//            return chain.filter(ctx);
-//        };
-//    }
+    private static final String ALLOWED_HEADERS = "x-requested-with, authorization, x-authorization, x-sid, Content-Type, Authorization, credential, Content-Disposition";
+    private static final String ALLOWED_METHODS = "*";
+    private static final String ALLOWED_ORIGIN = "*";
+    private static final String ALLOWED_EXPOSE = "*";
+    private static final String MAX_AGE = "3600";
+
+    @Bean
+    public WebFilter corsFilter() {
+        return (ServerWebExchange ctx, WebFilterChain chain) -> {
+            ServerHttpRequest request = ctx.getRequest();
+            if (CorsUtils.isCorsRequest(request)) {
+                ServerHttpResponse response = ctx.getResponse();
+                HttpHeaders headers = response.getHeaders();
+                headers.set("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
+                headers.set("Access-Control-Allow-Methods", ALLOWED_METHODS);
+                headers.set("Access-Control-Max-Age", MAX_AGE);
+                headers.set("Access-Control-Allow-Headers", ALLOWED_HEADERS);
+                headers.set("Access-Control-Expose-Headers", ALLOWED_EXPOSE);
+                headers.set("Access-Control-Allow-Credentials", "true");
+                if (request.getMethod() == HttpMethod.OPTIONS) {
+                    response.setStatusCode(HttpStatus.OK);
+                    return Mono.empty();
+                }
+            }
+            return chain.filter(ctx);
+        };
+    }
 
     //https://blog.csdn.net/zimou5581/article/details/90043178?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1
     @Bean
@@ -56,24 +62,24 @@ public class CorsConfig {
         return new CorsResponseHeaderFilter();
     }
 
-    @Bean
-    public CorsWebFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
-        source.registerCorsConfiguration("/**", buildCorsConfiguration());
-
-        return new CorsWebFilter(source, new DefaultCorsProcessor() {
-            @Override
-            protected boolean handleInternal(ServerWebExchange exchange, CorsConfiguration config,
-                                             boolean preFlightRequest) {
-                // 预留扩展点
-                // if (exchange.getRequest().getMethod() == HttpMethod.OPTIONS) {
-                return super.handleInternal(exchange, config, preFlightRequest);
-                // }
-
-                // return true;
-            }
-        });
-    }
+//    @Bean
+//    public CorsWebFilter corsFilter() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
+//        source.registerCorsConfiguration("/**", buildCorsConfiguration());
+//
+//        return new CorsWebFilter(source, new DefaultCorsProcessor() {
+//            @Override
+//            protected boolean handleInternal(ServerWebExchange exchange, CorsConfiguration config,
+//                                             boolean preFlightRequest) {
+//                // 预留扩展点
+//                // if (exchange.getRequest().getMethod() == HttpMethod.OPTIONS) {
+//                return super.handleInternal(exchange, config, preFlightRequest);
+//                // }
+//
+//                // return true;
+//            }
+//        });
+//    }
 
     private CorsConfiguration buildCorsConfiguration() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();

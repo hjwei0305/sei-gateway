@@ -1,14 +1,11 @@
-package com.changhong.sei.apigateway.intergration.fallback;
+package com.changhong.sei.apigateway.service.client.fallback;
 
-import com.changhong.sei.apigateway.intergration.AuthFromAccountCenter;
-
+import com.changhong.sei.apigateway.service.client.AuthServiceClient;
 import com.changhong.sei.core.dto.ResultData;
 import org.springframework.stereotype.Component;
 
-
 @Component
-public class  AuthFromAccountCenterFallBack implements AuthFromAccountCenter {
-
+public class AuthFromAccountCenterFallBack implements AuthServiceClient {
 
     @Override
     public ResultData<String> getAnonymousToken() {

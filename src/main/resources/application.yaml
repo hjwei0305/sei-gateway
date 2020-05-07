@@ -1,0 +1,33 @@
+#logging:
+#  level:
+#    org:
+#      apache:
+#        zookeeper: ERROR
+#
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.jdbc.Driver
+#    password: 123456
+#    url: jdbc:mysql://10.4.208.134:3306/sei_config?characterEncoding=utf8&useSSL=false
+#    username: sei
+#  redis:
+#    host: 10.4.208.132
+#    password: ZmkDbgaua3Rso33T
+#    port: 6379
+#
+#feign:
+#  hystrix:
+#    enabled: true
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        exclude: env,beans
+#        include: '*'
+#
+#server:
+#  port: 8080
+#  servlet:
+#    context-path: /api-gateway
+#

@@ -34,24 +34,27 @@ repositories {
 }
 
 dependencies {
-    compile('org.springframework.cloud:spring-cloud-starter-gateway')
-    compile("org.springframework.cloud:spring-cloud-starter-zookeeper-discovery")
-    compile('org.springframework.boot:spring-boot-starter-webflux')
-    compile("org.springframework.cloud:spring-cloud-starter-openfeign")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
+    implementation('org.springframework.cloud:spring-cloud-starter-gateway')
+    implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-discovery")
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
-    compile("com.changhong.sei:sei-core-service:$sei_version") {
+    implementation(
+            "org.hibernate:hibernate-java8:5.3.7.Final",
+            "mysql:mysql-connector-java:$mysqlVersion"
+    )
+
+    implementation("com.changhong.sei:sei-cloud-starter:$sei_version") {
         // 排除 web
         exclude group: 'com.changhong.sei', module: 'sei-core-monitor'
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
     }
 
-    compile("mysql:mysql-connector-java:$mysql_version")
-
     compileOnly  "org.projectlombok:lombok:1.18.4"
     annotationProcessor  "org.projectlombok:lombok:1.18.4"
 
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
 dependencyManagement {

@@ -1,7 +1,6 @@
 package com.changhong.sei.apigateway.config;
 
-import com.changhong.sei.apigateway.globalFilter.CorsResponseHeaderFilter;
-import com.changhong.sei.core.constant.Constants;
+import com.changhong.sei.apigateway.filter.CorsResponseHeaderFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;

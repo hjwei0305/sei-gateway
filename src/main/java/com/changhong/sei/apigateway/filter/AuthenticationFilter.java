@@ -1,6 +1,6 @@
-package com.changhong.sei.apigateway.globalFilter;
+package com.changhong.sei.apigateway.filter;
 
-import com.changhong.sei.apigateway.intergration.AuthFromAccountCenter;
+import com.changhong.sei.apigateway.service.client.AuthServiceClient;
 import com.changhong.sei.apigateway.service.InterfaceService;
 import com.changhong.sei.core.dto.ResultData;
 import com.changhong.sei.core.util.JsonUtils;
@@ -8,25 +8,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.cloud.gateway.filter.NettyWriteResponseFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -39,13 +35,13 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     private InterfaceService interfaceService;
     @Autowired
     private Environment env;
-    @Autowired
-    private AuthFromAccountCenter authFormAccountCenter;
+    @Resource
+    private AuthServiceClient authServiceClient;
 
-    @Value("${internal.header}")
-    public String internalHeader;
-    @Value("${session.header}")
-    public String sessionHeader;
+    @Value("${sei.header.token:x-authorization}")
+    public String internalTokenKey;
+    @Value("${sei.header.sid:x-sid}")
+    public String sessionIdKey;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -67,7 +63,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                 if (shouldFilter(uri)) {
                     return buildResultHeader(response, "未在请求中找到有效token");
                 } else {
-                    result = authFormAccountCenter.getAnonymousToken();
+                    result = authServiceClient.getAnonymousToken();
                     if (result.successful()) {
                         internalToken = result.getData();
                     } else {
@@ -78,7 +74,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         } else {
             // 有会话id,直接校验会话，如果校验成功,带上会话信息请求，
             // 如果校验失败,先判断接口是否需要认证，不需要认证接口直接请求内部token
-            result = authFormAccountCenter.check(sid);
+            result = authServiceClient.check(sid);
             if (result.successful()) {
                 // 设置cookie
                 cookieWrite(request, response, sid);
@@ -88,7 +84,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                 if (shouldFilter(uri)) {
                     return buildResultHeader(response, result.getMessage());
                 }
-                result = authFormAccountCenter.getAnonymousToken();
+                result = authServiceClient.getAnonymousToken();
                 if (result.successful()) {
                     internalToken = result.getData();
                 } else {
@@ -102,7 +98,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         }
         // 把内部token放入header
 //        System.out.println("内部token: "+internalHeader+" = " + internalToken);
-        ServerHttpRequest internalRequest = request.mutate().header(internalHeader, internalToken).build();
+        ServerHttpRequest internalRequest = request.mutate().header(this.internalTokenKey, internalToken).build();
         ServerWebExchange internalExchange = exchange.mutate().request(internalRequest).response(response).build();
         return chain.filter(internalExchange);
     }
@@ -134,7 +130,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     }
 
     private String getSid(ServerHttpRequest request) {
-        String sid = request.getHeaders().getFirst(sessionHeader);
+        String sid = request.getHeaders().getFirst(sessionIdKey);
 //        if (StringUtils.isBlank(sid)) {
 //            MultiValueMap<String, HttpCookie> cookies = request.getCookies();
 //            if (!CollectionUtils.isEmpty(cookies)) {

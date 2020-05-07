@@ -4,16 +4,61 @@ sei:
     code: api-gateway
     name: API网关
     version: 6.0.1
+    env: DEV
     # 是否是兼容模式
     compatible: false
-  # 本地调试的当前用户配置
-  mock:
-    user:
-      account: admin
-      user-name: 管理员
-      tenant-code: 10044
   swagger:
+    title: "${sei.application.name} API"
+    description: "${sei.application.name} 的API文档，运行环境: ${sei.application.env}"
+    version: ${sei.application.version}
     enable: false
   http:
     filter:
       enable: false
+  # 请求头token及sid设置
+  header:
+    token: x-authorization
+    sid: x-sid
+  mock: # 本地调试的当前用户配置
+    user:
+      account: admin
+      user-name: 管理员
+      tenant-code: 10044
+
+spring:
+  application:
+    name: ${sei.application.code}
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          filters:
+            - args[regexp]: '''${server.servlet.context-path}/'' + serviceId + ''/(?<remaining>.*)'''
+              args[replacement]: '''/${remaining}'''
+              name: RewritePath
+          predicates:
+            - args[pattern]: '''${server.servlet.context-path}/'' + serviceId + ''/**'''
+              name: Path
+#    # 不自动注册到注册中心
+#    service-registry:
+#      auto-registration:
+#        enabled: false
+    config:
+      uri: http://10.4.208.86:8100/config-center
+      profile: ${sei.application.env}
+      name: ${spring.application.name}
+    zookeeper:
+      # zookeeper注册中心开关
+      enabled: true
+      # zk 地址
+      connect-string: 10.4.208.132:2181
+    consul:
+      # consul注册中心开关
+      enabled: false
+      host: 10.4.3.6
+      port: 8500
+      discovery:
+        # 注册到consul的服务名称
+        service-name: ${spring.application.name}
+

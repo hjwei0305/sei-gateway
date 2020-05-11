@@ -23,10 +23,10 @@ public class RoutesController {
     @Autowired
     private DiscoveryClient discoveryClient;
 
-    @Autowired
+    @Autowired(required = false)
     private ZookeeperDiscoveryProperties zookeeperDiscoveryProperties;
 
-    @Autowired
+    @Autowired(required = false)
     private CuratorFramework curatorFramework;
 
     @GetMapping("getAllRoutes")

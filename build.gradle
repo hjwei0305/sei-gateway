@@ -10,7 +10,8 @@ ext {
     MainClass = 'com.changhong.sei.apigateway.WebApplication'
 }
 
-
+group = GROUP
+version = VERSION
 // JVM 版本号要求
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -102,5 +103,5 @@ jib {
         ports = ['8080']
     }
     // 如果私有镜像仓库没有启用https，设置allowInsecureRegistries参数为true
-    allowInsecureRegistries = false
+    allowInsecureRegistries = true
 }

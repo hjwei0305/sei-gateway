@@ -66,12 +66,12 @@ public class InterfaceService {
             for (Pattern pattern : this.ignoreAuthURLSet) {
                 if (pattern.matcher(uri).matches()) {
                     cacheContainer.put(uri, "1");
-                    return true;
+                    return false;
                 }
             }
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**

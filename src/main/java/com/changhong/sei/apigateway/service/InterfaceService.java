@@ -2,17 +2,20 @@ package com.changhong.sei.apigateway.service;
 
 import com.changhong.sei.apigateway.dao.GatewayInterfaceDao;
 import com.changhong.sei.apigateway.entity.GatewayInterface;
-import com.changhong.sei.core.cache.CacheBuilder;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Pattern;
 
 /**
  * usage:接口服务
@@ -26,32 +29,66 @@ public class InterfaceService {
 
     @Autowired
     private GatewayInterfaceDao gatewayInterfaceDao;
-    @Autowired
-    private CacheBuilder cacheBuilder;
+
+    private static Lock lock = new ReentrantLock();
+
+    /**
+     * 缓存
+     */
+    private static Cache<String, Object> cacheContainer = buildCacheContainer();
+
+    private static Cache<String, Object> buildCacheContainer() {
+        return CacheBuilder.newBuilder()
+                // 设置缓存最大容量为100，超过100之后就会按照LRU最近虽少使用算法来移除缓存项
+                .maximumSize(100)
+                // 设置写缓存后8秒钟过期  最后一次写入后的一段时间移出
+//                .expireAfterWrite(600000, TimeUnit.MILLISECONDS)
+                //最后一次访问后的一段时间移出
+                .expireAfterAccess(600000, TimeUnit.MILLISECONDS)
+
+                // 设置并发级别为8，并发级别是指可以同时写缓存的线程数
+                .concurrencyLevel(8)
+                // 设置缓存容器的初始容量为10
+                .initialCapacity(10)
+                // 开启统计缓存的命中率功能
+                .recordStats()
+                .build();
+    }
+
+    /**
+     * 忽略token认证的url
+     */
+    private final Set<Pattern> ignoreAuthURLSet = new HashSet<>();
 
     public Boolean checkToken(String uri) {
-        return Objects.isNull(cacheBuilder.get(key(uri)));
+        Object val = cacheContainer.getIfPresent(uri);
+        if (Objects.isNull(val)) {
+            for (Pattern pattern : this.ignoreAuthURLSet) {
+                if (pattern.matcher(uri).matches()) {
+                    cacheContainer.put(uri, "1");
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
     }
 
     /**
      * 加载不需要做认证检查的接口到redis中
      */
     public void loadRuntimeData() {
+        ignoreAuthURLSet.clear();
         List<GatewayInterface> interfaceList = gatewayInterfaceDao.findAll();
         if (CollectionUtils.isEmpty(interfaceList)) {
             log.warn("未加载到接口数据");
-            return;
+        } else {
+            interfaceList.forEach(gi -> {
+                if (!gi.getValidateToken() && !gi.isDeleted()) {
+                    ignoreAuthURLSet.add(Pattern.compile(".*?" + gi.getInterfaceURI() + ".*", Pattern.CASE_INSENSITIVE));
+                }
+            });
         }
-        interfaceList.forEach(gi -> {
-            if (!gi.getValidateToken() && !gi.isDeleted()) {
-                cacheBuilder.set(key(gi.getInterfaceURI()), "0");
-            }
-        });
-    }
-
-    private String key(String uri) {
-        String keyTemplate = uri.startsWith("/") ? uri : "/" + uri;
-        return "Gateway:NoToken" + keyTemplate.replaceAll("/", ":");
     }
 
     public List<GatewayInterface> findByAppCode(String appCode) {
@@ -60,11 +97,8 @@ public class InterfaceService {
 
     public GatewayInterface save(GatewayInterface gi) {
         gi = gatewayInterfaceDao.save(gi);
-        if (!gi.getValidateToken()) {
-            cacheBuilder.set(key(gi.getInterfaceURI()), "0");
-        } else {
-            cacheBuilder.remove(key(gi.getInterfaceURI()));
-        }
+
+        reloadCache();
         return gi;
     }
 
@@ -73,17 +107,20 @@ public class InterfaceService {
         if (gi.isPresent()) {
             gi.get().setDeleted(true);
             gatewayInterfaceDao.save(gi.get());
-            cacheBuilder.remove(key(gi.get().getInterfaceURI()));
+
+            reloadCache();
         }
     }
 
     public Boolean reloadCache() {
-        Set<String> gatewayKeys = cacheBuilder.keys("Gateway:NoToken*");
-        if (!CollectionUtils.isEmpty(gatewayKeys)) {
-            gatewayKeys.forEach(key -> cacheBuilder.remove(key));
-        }
+        lock.lock();
+        try {
+            this.loadRuntimeData();
 
-        this.loadRuntimeData();
+            cacheContainer.invalidateAll();
+        } finally {
+            lock.unlock();
+        }
         return true;
     }
 }

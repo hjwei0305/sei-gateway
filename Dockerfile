@@ -15,7 +15,7 @@ ENV JAVA_OPTS=""  APP_NAME="api-gateway"
 RUN rm -rf /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 # 添加应用
-ADD build/libs/sei-gateway.jar $APP_NAME.jar
+ADD build/libs/sei-gateway*.jar $APP_NAME.jar
 
 # 开放8080端口
 EXPOSE 8080

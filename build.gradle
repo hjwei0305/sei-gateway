@@ -63,11 +63,26 @@ dependencyManagement {
     }
 }
 
+////打ar包
+//jar  {
+//    archiveName = "${rootProject.name}.${archiveExtension.get()}"
+//    manifest {
+//        attributes 'Main-Class': 'com.changhong.sei.apigateway.WebApplication'
+//        attributes("Manifest-Version": "6.0")
+//        attributes("Created-By": "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})".toString())
+//        attributes("Implementation-Title": "$project.name")
+//        attributes("Implementation-Version": "$project.version")
+//        attributes("Implementation-Vendor": "rcsit.cn")
+//        attributes("Build-Time": new Date().format("yyyy-MM-dd HH:mm:ss"))
+//    }
+//}
+
 //打ar包
-jar  {
-    archiveName = "${rootProject.name}.${archiveExtension.get()}"
+bootJar  {
+    enabled = true
+    archiveFileName = "${rootProject.name}.${archiveExtension.get()}"
+    mainClassName = MainClass
     manifest {
-        attributes 'Main-Class': 'com.changhong.sei.apigateway.WebApplication'
         attributes("Manifest-Version": "6.0")
         attributes("Created-By": "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})".toString())
         attributes("Implementation-Title": "$project.name")

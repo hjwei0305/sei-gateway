@@ -5,6 +5,7 @@ import com.changhong.sei.apigateway.entity.GatewayInterface;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,17 +59,22 @@ public class InterfaceService {
     /**
      * 忽略token认证的url
      */
-    private final Set<Pattern> ignoreAuthURLSet = new HashSet<>();
+    private final Set<String> ignoreAuthURLSet = new HashSet<>();
+//    private final Set<Pattern> ignoreAuthURLSet = new HashSet<>();
 
     public Boolean checkToken(String uri) {
         Object val = cacheContainer.getIfPresent(uri);
         if (Objects.isNull(val)) {
-            for (Pattern pattern : this.ignoreAuthURLSet) {
-                if (pattern.matcher(uri).matches()) {
+//            for (Pattern pattern : this.ignoreAuthURLSet) {
+//                if (pattern.matcher(uri).matches()) {
+            String[] arr = new String[ignoreAuthURLSet.size()];
+            //Set-->数组
+            ignoreAuthURLSet.toArray(arr);
+                if (StringUtils.containsAny(uri, arr)) {
                     cacheContainer.put(uri, "1");
                     return false;
                 }
-            }
+//            }
             return true;
         }
         return false;
@@ -85,7 +91,8 @@ public class InterfaceService {
         } else {
             interfaceList.forEach(gi -> {
                 if (!gi.getValidateToken() && !gi.isDeleted()) {
-                    ignoreAuthURLSet.add(Pattern.compile(".*?" + gi.getInterfaceURI() + ".*", Pattern.CASE_INSENSITIVE));
+                    ignoreAuthURLSet.add(gi.getInterfaceURI());
+//                    ignoreAuthURLSet.add(Pattern.compile(".*?" + gi.getInterfaceURI() + ".*", Pattern.CASE_INSENSITIVE));
                 }
             });
         }

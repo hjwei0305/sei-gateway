@@ -1,7 +1,7 @@
 # Docker for java  api-gateway
 
 # 基础镜像
-FROM java:8-jdk-alpine
+FROM openjdk:8-jre-alpine
 
 # 作者
 LABEL maintainer="hua.feng@changhong.com"
@@ -21,4 +21,4 @@ ADD build/libs/sei-gateway.jar $APP_NAME.jar
 EXPOSE 8080
 
 # 启动应用
-ENTRYPOINT ["sh","-c","java -server -XX:+UseG1GC $JAVA_OPTS -jar $APP_NAME.jar"]
+ENTRYPOINT ["sh","-c","java -server -XX:InitialRAMPercentage=75.0  -XX:MaxRAMPercentage=75.0 -XX:+UseG1GC $JAVA_OPTS -jar $APP_NAME.jar"]

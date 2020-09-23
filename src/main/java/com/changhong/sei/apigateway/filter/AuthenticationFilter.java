@@ -61,13 +61,13 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             } else {
                 // 没有会话id,先判断接口是否需要认证，不需要认证接口直接请求内部token
                 if (shouldFilter(uri)) {
-                    return buildResultHeader(response, "未在请求中找到有效token");
+                    return buildResultHeader(response, HttpStatus.UNAUTHORIZED, "未在请求中找到有效token");
                 } else {
                     result = authServiceClient.getAnonymousToken();
                     if (result.successful()) {
                         internalToken = result.getData();
                     } else {
-                        return buildResultHeader(response, result.getMessage());
+                        return buildResultHeader(response, HttpStatus.UNAUTHORIZED, result.getMessage());
                     }
                 }
             }
@@ -76,25 +76,33 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             // 如果校验失败,先判断接口是否需要认证，不需要认证接口直接请求内部token
             result = authServiceClient.check(sid);
             if (result.successful()) {
+                internalToken = result.getData();
+
+                /*
+                 由于运行环境的稳定性问题(网络\内存等)导致内部调用失败,而这部分问题是瞬时的一般能快速恢复,如果直接返回401给用户造成频繁的登录.
+                 故,在此按超时容错降级处理返回http status 408
+                 */
+                if (AuthServiceClient.INTERNAL_ERROR.equals(internalToken)) {
+                    return buildResultHeader(response, HttpStatus.REQUEST_TIMEOUT, result.getMessage());
+                }
                 // 设置cookie
                 cookieWrite(request, response, sid);
-
-                internalToken = result.getData();
             } else {
                 if (shouldFilter(uri)) {
-                    return buildResultHeader(response, result.getMessage());
+                    return buildResultHeader(response, HttpStatus.UNAUTHORIZED, result.getMessage());
                 }
+
                 result = authServiceClient.getAnonymousToken();
                 if (result.successful()) {
                     internalToken = result.getData();
                 } else {
-                    return buildResultHeader(response, result.getMessage());
+                    return buildResultHeader(response, HttpStatus.UNAUTHORIZED, result.getMessage());
                 }
             }
         }
         // 如果没有内部token生成,账号服务可能出错
         if (StringUtils.isBlank(internalToken)) {
-            return buildResultHeader(response, "获取认证信息出错，请联系管理员");
+            return buildResultHeader(response, HttpStatus.UNAUTHORIZED, "获取认证信息出错，请联系管理员");
         }
         // 把内部token放入header
 //        System.out.println("内部token: "+internalHeader+" = " + internalToken);
@@ -114,11 +122,11 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         }
     }
 
-    public Mono<Void> buildResultHeader(ServerHttpResponse response, String msg) {
+    public Mono<Void> buildResultHeader(ServerHttpResponse response, HttpStatus status, String msg) {
         ResultData<String> resultData = ResultData.fail(msg);
         byte[] bits = JsonUtils.toJson(resultData).getBytes(StandardCharsets.UTF_8);
         DataBuffer buffer = response.bufferFactory().wrap(bits);
-        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        response.setStatusCode(status);
         //指定编码，否则在浏览器中会中文乱码
         response.getHeaders().set("Content-Type", "application/json;charset=UTF-8");
         return response.writeWith(Mono.just(buffer));

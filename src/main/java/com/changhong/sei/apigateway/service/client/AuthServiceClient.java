@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(value = "sei-auth", path = "auth", fallbackFactory = AuthFromAccountCenterFallBackFactory.class)
 public interface AuthServiceClient {
+    String INTERNAL_ERROR = "internal_error";
 
     @GetMapping(value = "/getAnonymousToken", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResultData<String> getAnonymousToken();

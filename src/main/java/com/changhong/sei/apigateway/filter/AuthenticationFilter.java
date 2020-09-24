@@ -1,14 +1,13 @@
 package com.changhong.sei.apigateway.filter;
 
-import com.changhong.sei.apigateway.service.client.AuthServiceClient;
 import com.changhong.sei.apigateway.service.InterfaceService;
+import com.changhong.sei.apigateway.service.client.AuthServiceClient;
 import com.changhong.sei.core.dto.ResultData;
 import com.changhong.sei.core.util.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -25,7 +24,9 @@ import reactor.core.publisher.Mono;
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 @Component
 public class AuthenticationFilter implements GlobalFilter, Ordered {
@@ -49,6 +50,10 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         ServerHttpResponse response = exchange.getResponse();
 
         String uri = request.getPath().toString();
+        // 平台全局忽略会话检查的地址.后期可以改为网关的配置读取
+        if (StringUtils.containsAny(uri, "/sso/", "/monitor/health", "/edm-service/pdfjs/", "/websocket/log")) {
+            return chain.filter(exchange);
+        }
         // 获取sid
         String sid = getSid(request);
         ResultData<String> result;
@@ -112,14 +117,10 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     }
 
     private boolean shouldFilter(String uri) {
-        if (StringUtils.containsAny(uri, "/sso/", "/monitor/health", "/edm-service/pdfjs/")) {
-            return false;
-        } else {
-            String contextPath = env.getProperty("server.servlet.context-path", "/api-gateway");
-            Boolean checkToken = interfaceService.checkToken(uri.replaceAll(contextPath, ""));
-            log.info("uri: {}, 是否需要Token检查: {}", uri, checkToken);
-            return checkToken;
-        }
+        String contextPath = env.getProperty("server.servlet.context-path", "/api-gateway");
+        Boolean checkToken = interfaceService.checkToken(uri.replaceAll(contextPath, ""));
+        log.info("uri: {}, 是否需要Token检查: {}", uri, checkToken);
+        return checkToken;
     }
 
     public Mono<Void> buildResultHeader(ServerHttpResponse response, HttpStatus status, String msg) {

@@ -9,6 +9,7 @@ import org.springframework.cloud.gateway.actuate.GatewayControllerEndpoint;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class RoutesController {
     private CuratorFramework curatorFramework;
 
     @GetMapping("getAllRoutes")
-    public Flux<Map<String, Object>> getAllRoutes(){
+    public Mono<List<Map<String, Object>>> getAllRoutes(){
         return gatewayControllerEndpoint.routes();
     }
 

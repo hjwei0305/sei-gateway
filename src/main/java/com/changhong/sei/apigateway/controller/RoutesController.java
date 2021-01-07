@@ -31,7 +31,7 @@ public class RoutesController {
     private CuratorFramework curatorFramework;
 
     @GetMapping("getAllRoutes")
-    public Flux<Map<String, Object>> getAllRoutes(){
+    public Mono<List<Map<String, Object>>> getAllRoutes(){
         return gatewayControllerEndpoint.routes();
     }
 

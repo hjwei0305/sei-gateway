@@ -22,6 +22,11 @@ sei:
       user-name: 管理员
       tenant-code: 10044
 
+management:
+  endpoint:
+    gateway:
+      enabled: true
+
 spring:
   application:
     name: ${sei.application.code}

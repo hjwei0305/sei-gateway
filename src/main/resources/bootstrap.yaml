@@ -2,7 +2,7 @@
 sei:
   application:
     code: api-gateway
-    name: API网关
+    name: '@project_description@'
     version: '@project_version@'
     env: DEV
     # 是否是兼容模式
@@ -37,10 +37,6 @@ spring:
           predicates:
             - args[pattern]: '''${server.servlet.context-path}/'' + serviceId + ''/**'''
               name: Path
-#    # 不自动注册到注册中心
-#    service-registry:
-#      auto-registration:
-#        enabled: false
     config:
       uri: http://dsei.changhong.com/config-center
       profile: ${sei.application.env}
@@ -58,5 +54,5 @@ spring:
       discovery:
         # 注册到consul的服务名称
         service-name: ${spring.application.name}
-        hostname: ${spring.application.name}.industry
+        hostname: '${spring.application.name}.industry'
 

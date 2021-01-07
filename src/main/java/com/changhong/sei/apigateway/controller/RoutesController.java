@@ -17,7 +17,7 @@ import java.util.Map;
 @RequestMapping("routes")
 public class RoutesController {
 
-    @Autowired
+    @Autowired(required = false)
     private GatewayControllerEndpoint gatewayControllerEndpoint;
 
     @Autowired

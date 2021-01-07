@@ -8,9 +8,6 @@ sei:
     # 是否是兼容模式
     compatible: false
   swagger:
-    title: "${sei.application.name} API"
-    description: "${sei.application.name} 的API文档，运行环境: ${sei.application.env}"
-    version: ${sei.application.version}
     enable: false
   http:
     filter:
@@ -45,7 +42,7 @@ spring:
 #      auto-registration:
 #        enabled: false
     config:
-      uri: http://10.4.208.86:8100/config-center
+      uri: http://dsei.changhong.com/config-center
       profile: ${sei.application.env}
       name: ${spring.application.name}
     zookeeper:
@@ -61,4 +58,5 @@ spring:
       discovery:
         # 注册到consul的服务名称
         service-name: ${spring.application.name}
+        hostname: ${spring.application.name}.industry
 

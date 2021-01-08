@@ -111,7 +111,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         }
         // 把内部token放入header
 //        System.out.println("内部token: "+internalHeader+" = " + internalToken);
-        ServerHttpRequest internalRequest = request.mutate().header(this.internalTokenKey, internalToken).build();
+        ServerHttpRequest internalRequest = request.mutate().header(this.internalTokenKey, internalToken).contextPath("/").build();
         ServerWebExchange internalExchange = exchange.mutate().request(internalRequest).response(response).build();
         return chain.filter(internalExchange);
     }

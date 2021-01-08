@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface AuthServiceClient {
     String INTERNAL_ERROR = "internal_error";
 
-    @GetMapping(value = "/getAnonymousToken", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/getAnonymousToken", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResultData<String> getAnonymousToken();
 
 
-    @PostMapping(value = "/check", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/check", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResultData<String> check(String sid);
 
 }

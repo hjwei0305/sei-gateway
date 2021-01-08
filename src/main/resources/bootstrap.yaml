@@ -31,11 +31,11 @@ spring:
         locator:
           enabled: true
           filters:
-            - args[regexp]: '''${server.servlet.context-path}/'' + serviceId + ''/(?<remaining>.*)'''
-              args[replacement]: '''/${remaining}'''
+            - args[regexp]: "'${server.servlet.context-path}/' + serviceId + '/(?<remaining>/?.*)'"
+              args[replacement]: "'/${remaining}'"
               name: RewritePath
           predicates:
-            - args[pattern]: '''${server.servlet.context-path}/'' + serviceId + ''/**'''
+            - args[pattern]: "'${server.servlet.context-path}/' + serviceId + '/**'"
               name: Path
     config:
       uri: http://dsei.changhong.com/config-center

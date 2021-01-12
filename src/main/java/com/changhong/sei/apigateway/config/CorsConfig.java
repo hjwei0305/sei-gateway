@@ -19,17 +19,17 @@ import org.springframework.web.util.pattern.PathPatternParser;
 public class CorsConfig {
 
     //https://blog.csdn.net/zimou5581/article/details/90043178?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1
-    @Bean
-    public CorsResponseHeaderFilter corsResponseHeaderFilter() {
-        return new CorsResponseHeaderFilter();
-    }
+//    @Bean
+//    public CorsResponseHeaderFilter corsResponseHeaderFilter() {
+//        return new CorsResponseHeaderFilter();
+//    }
 
-    @Bean
-    public CorsWebFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
-        source.registerCorsConfiguration("/**", buildCorsConfiguration());
-        return new CorsWebFilter(source);
-    }
+//    @Bean
+//    public CorsWebFilter corsFilter() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
+//        source.registerCorsConfiguration("/**", buildCorsConfiguration());
+//        return new CorsWebFilter(source);
+//    }
 
     private CorsConfiguration buildCorsConfiguration() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
@@ -63,18 +63,18 @@ public class CorsConfig {
         return corsConfiguration;
     }
 
-    @Bean
-    public WebFilter contextPathWebFilter(Environment env) {
-        String contextPath = env.getProperty("server.servlet.context-path", "/api-gateway");
-        return (exchange, chain) -> {
-            ServerHttpRequest request = exchange.getRequest();
-            if (request.getURI().getPath().startsWith(contextPath)) {
-                return chain.filter(
-                        exchange.mutate()
-                                .request(request.mutate().contextPath(contextPath).build())
-                                .build());
-            }
-            return chain.filter(exchange);
-        };
-    }
+//    @Bean
+//    public WebFilter contextPathWebFilter(Environment env) {
+//        String contextPath = env.getProperty("server.servlet.context-path", "/api-gateway");
+//        return (exchange, chain) -> {
+//            ServerHttpRequest request = exchange.getRequest();
+//            if (request.getURI().getPath().startsWith(contextPath)) {
+//                return chain.filter(
+//                        exchange.mutate()
+//                                .request(request.mutate().contextPath(contextPath).build())
+//                                .build());
+//            }
+//            return chain.filter(exchange);
+//        };
+//    }
 }

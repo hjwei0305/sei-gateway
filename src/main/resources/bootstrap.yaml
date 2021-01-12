@@ -22,11 +22,25 @@ sei:
       user-name: 管理员
       tenant-code: 10044
 
+server:
+  servlet:
+    context-path: /api-gateway
+
 spring:
   application:
     name: ${sei.application.code}
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - HEAD
+              - DELETE
       discovery:
         locator:
           enabled: true

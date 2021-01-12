@@ -35,12 +35,10 @@ spring:
         cors-configurations:
           '[/**]':
             allowedOrigins: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - HEAD
-              - DELETE
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+      defaultFilters[0]: DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
       discovery:
         locator:
           enabled: true

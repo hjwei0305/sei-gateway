@@ -51,7 +51,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
         String uri = request.getPath().toString();
         // 平台全局忽略会话检查的地址.后期可以改为网关的配置读取
-        if (StringUtils.containsAny(uri, "/sso/", "/monitor/health", "/edm-service/pdfjs/", "/websocket/")) {
+        if (StringUtils.containsAny(uri, "/sso/", "/version/", "/monitor/health", "/edm-service/pdfjs/", "/websocket/")) {
             //return chain.filter(exchange);
             ServerHttpRequest internalRequest = request.mutate().contextPath("/").build();
             ServerWebExchange internalExchange = exchange.mutate().request(internalRequest).response(response).build();

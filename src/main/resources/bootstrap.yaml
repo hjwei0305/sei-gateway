@@ -32,12 +32,14 @@ spring:
   cloud:
     gateway:
       globalcors:
+        # 处理跨域
         cors-configurations:
           '[/**]':
             allowedOrigins: "*"
             allowedMethods: "*"
             allowedHeaders: "*"
             allowCredentials: true
+      # 处理重复header: 相同header多个值时的处理方式，三种规则可选
       defaultFilters[0]: DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
       discovery:
         locator:

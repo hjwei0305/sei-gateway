@@ -68,7 +68,7 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
                     String path = exchange.getRequest().getURI().getRawPath();
 
                     AccessLogVo accessLogVo = new AccessLogVo(traceId, token, path, request.getMethodValue());
-                    accessLogVo.setOperationDate(currentTime);
+                    accessLogVo.setAccessTime(currentTime);
                     // 获取开始时间
                     Long startTime = exchange.getAttribute(Constants.REQUEST_ATTRIBUTE_START_TIME);
                     if (Objects.nonNull(startTime)) {

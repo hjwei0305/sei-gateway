@@ -11,15 +11,15 @@ import java.io.Serializable;
 public class AccessLogVo implements Serializable {
     private static final long serialVersionUID = -7958165221208610549L;
 
-    protected String token;
+    private String token;
     /**
      * 应用模块
      */
-    protected String appModule;
+    private String appModule;
     /**
      * 跟踪id
      */
-    protected String traceId;
+    private String traceId;
     /**
      * 路径
      */
@@ -47,7 +47,7 @@ public class AccessLogVo implements Serializable {
     /**
      * 操作时间(Unix时间戳)
      */
-    private Long operationDate;
+    private Long accessTime;
 
     public AccessLogVo() {
 
@@ -141,12 +141,12 @@ public class AccessLogVo implements Serializable {
         return this;
     }
 
-    public Long getOperationDate() {
-        return operationDate;
+    public Long getAccessTime() {
+        return accessTime;
     }
 
-    public AccessLogVo setOperationDate(Long operationDate) {
-        this.operationDate = operationDate;
+    public AccessLogVo setAccessTime(Long accessTime) {
+        this.accessTime = accessTime;
         return this;
     }
 

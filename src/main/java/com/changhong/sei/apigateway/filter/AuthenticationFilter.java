@@ -1,5 +1,6 @@
 package com.changhong.sei.apigateway.filter;
 
+import com.changhong.sei.apigateway.commons.Constants;
 import com.changhong.sei.apigateway.service.InterfaceService;
 import com.changhong.sei.apigateway.service.client.AuthServiceClient;
 import com.changhong.sei.core.dto.ResultData;
@@ -112,8 +113,10 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         if (StringUtils.isBlank(internalToken)) {
             return buildResultHeader(response, HttpStatus.UNAUTHORIZED, "获取认证信息出错，请联系管理员");
         }
+
+        // 记录token
+        exchange.getAttributes().put(Constants.REQUEST_ATTRIBUTE_TOKEN, internalToken);
         // 把内部token放入header
-//        System.out.println("内部token: "+internalHeader+" = " + internalToken);
         ServerHttpRequest internalRequest = request.mutate().header(this.internalTokenKey, internalToken).contextPath("/").build();
         ServerWebExchange internalExchange = exchange.mutate().request(internalRequest).response(response).build();
         return chain.filter(internalExchange);

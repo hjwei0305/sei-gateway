@@ -1,7 +1,6 @@
-package com.changhong.sei.apigateway.entity.vo;
+package com.changhong.sei.apigateway.service.mq;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 实现功能：访问日志vo

@@ -1,7 +1,6 @@
 package com.changhong.sei.apigateway.service.mq;
 
 import com.changhong.sei.apigateway.commons.Constants;
-import com.changhong.sei.apigateway.entity.vo.AccessLogVo;
 import com.changhong.sei.core.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,6 @@ import java.util.Objects;
  * @version 1.0.00  2021-01-13 09:49
  */
 @Component
-@ConditionalOnBean({ProducerFactory.class, KafkaTemplate.class})
 public class AccessLogProducer {
     private static final Logger LOG = LoggerFactory.getLogger(AccessLogProducer.class);
     @Autowired(required = false)

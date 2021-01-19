@@ -23,4 +23,9 @@ public interface Constants {
      * 访问日志topic
      */
     String TOPIC_ACCESS_LOG = "SeiGatewayAccessLog";
+
+    /**
+     * swagger2默认的url后缀
+     */
+    String SWAGGER2URL = "/v2/api-docs";
 }

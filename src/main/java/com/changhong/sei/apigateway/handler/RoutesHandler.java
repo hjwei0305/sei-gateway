@@ -1,4 +1,4 @@
-package com.changhong.sei.apigateway.controller;
+package com.changhong.sei.apigateway.handler;
 
 import com.changhong.sei.core.dto.ResultData;
 import org.apache.curator.framework.CuratorFramework;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("routes")
-public class RoutesController {
+public class RoutesHandler {
 
     @Autowired(required = false)
     private GatewayControllerEndpoint gatewayControllerEndpoint;

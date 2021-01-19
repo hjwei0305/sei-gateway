@@ -1,14 +1,10 @@
 # 应用全局配置
 sei:
   application:
-    code: api-gateway
-    name: '@project_description@'
-    version: '@project_version@'
     env: DEV
-    # 是否是兼容模式
-    compatible: false
-  swagger:
-    enable: false
+    code: api-gateway
+    version: '@project_version@'
+    description: '@project_description@'
   http:
     filter:
       enable: false

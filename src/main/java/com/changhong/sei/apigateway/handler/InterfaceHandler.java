@@ -1,4 +1,4 @@
-package com.changhong.sei.apigateway.controller;
+package com.changhong.sei.apigateway.handler;
 
 import com.changhong.sei.apigateway.service.InterfaceService;
 import com.changhong.sei.apigateway.entity.GatewayInterface;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/interface")
-public class InterfaceController {
+public class InterfaceHandler {
 
     @Autowired
     private InterfaceService interfaceService;

@@ -1,22 +1,25 @@
 package com.changhong.sei.apigateway.service;
 
-import com.changhong.sei.apigateway.dao.GatewayInterfaceDao;
-import com.changhong.sei.apigateway.entity.GatewayInterface;
+import com.changhong.sei.apigateway.service.client.AuthWhitelistClient;
+import com.changhong.sei.apigateway.service.client.dto.AuthWhitelistDto;
+import com.changhong.sei.core.dto.ResultData;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Pattern;
 
 /**
  * usage:接口服务
@@ -28,10 +31,12 @@ import java.util.regex.Pattern;
 public class InterfaceService {
     private static final Logger log = LoggerFactory.getLogger(InterfaceService.class);
 
-    @Autowired
-    private GatewayInterfaceDao gatewayInterfaceDao;
+    private static final Lock LOCK = new ReentrantLock();
 
-    private static Lock lock = new ReentrantLock();
+    @Value("${sei.application.env}")
+    private String envCode;
+    @Autowired
+    private AuthWhitelistClient whitelistClient;
 
     /**
      * 缓存
@@ -40,8 +45,8 @@ public class InterfaceService {
 
     private static Cache<String, Object> buildCacheContainer() {
         return CacheBuilder.newBuilder()
-                // 设置缓存最大容量为100，超过100之后就会按照LRU最近虽少使用算法来移除缓存项
-                .maximumSize(100)
+                // 设置缓存最大容量为300，超过300之后就会按照LRU最近虽少使用算法来移除缓存项
+                .maximumSize(300)
                 // 设置写缓存后8秒钟过期  最后一次写入后的一段时间移出
 //                .expireAfterWrite(600000, TimeUnit.MILLISECONDS)
                 //最后一次访问后的一段时间移出
@@ -60,21 +65,17 @@ public class InterfaceService {
      * 忽略token认证的url
      */
     private final Set<String> ignoreAuthURLSet = new HashSet<>();
-//    private final Set<Pattern> ignoreAuthURLSet = new HashSet<>();
 
     public Boolean checkToken(String uri) {
         Object val = cacheContainer.getIfPresent(uri);
         if (Objects.isNull(val)) {
-//            for (Pattern pattern : this.ignoreAuthURLSet) {
-//                if (pattern.matcher(uri).matches()) {
             String[] arr = new String[ignoreAuthURLSet.size()];
             //Set-->数组
             ignoreAuthURLSet.toArray(arr);
-                if (StringUtils.containsAny(uri, arr)) {
-                    cacheContainer.put(uri, "1");
-                    return false;
-                }
-//            }
+            if (StringUtils.containsAny(uri, arr)) {
+                cacheContainer.put(uri, "1");
+                return false;
+            }
             return true;
         }
         return false;
@@ -85,48 +86,29 @@ public class InterfaceService {
      */
     public void loadRuntimeData() {
         ignoreAuthURLSet.clear();
-        List<GatewayInterface> interfaceList = gatewayInterfaceDao.findAll();
-        if (CollectionUtils.isEmpty(interfaceList)) {
+        ResultData<List<AuthWhitelistDto>> resultData = whitelistClient.get(envCode);
+        if (resultData.failed()) {
+            log.error(resultData.getMessage());
+            return;
+        }
+        List<AuthWhitelistDto> whitelists = resultData.getData();
+        if (CollectionUtils.isEmpty(whitelists)) {
             log.warn("未加载到接口数据");
         } else {
-            interfaceList.forEach(gi -> {
-                if (!gi.getValidateToken() && !gi.isDeleted()) {
-                    ignoreAuthURLSet.add(gi.getInterfaceURI());
-//                    ignoreAuthURLSet.add(Pattern.compile(".*?" + gi.getInterfaceURI() + ".*", Pattern.CASE_INSENSITIVE));
-                }
+            whitelists.forEach(gi -> {
+                ignoreAuthURLSet.add(gi.getUri());
             });
         }
     }
 
-    public List<GatewayInterface> findByAppCode(String appCode) {
-        return gatewayInterfaceDao.findByDeletedFalseAndApplicationCode(appCode);
-    }
-
-    public GatewayInterface save(GatewayInterface gi) {
-        gi = gatewayInterfaceDao.save(gi);
-
-        reloadCache();
-        return gi;
-    }
-
-    public void delete(String id) {
-        Optional<GatewayInterface> gi = gatewayInterfaceDao.findById(id);
-        if (gi.isPresent()) {
-            gi.get().setDeleted(true);
-            gatewayInterfaceDao.save(gi.get());
-
-            reloadCache();
-        }
-    }
-
     public Boolean reloadCache() {
-        lock.lock();
+        LOCK.lock();
         try {
             this.loadRuntimeData();
 
             cacheContainer.invalidateAll();
         } finally {
-            lock.unlock();
+            LOCK.unlock();
         }
         return true;
     }

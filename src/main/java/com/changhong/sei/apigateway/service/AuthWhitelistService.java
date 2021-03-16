@@ -29,8 +29,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * User:liusonglin; Date:2018/5/18;ProjectName:api-gateway;
  */
 @Component
-public class InterfaceService {
-    private static final Logger log = LoggerFactory.getLogger(InterfaceService.class);
+public class AuthWhitelistService {
+    private static final Logger log = LoggerFactory.getLogger(AuthWhitelistService.class);
 
     private static final Lock LOCK = new ReentrantLock();
 

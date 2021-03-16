@@ -1,6 +1,6 @@
 package com.changhong.sei.apigateway.commons.redismq;
 
-import com.changhong.sei.apigateway.service.InterfaceService;
+import com.changhong.sei.apigateway.service.AuthWhitelistService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
@@ -15,7 +15,7 @@ import org.springframework.data.redis.connection.MessageListener;
 public class SubscribeListener implements MessageListener, InitializingBean {
 
     @Autowired
-    private InterfaceService interfaceService;
+    private AuthWhitelistService interfaceService;
 
     @Override
     public void afterPropertiesSet() throws Exception {

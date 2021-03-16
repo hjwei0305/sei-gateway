@@ -1,10 +1,16 @@
 package com.changhong.sei.apigateway.config;
 
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.WebFilter;
+
+import java.util.stream.Collectors;
 
 /**
  * usage:
@@ -12,6 +18,12 @@ import org.springframework.web.server.WebFilter;
  */
 @Configuration
 public class GatewayConfig {
+
+    @Bean
+    @ConditionalOnMissingBean
+    public HttpMessageConverters messageConverters(ObjectProvider<HttpMessageConverter<?>> converters) {
+        return new HttpMessageConverters(converters.orderedStream().collect(Collectors.toList()));
+    }
 
     @Bean
     public WebFilter contextPathWebFilter(Environment env) {

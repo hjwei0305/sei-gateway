@@ -1,4 +1,4 @@
-package com.changhong.sei.apigateway.service.mq;
+package com.changhong.sei.apigateway.service.accesslog;
 
 import java.io.Serializable;
 

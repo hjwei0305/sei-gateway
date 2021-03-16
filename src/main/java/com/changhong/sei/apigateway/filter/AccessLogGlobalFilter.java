@@ -1,8 +1,8 @@
 package com.changhong.sei.apigateway.filter;
 
 import com.changhong.sei.apigateway.commons.Constants;
-import com.changhong.sei.apigateway.service.mq.AccessLogVo;
-import com.changhong.sei.apigateway.service.mq.AccessLogProducer;
+import com.changhong.sei.apigateway.service.accesslog.AccessLogVo;
+import com.changhong.sei.apigateway.service.accesslog.AccessLogProducer;
 import com.changhong.sei.core.context.ContextUtil;
 import com.changhong.sei.util.IdGenerator;
 import com.changhong.sei.util.thread.ThreadLocalUtil;

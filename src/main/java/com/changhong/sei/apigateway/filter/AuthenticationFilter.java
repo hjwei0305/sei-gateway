@@ -1,7 +1,7 @@
 package com.changhong.sei.apigateway.filter;
 
 import com.changhong.sei.apigateway.commons.Constants;
-import com.changhong.sei.apigateway.service.InterfaceService;
+import com.changhong.sei.apigateway.service.AuthWhitelistService;
 import com.changhong.sei.apigateway.service.client.AuthServiceClient;
 import com.changhong.sei.core.dto.ResultData;
 import com.changhong.sei.core.util.JsonUtils;
@@ -34,7 +34,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     @Autowired
-    private InterfaceService interfaceService;
+    private AuthWhitelistService interfaceService;
     @Autowired
     private Environment env;
     @Resource

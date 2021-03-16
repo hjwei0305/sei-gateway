@@ -1,13 +1,11 @@
-package com.changhong.sei.apigateway.service.mq;
+package com.changhong.sei.apigateway.service.accesslog;
 
 import com.changhong.sei.apigateway.commons.Constants;
 import com.changhong.sei.core.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;

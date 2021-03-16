@@ -40,6 +40,10 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-webflux')
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
+    implementation('org.hibernate:hibernate-validator:5.2.4.Final') {
+        force = true
+    }
+
     implementation("com.changhong.sei:sei-cloud-starter:$sei_version")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')

@@ -49,7 +49,7 @@ spring:
       # 配置中心服务地址
       uri: http://sei.changhong.com/sei-manager/configserver
       # 配置中心认证token
-      # token: 11111
+      token: DEjjbZxTrSWNf
     zookeeper:
       # zookeeper注册中心开关
       enabled: true

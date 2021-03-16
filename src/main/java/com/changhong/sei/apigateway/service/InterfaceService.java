@@ -1,7 +1,7 @@
 package com.changhong.sei.apigateway.service;
 
-import com.changhong.sei.apigateway.service.client.AuthWhitelistClient;
 import com.changhong.sei.apigateway.service.client.dto.AuthWhitelistDto;
+import com.changhong.sei.apitemplate.ApiTemplate;
 import com.changhong.sei.core.dto.ResultData;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -35,13 +36,19 @@ public class InterfaceService {
 
     @Value("${sei.application.env}")
     private String envCode;
+    @Value("${sei.manager.url}")
+    private String managerHost;
     @Autowired
-    private AuthWhitelistClient whitelistClient;
+    private ApiTemplate apiTemplate;
 
+    /**
+     * 忽略token认证的url
+     */
+    private final Set<String> ignoreAuthURLSet = new HashSet<>();
     /**
      * 缓存
      */
-    private static Cache<String, Object> cacheContainer = buildCacheContainer();
+    private static final Cache<String, Object> CACHE_CONTAINER = buildCacheContainer();
 
     private static Cache<String, Object> buildCacheContainer() {
         return CacheBuilder.newBuilder()
@@ -61,19 +68,14 @@ public class InterfaceService {
                 .build();
     }
 
-    /**
-     * 忽略token认证的url
-     */
-    private final Set<String> ignoreAuthURLSet = new HashSet<>();
-
     public Boolean checkToken(String uri) {
-        Object val = cacheContainer.getIfPresent(uri);
+        Object val = CACHE_CONTAINER.getIfPresent(uri);
         if (Objects.isNull(val)) {
             String[] arr = new String[ignoreAuthURLSet.size()];
             //Set-->数组
             ignoreAuthURLSet.toArray(arr);
             if (StringUtils.containsAny(uri, arr)) {
-                cacheContainer.put(uri, "1");
+                CACHE_CONTAINER.put(uri, "1");
                 return false;
             }
             return true;
@@ -82,34 +84,32 @@ public class InterfaceService {
     }
 
     /**
-     * 加载不需要做认证检查的接口到redis中
+     * 重新载入网关配置到缓存
      */
-    public void loadRuntimeData() {
-        ignoreAuthURLSet.clear();
-        ResultData<List<AuthWhitelistDto>> resultData = whitelistClient.get(envCode);
-        if (resultData.failed()) {
-            log.error(resultData.getMessage());
-            return;
-        }
-        List<AuthWhitelistDto> whitelists = resultData.getData();
-        if (CollectionUtils.isEmpty(whitelists)) {
-            log.warn("未加载到接口数据");
-        } else {
-            whitelists.forEach(gi -> {
-                ignoreAuthURLSet.add(gi.getUri());
-            });
-        }
-    }
-
-    public Boolean reloadCache() {
+    public void reloadConfigCache() {
         LOCK.lock();
         try {
-            this.loadRuntimeData();
+            // 加载不需要做认证检查的接口到redis中
+            ResultData<List<AuthWhitelistDto>> resultData = apiTemplate.getByUrl(managerHost + "/authWhitelist/get?envCode=" + envCode, new ParameterizedTypeReference<ResultData<List<AuthWhitelistDto>>>() {
+            });
+            if (resultData.successful()) {
+                List<AuthWhitelistDto> whitelists = resultData.getData();
+                if (CollectionUtils.isEmpty(whitelists)) {
+                    log.warn("未加载到接口数据");
+                } else {
+                    ignoreAuthURLSet.clear();
 
-            cacheContainer.invalidateAll();
+                    whitelists.forEach(gi -> {
+                        ignoreAuthURLSet.add(gi.getUri());
+                    });
+                }
+
+                CACHE_CONTAINER.invalidateAll();
+            } else {
+                log.error(resultData.getMessage());
+            }
         } finally {
             LOCK.unlock();
         }
-        return true;
     }
 }

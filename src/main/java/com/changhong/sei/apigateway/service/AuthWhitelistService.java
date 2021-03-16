@@ -106,7 +106,7 @@ public class AuthWhitelistService {
 
                 CACHE_CONTAINER.invalidateAll();
             } else {
-                log.error(resultData.getMessage());
+                log.error("获取网关白名单配置异常: " + resultData.getMessage());
             }
         } finally {
             LOCK.unlock();

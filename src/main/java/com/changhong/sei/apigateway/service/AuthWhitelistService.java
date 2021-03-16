@@ -36,7 +36,7 @@ public class AuthWhitelistService {
 
     @Value("${sei.application.env}")
     private String envCode;
-    @Value("${spring.cloud.config.url}")
+    @Value("${sei.manager.uri}")
     private String managerHost;
     @Autowired
     private ApiTemplate apiTemplate;
@@ -57,7 +57,7 @@ public class AuthWhitelistService {
                 // 设置写缓存后8秒钟过期  最后一次写入后的一段时间移出
 //                .expireAfterWrite(600000, TimeUnit.MILLISECONDS)
                 //最后一次访问后的一段时间移出
-                .expireAfterAccess(600000, TimeUnit.MILLISECONDS)
+                .expireAfterAccess(600000, TimeUnit.SECONDS)
 
                 // 设置并发级别为8，并发级别是指可以同时写缓存的线程数
                 .concurrencyLevel(8)

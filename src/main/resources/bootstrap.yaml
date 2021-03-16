@@ -2,7 +2,7 @@
 sei:
   application:
     env: DEV
-    code: api-gateway
+    code: sei-gateway
     version: '@project_version@'
     description: '@project_description@'
   http:
@@ -10,8 +10,8 @@ sei:
       enable: false
   # 请求头token及sid设置
   header:
-    token: x-authorization
     sid: x-sid
+    token: x-authorization
 
 server:
   servlet:
@@ -43,7 +43,7 @@ spring:
             - args[pattern]: "'${server.servlet.context-path}/' + serviceId + '/**'"
               name: Path
     config:
-      uri: http://sei.changhong.com/sei-manager
+      uri: http://sei.changhong.com/sei-manager/config
       profile: ${sei.application.env}
       name: ${spring.application.name}
       enabled: true

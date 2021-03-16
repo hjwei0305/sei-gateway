@@ -12,11 +12,6 @@ sei:
   header:
     token: x-authorization
     sid: x-sid
-  mock: # 本地调试的当前用户配置
-    user:
-      account: admin
-      user-name: 管理员
-      tenant-code: 10044
 
 server:
   servlet:
@@ -48,9 +43,10 @@ spring:
             - args[pattern]: "'${server.servlet.context-path}/' + serviceId + '/**'"
               name: Path
     config:
-      uri: http://dsei.changhong.com/config-center
+      uri: http://sei.changhong.com/sei-manager
       profile: ${sei.application.env}
       name: ${spring.application.name}
+      enabled: true
     zookeeper:
       # zookeeper注册中心开关
       enabled: true

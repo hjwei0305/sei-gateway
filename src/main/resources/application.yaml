@@ -1,33 +1,44 @@
-#logging:
-#  level:
-#    org:
-#      apache:
-#        zookeeper: ERROR
-#
-#spring:
-#  datasource:
-#    driver-class-name: com.mysql.jdbc.Driver
-#    password: 123456
-#    url: jdbc:mysql://10.4.208.134:3306/sei_config?characterEncoding=utf8&useSSL=false
-#    username: sei
-#  redis:
-#    host: 10.4.208.132
-#    password: ZmkDbgaua3Rso33T
-#    port: 6379
-#
-#feign:
-#  hystrix:
-#    enabled: true
-#
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        exclude: env,beans
-#        include: '*'
-#
-#server:
-#  port: 8080
-#  servlet:
-#    context-path: /api-gateway
-#
+spring:
+  jackson:
+    serialization:
+      fail_on_empty_beans: false
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-request-size: 200MB
+      max-file-size: 100MB
+  kafka:
+    bootstrap-servers: 10.4.208.132:9092
+  redis:
+    password: ZmkDbgaua3Rso33T
+    database: 0
+    port: 6379
+    host: 10.4.208.132
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+        timeout:
+          enabled: false
+
+ribbon:
+  ConnectTimeout: 180000
+  ReadTimeout: 180000
+logging:
+  level:
+    root: WARN
+
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        loggerLevel: basic
+        readTimeout: 600000
+        connectTimeout: 600000

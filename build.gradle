@@ -40,21 +40,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-webflux')
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
-    implementation(
-            "org.hibernate:hibernate-java8:5.3.7.Final",
-            "mysql:mysql-connector-java:$mysqlVersion"
-    )
-
-    implementation('javax.el:javax.el-api:3.0.0')
-
-    implementation('org.hibernate:hibernate-validator:5.2.4.Final') {
-        force = true
-    }
-
     implementation("com.changhong.sei:sei-cloud-starter:$sei_version")
-
-    compileOnly  "org.projectlombok:lombok:1.18.4"
-    annotationProcessor  "org.projectlombok:lombok:1.18.4"
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }

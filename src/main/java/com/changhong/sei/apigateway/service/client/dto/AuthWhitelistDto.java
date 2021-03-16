@@ -5,8 +5,6 @@ import com.changhong.sei.core.dto.BaseEntityDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotBlank;
-
 /**
  * 应用参数配置(ConfAppConfig)DTO类
  *
@@ -19,7 +17,6 @@ public class AuthWhitelistDto extends BaseEntityDto {
     /**
      * 应用服务代码
      */
-    @NotBlank
     @ApiModelProperty(value = "应用服务代码")
     private String appCode;
     /**
@@ -30,7 +27,6 @@ public class AuthWhitelistDto extends BaseEntityDto {
     /**
      * 环境代码
      */
-    @NotBlank
     @ApiModelProperty(value = "环境代码")
     private String envCode;
     /**
@@ -46,7 +42,6 @@ public class AuthWhitelistDto extends BaseEntityDto {
     /**
      * uri地址
      */
-    @NotBlank
     @ApiModelProperty(value = "uri地址")
     private String uri;
     /**

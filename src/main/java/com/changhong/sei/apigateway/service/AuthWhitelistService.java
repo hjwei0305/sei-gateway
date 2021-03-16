@@ -36,7 +36,7 @@ public class AuthWhitelistService {
 
     @Value("${sei.application.env}")
     private String envCode;
-    @Value("${sei.manager.url}")
+    @Value("${spring.cloud.config.url}")
     private String managerHost;
     @Autowired
     private ApiTemplate apiTemplate;

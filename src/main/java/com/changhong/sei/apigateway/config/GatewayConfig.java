@@ -58,15 +58,16 @@ public class GatewayConfig {
         return (ServerWebExchange ctx, WebFilterChain chain) -> {
             ServerHttpRequest request = ctx.getRequest();
             if (CorsUtils.isCorsRequest(request)) {
-                HttpHeaders requestHeaders = request.getHeaders();
+//                HttpHeaders requestHeaders = request.getHeaders();
                 ServerHttpResponse response = ctx.getResponse();
-                HttpMethod requestMethod = requestHeaders.getAccessControlRequestMethod();
+//                HttpMethod requestMethod = requestHeaders.getAccessControlRequestMethod();
                 HttpHeaders headers = response.getHeaders();
-                headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, requestHeaders.getOrigin());
-                headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,"Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With,userId,token");
-                headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-                headers.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "*");
-                headers.add(HttpHeaders.ACCESS_CONTROL_MAX_AGE, MAX_AGE);
+                headers.set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+                headers.set(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,"*");
+                headers.set(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+                headers.set(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "*");
+                headers.set(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "*");
+                headers.set(HttpHeaders.ACCESS_CONTROL_MAX_AGE, MAX_AGE);
                 if (request.getMethod() == HttpMethod.OPTIONS) {
                     response.setStatusCode(HttpStatus.OK);
                     return Mono.empty();

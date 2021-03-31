@@ -9,7 +9,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.cloud.gateway.actuate.GatewayControllerEndpoint;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +38,7 @@ public class RoutesHandler {
     /**
      * 重新载入网关配置到缓存
      */
-    @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true", methods = RequestMethod.POST)
+//    @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true", methods = RequestMethod.POST)
     @PostMapping("reloadCache")
     public ResultData<Boolean> reloadCache() {
         // 发布重载配置消息 @{SubscribeListener#onMessage}

@@ -38,7 +38,7 @@ public class RoutesHandler {
     /**
      * 重新载入网关配置到缓存
      */
-//    @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true", methods = RequestMethod.POST)
+    @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true", methods = RequestMethod.POST)
     @PostMapping("reloadCache")
     public ResultData<Boolean> reloadCache() {
         // 发布重载配置消息 @{SubscribeListener#onMessage}

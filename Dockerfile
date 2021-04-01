@@ -1,7 +1,7 @@
 # Docker for java  api-gateway
 
 # 基础镜像
-FROM rddhub.changhong.com/library/server-jre:8u281-alpine
+FROM openjdk:8-jre-alpine
 
 # 作者
 LABEL maintainer="hua.feng@changhong.com"

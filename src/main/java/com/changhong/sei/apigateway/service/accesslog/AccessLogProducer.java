@@ -1,10 +1,10 @@
 package com.changhong.sei.apigateway.service.accesslog;
 
-import com.changhong.sei.apigateway.commons.Constants;
 import com.changhong.sei.core.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +22,11 @@ public class AccessLogProducer {
     private static final Logger LOG = LoggerFactory.getLogger(AccessLogProducer.class);
     @Autowired(required = false)
     private KafkaTemplate<String, String> kafkaTemplate;
+    /**
+     * 访问日志topic
+     */
+    @Value("sei.topic.logger.access:SeiGatewayAccessLog")
+    private String topic;
 
     /**
      * 发送消息
@@ -34,7 +39,7 @@ public class AccessLogProducer {
         }
         String message = JsonUtils.toJson(accessLog);
 
-        kafkaTemplate.send(Constants.TOPIC_ACCESS_LOG, accessLog.getTraceId(), message);
+        kafkaTemplate.send(topic, accessLog.getTraceId(), message);
         if (LOG.isDebugEnabled()) {
             LOG.debug("访问记录队列生产者：" + message);
         }

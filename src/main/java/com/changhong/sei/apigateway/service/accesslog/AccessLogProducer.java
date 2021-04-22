@@ -25,7 +25,7 @@ public class AccessLogProducer {
     /**
      * 访问日志topic
      */
-    @Value("sei.topic.logger.access:SeiGatewayAccessLog")
+    @Value("${sei.topic.logger.access:SeiGatewayAccessLog}")
     private String topic;
 
     /**

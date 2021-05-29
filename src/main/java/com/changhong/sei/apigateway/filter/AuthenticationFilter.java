@@ -15,6 +15,7 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -65,10 +66,11 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         ResultData<String> result;
         String internalToken;
         if (StringUtils.isBlank(sid)) {
+            HttpHeaders headers = request.getHeaders();
             // token认证
-            String token = request.getHeaders().getFirst(internalTokenKey);
+            String token = headers.getFirst(internalTokenKey);
             if (StringUtils.isBlank(token)) {
-                token = request.getHeaders().getFirst("Authorization");
+                token = headers.getFirst(HttpHeaders.AUTHORIZATION);
             }
             if (StringUtils.isNotBlank(token)) {
                 internalToken = token;

@@ -65,10 +65,13 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         ResultData<String> result;
         String internalToken;
         if (StringUtils.isBlank(sid)) {
-            // TODO 兼容SEI3.0认证token
-            String token3_0 = request.getHeaders().getFirst("Authorization");
-            if (StringUtils.isNotBlank(token3_0)) {
-                internalToken = token3_0;
+            // token认证
+            String token = request.getHeaders().getFirst(internalTokenKey);
+            if (StringUtils.isBlank(token)) {
+                token = request.getHeaders().getFirst("Authorization");
+            }
+            if (StringUtils.isNotBlank(token)) {
+                internalToken = token;
             } else {
                 // 没有会话id,先判断接口是否需要认证，不需要认证接口直接请求内部token
                 if (shouldFilter(uri)) {

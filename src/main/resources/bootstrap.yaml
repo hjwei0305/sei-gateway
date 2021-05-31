@@ -5,9 +5,6 @@ sei:
     code: sei-gateway
     version: '@project_version@'
     description: '@project_description@'
-  http:
-    filter:
-      enable: false
   # 请求头token及sid设置
   header:
     sid: x-sid

@@ -44,6 +44,11 @@ dependencies {
     implementation('org.springframework.cloud:spring-cloud-starter-gateway')
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-ribbon")
+    // 由于不能同时注册多个注册中心,在使用时需要通过配置enable=true/false进行控制.如spring.cloud.consul.enabled=false
+    // consul注册中心
+    implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery")
+    // zookeeper注册中心
+    implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-discovery")
     // redis连接池配置需要
     implementation("org.apache.commons:commons-pool2")
 

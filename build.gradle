@@ -40,6 +40,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-webflux')
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation('org.springframework.cloud:spring-cloud-starter-gateway')
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
@@ -52,12 +53,6 @@ dependencies {
     // redis连接池配置需要
     implementation("org.apache.commons:commons-pool2")
 
-    implementation('javax.el:javax.el-api:3.0.0')
-
-    implementation('org.hibernate:hibernate-validator:5.2.4.Final') {
-        force = true
-    }
-
     // 内部模块依赖
     implementation("com.changhong.sei:sei-commons:$sei_version")
     // 队列
@@ -68,8 +63,7 @@ dependencies {
 
 configurations {
     //在整个构建过程中排除org.hibernate.validator:hibernate-validator
-    all*.exclude group: 'org.hibernate.validator', module: 'hibernate-validator'
-    all*.exclude group: 'com.changhong.sei', module: 'sei-core-monitor'
+//    all*.exclude group: 'org.hibernate.validator', module: 'hibernate-validator'
     all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
 }
 

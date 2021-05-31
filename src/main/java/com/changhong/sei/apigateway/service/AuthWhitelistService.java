@@ -101,9 +101,7 @@ public class AuthWhitelistService {
                 } else {
                     ignoreAuthURLSet.clear();
 
-                    whitelists.forEach(gi -> {
-                        ignoreAuthURLSet.add(gi.getUri());
-                    });
+                    whitelists.forEach(gi -> ignoreAuthURLSet.add(gi.getUri()));
                 }
 
                 CACHE_CONTAINER.invalidateAll();
@@ -111,7 +109,7 @@ public class AuthWhitelistService {
                 log.error("获取网关白名单配置异常: " + resultData.getMessage());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("重新载入网关配置到缓存异常", e);
         } finally {
             LOCK.unlock();
         }

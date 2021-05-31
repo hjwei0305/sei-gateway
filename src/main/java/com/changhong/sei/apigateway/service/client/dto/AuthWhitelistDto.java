@@ -2,8 +2,6 @@ package com.changhong.sei.apigateway.service.client.dto;
 
 
 import com.changhong.sei.core.dto.BaseEntityDto;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 应用参数配置(ConfAppConfig)DTO类
@@ -11,43 +9,35 @@ import io.swagger.annotations.ApiModelProperty;
  * @author sei
  * @since 2021-02-22 21:43:49
  */
-@ApiModel(description = "网关认证白名单DTO")
 public class AuthWhitelistDto extends BaseEntityDto {
     private static final long serialVersionUID = 4587136178264169512L;
     /**
      * 应用服务代码
      */
-    @ApiModelProperty(value = "应用服务代码")
     private String appCode;
     /**
      * 应用服务名称
      */
-    @ApiModelProperty(value = "应用服务名称")
     private String appName;
     /**
      * 环境代码
      */
-    @ApiModelProperty(value = "环境代码")
     private String envCode;
     /**
      * 环境名称
      */
-    @ApiModelProperty(value = "环境名称")
     private String envName;
     /**
      * http方法
      */
-    @ApiModelProperty(value = "http方法")
     private String method;
     /**
      * uri地址
      */
-    @ApiModelProperty(value = "uri地址")
     private String uri;
     /**
      * 描述说明
      */
-    @ApiModelProperty(value = "描述说明")
     private String remark;
 
     public String getAppCode() {

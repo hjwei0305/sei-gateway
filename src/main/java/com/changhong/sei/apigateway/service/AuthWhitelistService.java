@@ -1,16 +1,16 @@
 package com.changhong.sei.apigateway.service;
 
 import com.changhong.sei.apigateway.service.client.dto.AuthWhitelistDto;
-import com.changhong.sei.apitemplate.ApiTemplate;
 import com.changhong.sei.core.dto.ResultData;
+import com.changhong.sei.core.util.HttpUtils;
+import com.changhong.sei.core.util.JsonUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -38,8 +38,6 @@ public class AuthWhitelistService {
     private String envCode;
     @Value("${sei.manager.uri}")
     private String managerHost;
-    @Autowired
-    private ApiTemplate apiTemplate;
 
     /**
      * 忽略token认证的url
@@ -90,8 +88,12 @@ public class AuthWhitelistService {
         LOCK.lock();
         try {
             // 加载不需要做认证检查的接口到redis中
-            ResultData<List<AuthWhitelistDto>> resultData = apiTemplate.getByUrl(managerHost + "/authWhitelist/get?envCode=" + envCode, new ParameterizedTypeReference<ResultData<List<AuthWhitelistDto>>>() {
+            String url = managerHost.concat("/authWhitelist/get?envCode=").concat(envCode);
+            String data = HttpUtils.sendGet(url);
+            ResultData<List<AuthWhitelistDto>> resultData = JsonUtils.mapper().readValue(data, new TypeReference<ResultData<List<AuthWhitelistDto>>>() {
             });
+//            ResultData<List<AuthWhitelistDto>> resultData = apiTemplate.getByUrl(url, new ParameterizedTypeReference<ResultData<List<AuthWhitelistDto>>>() {
+//            });
             if (resultData.successful()) {
                 List<AuthWhitelistDto> whitelists = resultData.getData();
                 if (CollectionUtils.isEmpty(whitelists)) {
@@ -108,6 +110,8 @@ public class AuthWhitelistService {
             } else {
                 log.error("获取网关白名单配置异常: " + resultData.getMessage());
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             LOCK.unlock();
         }

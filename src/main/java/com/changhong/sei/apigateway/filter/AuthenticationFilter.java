@@ -177,19 +177,21 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
         //https://blog.csdn.net/weixin_44269886/article/details/102459425?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(sessionIdKey, value)
+                .domain(request.getURI().getHost())
                 //.path(request.getPath().contextPath().value() + "/")
                 .path("/")
                 .maxAge(-1)
                 .httpOnly(true)
-                .sameSite("None")
+//                .sameSite("None")
                 .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
         response.addCookie(cookieBuilder.build());
 
         cookieBuilder = ResponseCookie.from("_s", value)
+                .domain(request.getURI().getHost())
                 .path("/")
                 .maxAge(-1)
                 .httpOnly(true)
-                .sameSite("None")
+//                .sameSite("None")
                 .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
         response.addCookie(cookieBuilder.build());
     }

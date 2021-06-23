@@ -62,8 +62,7 @@ dependencies {
 }
 
 configurations {
-    //在整个构建过程中排除org.hibernate.validator:hibernate-validator
-//    all*.exclude group: 'org.hibernate.validator', module: 'hibernate-validator'
+    //在整个构建过程中排除
     all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
 }
 

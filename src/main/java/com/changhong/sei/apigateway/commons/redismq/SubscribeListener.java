@@ -32,13 +32,13 @@ public class SubscribeListener implements MessageListener, InitializingBean {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         interfaceService.reloadConfigCache();
-        String body = new String(message.getBody());
-        String channel = new String(message.getChannel());
-        String pattern_ = new String(pattern);
-
-        System.out.println(body);
-        System.out.println(channel);
-        // 如果是 ChannelTopic, 则 channel 字段与 pattern 字段值相同
-        System.out.println(pattern_);
+//        String body = new String(message.getBody());
+//        String channel = new String(message.getChannel());
+//        String pattern_ = new String(pattern);
+//
+//        System.out.println(body);
+//        System.out.println(channel);
+//        // 如果是 ChannelTopic, 则 channel 字段与 pattern 字段值相同
+//        System.out.println(pattern_);
     }
 }

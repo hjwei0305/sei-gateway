@@ -17,6 +17,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -121,8 +122,6 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             return buildResultHeader(response, HttpStatus.UNAUTHORIZED, "获取认证信息出错，请联系管理员");
         }
 
-        // 记录token
-        exchange.getAttributes().put(Constants.REQUEST_ATTRIBUTE_TOKEN, internalToken);
         // 把内部token放入header
         ServerHttpRequest internalRequest = request.mutate().header(this.internalTokenKey, internalToken).contextPath("/").build();
         ServerWebExchange internalExchange = exchange.mutate().request(internalRequest).response(response).build();
@@ -174,25 +173,25 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     private void cookieWrite(ServerHttpRequest request, ServerHttpResponse response, String value) {
 //        byte[] encodedCookieBytes = Base64.getEncoder().encode(value.getBytes());
-//        String baseVal = new String(encodedCookieBytes);
-//
-//        //https://blog.csdn.net/weixin_44269886/article/details/102459425?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2
-//        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(sessionHeader, baseVal)
-//                //.path(request.getPath().contextPath().value() + "/")
-//                .path("/")
-//                .maxAge(-1)
-//                .httpOnly(true)
-//                .sameSite("None")
-//                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
-//        response.addCookie(cookieBuilder.build());
-//
-//        cookieBuilder = ResponseCookie.from("_s", baseVal)
-//                .path("/")
-//                .maxAge(-1)
-//                .httpOnly(true)
-//                .sameSite("None")
-//                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
-//        response.addCookie(cookieBuilder.build());
+//        value = new String(encodedCookieBytes);
+
+        //https://blog.csdn.net/weixin_44269886/article/details/102459425?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2
+        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(sessionIdKey, value)
+                //.path(request.getPath().contextPath().value() + "/")
+                .path("/")
+                .maxAge(-1)
+                .httpOnly(true)
+                .sameSite("None")
+                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
+        response.addCookie(cookieBuilder.build());
+
+        cookieBuilder = ResponseCookie.from("_s", value)
+                .path("/")
+                .maxAge(-1)
+                .httpOnly(true)
+                .sameSite("None")
+                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
+        response.addCookie(cookieBuilder.build());
     }
 
     class CookieBuilder {

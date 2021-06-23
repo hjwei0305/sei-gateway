@@ -55,8 +55,6 @@ dependencies {
 
     // 内部模块依赖
     implementation("com.changhong.sei:sei-commons:$sei_version")
-    // 队列
-    implementation("com.changhong.sei:sei-mq-starter:$sei_version")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }

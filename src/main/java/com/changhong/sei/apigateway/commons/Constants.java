@@ -10,14 +10,6 @@ import org.springframework.boot.actuate.autoconfigure.cloudfoundry.AccessLevel;
  */
 public interface Constants {
 
-    /**
-     * 访问开始时间戳
-     */
-    String REQUEST_ATTRIBUTE_START_TIME = "SeiStartTime";
-    /**
-     * token
-     */
-    String REQUEST_ATTRIBUTE_TOKEN = "SeiAuthToken";
 
     /**
      * swagger2默认的url后缀

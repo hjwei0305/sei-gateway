@@ -15,21 +15,21 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.Base64;
+import java.util.Objects;
 
 @Component
 public class AuthenticationFilter implements GlobalFilter, Ordered {
@@ -46,6 +46,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     public String internalTokenKey;
     @Value("${sei.header.sid:x-sid}")
     public String sessionIdKey;
+    @Value("${sei.cookie.domain:none}")
+    public String cookieDomain;
+    public static final String sei3SID = "_s";
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -152,144 +155,59 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     private String getSid(ServerHttpRequest request) {
         String sid = request.getHeaders().getFirst(sessionIdKey);
-//        if (StringUtils.isBlank(sid)) {
-//            MultiValueMap<String, HttpCookie> cookies = request.getCookies();
-//            if (!CollectionUtils.isEmpty(cookies)) {
-//                HttpCookie httpCookie = cookies.getFirst(sessionHeader);
-//                if (Objects.nonNull(httpCookie)) {
-//                    byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
-//                    sid = new String(encodedCookieBytes);
-//                } else {
-//                    httpCookie = cookies.getFirst("_s");
-//                    if (Objects.nonNull(httpCookie)) {
-//                        byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
-//                        sid = new String(encodedCookieBytes);
-//                    }
-//                }
-//            }
-//        }
+        if (StringUtils.isBlank(sid)) {
+            sid = request.getHeaders().getFirst(sei3SID);
+            if (StringUtils.isBlank(sid)) {
+                sid = request.getQueryParams().getFirst(sei3SID);
+                if (StringUtils.isBlank(sid)) {
+                    MultiValueMap<String, HttpCookie> cookieMap = request.getCookies();
+                    HttpCookie httpCookie = cookieMap.getFirst(sessionIdKey);
+                    if (Objects.nonNull(httpCookie)) {
+                        byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
+                        sid = new String(encodedCookieBytes);
+                    } else {
+                        httpCookie = cookieMap.getFirst(sei3SID);
+                        if (Objects.nonNull(httpCookie)) {
+                            byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
+                            sid = new String(encodedCookieBytes);
+                        }
+                    }
+                }
+            }
+        }
         return sid;
     }
 
     private void cookieWrite(ServerHttpRequest request, ServerHttpResponse response, String value) {
-//        byte[] encodedCookieBytes = Base64.getEncoder().encode(value.getBytes());
-//        value = new String(encodedCookieBytes);
+        byte[] encodedCookieBytes = Base64.getEncoder().encode(value.getBytes());
+        value = new String(encodedCookieBytes);
 
-        //https://blog.csdn.net/weixin_44269886/article/details/102459425?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2
+        String domain = "none".equalsIgnoreCase(cookieDomain) ? "" : cookieDomain;
+        boolean secure = "https".equalsIgnoreCase(request.getURI().getScheme());
+
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(sessionIdKey, value)
-//                .domain(request.getURI().getHost())
-                //.path(request.getPath().contextPath().value() + "/")
                 .path("/")
                 .maxAge(-1)
-                .httpOnly(true)
-//                .sameSite("None")
-                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
+                .httpOnly(true);
+        if (StringUtils.isNotBlank(domain)) {
+            cookieBuilder.domain(domain);
+        }
+        if (secure) {
+            //https://blog.csdn.net/weixin_44269886/article/details/102459425?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2
+            cookieBuilder.sameSite("None").secure(secure);
+        }
         response.addCookie(cookieBuilder.build());
 
-        cookieBuilder = ResponseCookie.from("_s", value)
-//                .domain(request.getURI().getHost())
+        cookieBuilder = ResponseCookie.from(sei3SID, value)
                 .path("/")
                 .maxAge(-1)
-                .httpOnly(true)
-//                .sameSite("None")
-                .secure("https".equalsIgnoreCase(request.getURI().getScheme()));
+                .httpOnly(true);
+        if (StringUtils.isNotBlank(domain)) {
+            cookieBuilder.domain(domain);
+        }
+        if (secure) {
+            cookieBuilder.sameSite("None").secure(secure);
+        }
         response.addCookie(cookieBuilder.build());
-    }
-
-    class CookieBuilder {
-        private String key;
-        private String value;
-        /**
-         * 设置cookie的有效期.
-         * 如果cookie超过date所表示的日期时，cookie将失效。 如果没有设置这个选项，那么cookie将在浏览器关闭时失效。
-         * date是格林威治时间(GMT)
-         */
-        private String expires;
-        /**
-         * 临时cookie(没有expires参数的cookie)不能带有domain选项。
-         */
-        private String domain;
-        private String path;
-        /**
-         * 表示cookie只能被发送到http服务器
-         */
-        private String secure;
-        /**
-         * 表示cookie不能被客户端脚本获取到
-         */
-        private String httponly;
-
-        public CookieBuilder setKey(String key) {
-            this.key = key;
-            return this;
-        }
-
-        public CookieBuilder setValue(String value) {
-            this.value = value;
-            return this;
-        }
-
-        public CookieBuilder setMaxAge(long ms) {
-            //cookie的过期日期为GMT格式的时间。
-            Date date = new Date(System.currentTimeMillis() + ms);
-            SimpleDateFormat sdf = new SimpleDateFormat("EEE d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-            this.expires = sdf.format(date);
-            return this;
-        }
-
-        public CookieBuilder setDomain(String domain) {
-            this.domain = domain;
-            return this;
-        }
-
-        public CookieBuilder setPath(String path) {
-            this.path = path;
-            return this;
-        }
-
-        public CookieBuilder setSecure(String secure) {
-            this.secure = secure;
-            return this;
-        }
-
-        public CookieBuilder setHttponly(String httponly) {
-            this.httponly = httponly;
-            return this;
-        }
-
-        public String build() {
-            StringBuilder sb = new StringBuilder();
-            sb.append(this.key);
-            sb.append("=");
-            sb.append(this.value);
-            sb.append(";");
-            if (null != this.expires) {
-                sb.append("expires=");
-                sb.append(this.expires);
-                sb.append(";");
-            }
-            if (null != this.domain) {
-                sb.append("domain=");
-                sb.append(this.domain);
-                sb.append(";");
-            }
-            if (null != this.path) {
-                sb.append("path=");
-                sb.append(this.path);
-                sb.append(";");
-            }
-            if (null != this.secure) {
-                sb.append("secure=");
-                sb.append(this.secure);
-                sb.append(";");
-            }
-            if (null != this.httponly) {
-                sb.append("httponly=");
-                sb.append(this.httponly);
-                sb.append(";");
-            }
-            return sb.toString();
-        }
     }
 }

@@ -159,20 +159,20 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             sid = request.getHeaders().getFirst(sei3SID);
             if (StringUtils.isBlank(sid)) {
                 sid = request.getQueryParams().getFirst(sei3SID);
-                if (StringUtils.isBlank(sid)) {
-                    MultiValueMap<String, HttpCookie> cookieMap = request.getCookies();
-                    HttpCookie httpCookie = cookieMap.getFirst(sessionIdKey);
-                    if (Objects.nonNull(httpCookie)) {
-                        byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
-                        sid = new String(encodedCookieBytes);
-                    } else {
-                        httpCookie = cookieMap.getFirst(sei3SID);
-                        if (Objects.nonNull(httpCookie)) {
-                            byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
-                            sid = new String(encodedCookieBytes);
-                        }
-                    }
-                }
+//                if (StringUtils.isBlank(sid)) {
+//                    MultiValueMap<String, HttpCookie> cookieMap = request.getCookies();
+//                    HttpCookie httpCookie = cookieMap.getFirst(sessionIdKey);
+//                    if (Objects.nonNull(httpCookie)) {
+//                        byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
+//                        sid = new String(encodedCookieBytes);
+//                    } else {
+//                        httpCookie = cookieMap.getFirst(sei3SID);
+//                        if (Objects.nonNull(httpCookie)) {
+//                            byte[] encodedCookieBytes = Base64.getDecoder().decode(httpCookie.getValue());
+//                            sid = new String(encodedCookieBytes);
+//                        }
+//                    }
+//                }
             }
         }
         return sid;

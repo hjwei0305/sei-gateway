@@ -30,7 +30,7 @@ import java.util.Objects;
  * @author 马超(Vision.Mac)
  * @version 1.0.00  2021-01-12 13:33
  */
-//@Component
+@Component
 public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
     private static final Logger LOG = LoggerFactory.getLogger(AccessLogGlobalFilter.class);
 

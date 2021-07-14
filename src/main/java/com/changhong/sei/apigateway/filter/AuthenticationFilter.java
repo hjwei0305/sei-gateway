@@ -106,7 +106,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                     return buildResultHeader(response, HttpStatus.REQUEST_TIMEOUT, result.getMessage());
                 }
                 // 设置cookie
-                cookieWrite(request, response, sid);
+                //cookieWrite(request, response, sid);
             } else {
                 if (shouldFilter(uri)) {
                     return buildResultHeader(response, HttpStatus.UNAUTHORIZED, result.getMessage());

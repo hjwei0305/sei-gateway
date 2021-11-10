@@ -58,7 +58,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         String uri = request.getPath().toString();
 //        System.out.println("当前访问:" + uri);
         // 平台全局忽略会话检查的地址.后期可以改为网关的配置读取
-        if (StringUtils.containsAny(uri, Constants.SWAGGER2URL, "/sso/", "/version/", "/monitor/health", "/edm-service/pdfjs/", "/websocket/", "doc.html", "/swagger-resources", "/v2/api-docs")
+        if (StringUtils.containsAny(uri, Constants.SWAGGER2URL, "/sso/", "/oauth2/", "/version/", "/monitor/health", "/edm-service/pdfjs/", "/websocket/", "doc.html", "/swagger-resources", "/v2/api-docs")
                 || StringUtils.endsWithAny(uri, ".js", ".css", ".ico")) {
             //return chain.filter(exchange);
             ServerHttpRequest internalRequest = request.mutate().contextPath("/").build();

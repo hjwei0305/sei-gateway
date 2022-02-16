@@ -1,6 +1,7 @@
 package com.changhong.sei.apigateway.service;
 
 import com.changhong.sei.apigateway.service.client.dto.AuthWhitelistDto;
+import com.changhong.sei.core.context.ContextUtil;
 import com.changhong.sei.core.dto.ResultData;
 import com.changhong.sei.core.util.HttpUtils;
 import com.changhong.sei.core.util.JsonUtils;
@@ -36,8 +37,6 @@ public class AuthWhitelistService {
 
     @Value("${sei.application.env}")
     private String envCode;
-    @Value("${sei.manager.uri}")
-    private String managerHost;
 
     /**
      * 忽略token认证的url
@@ -87,26 +86,39 @@ public class AuthWhitelistService {
     public void reloadConfigCache() {
         LOCK.lock();
         try {
-            // 加载不需要做认证检查的接口到redis中
-            String url = managerHost.concat("/authWhitelist/get?envCode=").concat(envCode);
-            String data = HttpUtils.sendGet(url);
-            ResultData<List<AuthWhitelistDto>> resultData = JsonUtils.mapper().readValue(data, new TypeReference<ResultData<List<AuthWhitelistDto>>>() {
-            });
+            // 获取运维平台基地址
+            String managerHost = ContextUtil.getProperty("sei.manager.uri");
+            if (StringUtils.isNotBlank(managerHost)) {
+                // 加载不需要做认证检查的接口到redis中
+                String url = managerHost.concat("/authWhitelist/get?envCode=").concat(envCode);
+                String data = HttpUtils.sendGet(url);
+                ResultData<List<AuthWhitelistDto>> resultData = JsonUtils.mapper().readValue(data, new TypeReference<ResultData<List<AuthWhitelistDto>>>() {
+                });
 //            ResultData<List<AuthWhitelistDto>> resultData = apiTemplate.getByUrl(url, new ParameterizedTypeReference<ResultData<List<AuthWhitelistDto>>>() {
 //            });
-            if (resultData.successful()) {
-                List<AuthWhitelistDto> whitelists = resultData.getData();
-                if (CollectionUtils.isEmpty(whitelists)) {
-                    log.warn("未加载到接口数据");
+                if (resultData.successful()) {
+                    List<AuthWhitelistDto> whitelists = resultData.getData();
+                    if (CollectionUtils.isEmpty(whitelists)) {
+                        log.warn("未加载到接口数据");
+                    } else {
+                        ignoreAuthURLSet.clear();
+
+                        whitelists.forEach(gi -> ignoreAuthURLSet.add(gi.getUri()));
+                    }
+
+                    CACHE_CONTAINER.invalidateAll();
                 } else {
-                    ignoreAuthURLSet.clear();
-
-                    whitelists.forEach(gi -> ignoreAuthURLSet.add(gi.getUri()));
+                    log.error("获取网关白名单配置异常: " + resultData.getMessage());
                 }
-
-                CACHE_CONTAINER.invalidateAll();
             } else {
-                log.error("获取网关白名单配置异常: " + resultData.getMessage());
+                log.warn("未配置运维平台基地址[sei.manager.uri].");
+            }
+            String ignoreUrl = ContextUtil.getProperty("ignore.auth-url");
+            if (StringUtils.isNotBlank(ignoreUrl)) {
+                String[] urls = ignoreUrl.split("[,]");
+                for (String url : urls) {
+                    ignoreAuthURLSet.add(url.trim());
+                }
             }
         } catch (Exception e) {
             log.error("重新载入网关配置到缓存异常", e);

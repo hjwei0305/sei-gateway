@@ -16,6 +16,10 @@ spring:
     port: 6379
     host: 10.4.208.132
 
+# 全局配置忽略认证检查的接口
+ignore:
+  auth-url: /sei-auth/auth/check,/sei-auth/auth/login
+
 hystrix:
   command:
     default:

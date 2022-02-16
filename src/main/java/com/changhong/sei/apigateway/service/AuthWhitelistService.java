@@ -37,6 +37,10 @@ public class AuthWhitelistService {
 
     @Value("${sei.application.env}")
     private String envCode;
+    @Value("${sei.manager.uri:none}")
+    private String managerHost;
+    @Value("${ignore.auth-url:none}")
+    private String ignoreUrl;
 
     /**
      * 忽略token认证的url
@@ -87,8 +91,7 @@ public class AuthWhitelistService {
         LOCK.lock();
         try {
             // 获取运维平台基地址
-            String managerHost = ContextUtil.getProperty("sei.manager.uri");
-            if (StringUtils.isNotBlank(managerHost)) {
+            if (StringUtils.isNotBlank(managerHost) && !StringUtils.equalsIgnoreCase("none", managerHost)) {
                 // 加载不需要做认证检查的接口到redis中
                 String url = managerHost.concat("/authWhitelist/get?envCode=").concat(envCode);
                 String data = HttpUtils.sendGet(url);
@@ -113,8 +116,7 @@ public class AuthWhitelistService {
             } else {
                 log.warn("未配置运维平台基地址[sei.manager.uri].");
             }
-            String ignoreUrl = ContextUtil.getProperty("ignore.auth-url");
-            if (StringUtils.isNotBlank(ignoreUrl)) {
+            if (!StringUtils.equalsIgnoreCase("none", ignoreUrl)) {
                 String[] urls = ignoreUrl.split("[,]");
                 for (String url : urls) {
                     ignoreAuthURLSet.add(url.trim());

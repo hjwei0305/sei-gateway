@@ -44,14 +44,13 @@ spring:
       profile: ${sei.application.env}
       name: ${spring.application.name}
       # 配置中心服务地址
-      uri: http://sei.changhong.com/sei-manager/configserver
-      # 配置中心认证token
-      token: DEjjbZxTrSWNf
+      uri: http://10.233.0.171/sei-manager/configserver
+      token: BiWWR1gWtU7lDJP
     zookeeper:
       # zookeeper注册中心开关
       enabled: true
       # zk 地址
-      connect-string: 10.4.208.132:2181
+      connect-string: 10.233.0.170:2181
     consul:
       # consul注册中心开关
       enabled: false
